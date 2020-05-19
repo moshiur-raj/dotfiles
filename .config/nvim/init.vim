@@ -45,11 +45,11 @@ Plug 'dense-analysis/ale'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
+"Bracket, quotation Completion
+"Plug 'jiangmiao/auto-pairs'
+
 "Commenting
 Plug 'preservim/nerdcommenter'
-
-"Bracket, quotation Completion
-Plug 'jiangmiao/auto-pairs'
 
 " Initialize plugin system
 call plug#end()
@@ -158,10 +158,8 @@ inoremap <C-a> <Esc>ggVG$
 nnoremap <Esc> <Esc>:nohlsearch<CR><Esc>
 
 "cursor movement in insert mode
-inoremap <C-h> <Esc>bi
 inoremap <C-j> <Esc>j$a
 inoremap <C-k> <Esc>k$a
-inoremap <C-l> <Esc>ea
 
 "opening the terminal
 nnoremap <C-t> :65vs<CR>:terminal bash<CR>
@@ -169,6 +167,8 @@ inoremap <C-t> <Esc>:65vs<CR>:terminal bash<CR>
 nnoremap <A-t> :15sp<CR>:terminal bash<CR>
 inoremap <A-t> <Esc>:15sp<CR>:terminal bash<CR>
 
+"changing directory to current file directory
+nnoremap cd :lcd %:p:h<CR>
 
 """"""""""""""""
 " Split Settings
