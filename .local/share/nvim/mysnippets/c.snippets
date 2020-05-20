@@ -65,9 +65,16 @@ strtol(${1}, ${2:&$1}, ${3:10});
 endsnippet
 
 snippet struct "struct tag_name {...}"
-struct ${1:tag_name}
+struct ${1:name}
 {
-	${2:/*decalre_variables*/}
+	${2:/*declare_variables*/}
+};
+endsnippet
+
+snippet enum "enum tag_name {...}"
+enum ${1:identifier}
+{
+	${2:/*declare_enumeration-constants*/}
 };
 endsnippet
 

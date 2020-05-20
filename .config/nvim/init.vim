@@ -46,7 +46,7 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 "Bracket, quotation Completion
-"Plug 'jiangmiao/auto-pairs'
+Plug 'jiangmiao/auto-pairs'
 
 "Commenting
 Plug 'preservim/nerdcommenter'
@@ -93,8 +93,8 @@ set pumheight=5
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsSnippetDirectories=["UltiSnips", "/home/moshiur/.local/share/nvim/mysnippets"]
 let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigger="<Tab>"
+let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
 
 " For Themes
 colorscheme one
@@ -104,6 +104,9 @@ set termguicolors
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_close_button = 0
+" Use patched fonts
+let g:airline_powerline_fonts = 1
 
 " For ALE
 let g:ale_sign_error = '●'
@@ -120,7 +123,7 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 
 "Nerdcommenter
 let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-imap <C-\> <Esc><leader>c<space>a
+imap <C-\> <Esc><leader>c<space>
 nmap <C-\> <leader>c<space>
 vmap <C-\> <leader>c<space>
 
@@ -166,6 +169,10 @@ nnoremap <C-t> :65vs<CR>:terminal bash<CR>
 inoremap <C-t> <Esc>:65vs<CR>:terminal bash<CR>
 nnoremap <A-t> :15sp<CR>:terminal bash<CR>
 inoremap <A-t> <Esc>:15sp<CR>:terminal bash<CR>
+
+" Terminal mappings
+tnoremap <Esc> <C-\><C-N>
+tnoremap <C-\><C-N> <Esc>
 
 "changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
