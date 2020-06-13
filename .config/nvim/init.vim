@@ -46,7 +46,8 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 "Bracket, quotation Completion
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
+Plug 'Raimondi/delimitMate'
 
 "Commenting
 Plug 'preservim/nerdcommenter'
@@ -78,8 +79,8 @@ set completeopt=noinsert,menuone,noselect
 " Use Enter to select suggestions
 imap <expr> <CR> pumvisible() ? ((complete_info()["selected"] == "-1") ? "\<C-n>\<C-y>\<Plug>(ultisnips_expand)" : "\<C-y>\<Plug>(ultisnips_expand)") : "\<CR>"
 " Use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 "disable arrow keys
 inoremap <expr> <up> pumvisible() ? "<C-y><up>":"<up>"
 inoremap <expr> <down> pumvisible() ? "<C-y><down>":"<down>"
@@ -93,8 +94,29 @@ set pumheight=5
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsSnippetDirectories=["UltiSnips", "/home/moshiur/.local/share/nvim/mysnippets"]
 let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
-let g:UltiSnipsJumpForwardTrigger="<Tab>"
-let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
+
+"Using Tab for selecting suggestions and jumping to locations in snippets
+let g:ulti_jump_forwards_res = 0
+function! s:ulti_jump_forwards()
+    call UltiSnips#JumpForwards()
+    return g:ulti_jump_forwards_res
+endfunction
+
+function! s:i_tab()
+    return pumvisible() ? "\<C-n>" : (<SID>ulti_jump_forwards() ? "" : "\<Tab>")
+endfunction
+inoremap <silent> <TAB> <C-R>=(<SID>i_tab())<CR>
+
+let g:ulti_jump_backwards_res = 0
+function! s:ulti_jump_backwards()
+    call UltiSnips#JumpBackwards()
+    return g:ulti_jump_backwards_res
+endfunction
+
+function! s:i_stab()
+	return pumvisible() ? "\<C-p>" : (<SID>ulti_jump_backwards() ? "" : "\<S-Tab>")
+endfunction
+inoremap <silent> <S-TAB> <C-R>=(<SID>i_stab())<CR>
 
 " For Themes
 colorscheme one
@@ -113,17 +135,17 @@ let g:ale_sign_error = '●'
 let g:ale_sign_warning = '.'
 let g:ale_lint_on_text_changed = '0'
 let g:ale_lint_on_insert_leave = '0'
-nmap <C-e>k <Plug>(ale_previous_wrap)
-nmap <C-e>j <Plug>(ale_next_wrap)
-imap <C-e>k <Esc><Plug>(ale_previous_wrap)
-imap <C-e>j <Esc><Plug>(ale_next_wrap)
+"nmap <C-e>k <Plug>(ale_previous_wrap)
+"nmap <C-e>j <Plug>(ale_next_wrap)
+"imap <C-e>k <Esc><Plug>(ale_previous_wrap)
+"imap <C-e>j <Esc><Plug>(ale_next_wrap)
 
 " NerdTree Toggle
 nnoremap <C-n> :NERDTreeToggle<CR>
 
 "Nerdcommenter
 let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-imap <C-\> <Esc><leader>c<space>
+imap <C-\> <Esc><leader>c<space>a
 nmap <C-\> <leader>c<space>
 vmap <C-\> <leader>c<space>
 
@@ -140,10 +162,10 @@ set relativenumber	" show relative number
 " Keybindings
 """""""""""""
 " copying to + register in normal and visual mode
-nnoremap <C-c> "+y
+"nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 " cutting to + register in normal and visual mode
-nnoremap <C-x> "+d
+"nnoremap <C-x> "+d
 vnoremap <C-x> "+d
 " pasting from + register in normal, insert and visual mode
 nnoremap <C-v> "+p
@@ -153,22 +175,22 @@ inoremap <C-v> <Esc>"+pa
 nnoremap <C-s> :w<Esc>
 inoremap <C-s> <Esc>:w<Esc>a
 " selecting all in normal, insert and visual mode
-nnoremap <C-a> ggVG$
-vnoremap <C-a> <Esc>ggVG$
-inoremap <C-a> <Esc>ggVG$
+"nnoremap <C-a> ggVG$
+"vnoremap <C-a> <Esc>ggVG$
+"inoremap <C-a> <Esc>ggVG$
 
 " disabling higlight with Esc
-nnoremap <Esc> <Esc>:nohlsearch<CR><Esc>
+nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 "cursor movement in insert mode
-inoremap <C-j> <Esc>j$a
-inoremap <C-k> <Esc>k$a
+"inoremap <C-j> <Esc>j$a
+"inoremap <C-k> <Esc>k$a
 
 "opening the terminal
-nnoremap <C-t> :65vs<CR>:terminal bash<CR>
-inoremap <C-t> <Esc>:65vs<CR>:terminal bash<CR>
-nnoremap <A-t> :15sp<CR>:terminal bash<CR>
-inoremap <A-t> <Esc>:15sp<CR>:terminal bash<CR>
+nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
+inoremap <C-t> <Esc>:lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
+nnoremap <A-t> :lcd %:p:h<CR>:15sp<CR>:terminal bash<CR>
+inoremap <A-t> <Esc>:lcd %:p:h<CR>:15sp<CR>:terminal bash<CR>
 
 " Terminal mappings
 tnoremap <Esc> <C-\><C-N>
@@ -209,4 +231,7 @@ tnoremap <C-Left> <C-\><C-n>:vertical resize -1<CR>a
 tnoremap <C-Down> <C-\><C-n>:resize -1<CR>a
 tnoremap <C-Up> <C-\><C-n>:resize +1<CR>a
 tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
+
+"bracket completion for {<CR>}
+inoremap <silent> {<CR> {<CR>}<ESC>O
 
