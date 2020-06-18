@@ -1,5 +1,9 @@
+snippet #include "#include <>"
+#include <${1:stdio.h}>
+endsnippet
+
 snippet main "int main() {...}"
-main(int argc, char** argv)
+main(int argc, char **argv)
 {
 	${0}
 	return 0;
@@ -64,17 +68,23 @@ snippet strtol "long strtol(char* string, char** endptr, int base)"
 strtol(${1}, ${2:&$1}, ${3:10});
 endsnippet
 
-snippet struct "struct tag_name {...}"
+snippet struct "struct name {}"
 struct ${1:name}
 {
 	${2:/*declare_variables*/}
 };
 endsnippet
 
-snippet enum "enum tag_name {...}"
-enum ${1:identifier}
+snippet enum "enum name {}"
+enum ${1:name}
 {
 	${2:/*declare_enumeration-constants*/}
 };
 endsnippet
 
+snippet union "union name {}"
+union ${1:name}
+{
+	${2:/*declate_variables_here*/}
+};
+endsnippet

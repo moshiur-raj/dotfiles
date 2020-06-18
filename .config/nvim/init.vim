@@ -35,8 +35,9 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " NerdTree
 Plug 'preservim/nerdtree'
 
-" Easymotion
-Plug 'easymotion/vim-easymotion'
+" Jump to locations
+"Plug 'easymotion/vim-easymotion'
+Plug 'justinmk/vim-sneak'
 
 " Syntax Checker
 Plug 'dense-analysis/ale'
@@ -145,9 +146,9 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 
 "Nerdcommenter
 let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-imap <C-\> <Esc><leader>c<space>a
-nmap <C-\> <leader>c<space>
-vmap <C-\> <leader>c<space>
+"imap <C-/> <Esc><leader>c<space>a
+"nmap <C-/> <leader>c<space>
+"vmap <C-/> <leader>c<space>
 
 """"""""""""
 " UI changes
