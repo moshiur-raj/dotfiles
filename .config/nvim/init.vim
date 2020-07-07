@@ -7,7 +7,7 @@
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.local/share/nvim/plugged')
+call plug#begin('$HOME/.local/share/nvim/plugged')
 
 " Make sure you use single quotes\
 
@@ -52,6 +52,9 @@ Plug 'Raimondi/delimitMate'
 
 "Commenting
 Plug 'preservim/nerdcommenter'
+
+"git Support
+Plug 'tpope/vim-fugitive'
 
 " Initialize plugin system
 call plug#end()
@@ -99,12 +102,12 @@ let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
 "Using Tab for selecting suggestions and jumping to locations in snippets
 let g:ulti_jump_forwards_res = 0
 function! s:ulti_jump_forwards()
-    call UltiSnips#JumpForwards()
-    return g:ulti_jump_forwards_res
+	call UltiSnips#JumpForwards()
+	return g:ulti_jump_forwards_res
 endfunction
 
 function! s:i_tab()
-    return pumvisible() ? "\<C-n>" : (<SID>ulti_jump_forwards() ? "" : "\<Tab>")
+	return pumvisible() ? "\<C-n>" : (<SID>ulti_jump_forwards() ? "" : "\<Tab>")
 endfunction
 inoremap <silent> <TAB> <C-R>=(<SID>i_tab())<CR>
 
@@ -231,7 +234,7 @@ tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
 tnoremap <C-Left> <C-\><C-n>:vertical resize -1<CR>a
 tnoremap <C-Down> <C-\><C-n>:resize -1<CR>a
 tnoremap <C-Up> <C-\><C-n>:resize +1<CR>a
-tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
+tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a 
 
 "bracket completion for {<CR>}
 inoremap <silent> {<CR> {<CR>}<ESC>O
