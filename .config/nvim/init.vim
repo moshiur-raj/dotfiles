@@ -32,11 +32,13 @@ Plug 'vim-airline/vim-airline'
 " C Syntax Highlighting Enhancement
 Plug 'octol/vim-cpp-enhanced-highlight'
 
+"latex Support
+Plug 'lervag/vimtex'
+
 " NerdTree
 Plug 'preservim/nerdtree'
 
 " Jump to locations
-"Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 
 " Syntax Checker
@@ -47,8 +49,8 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 "Bracket, quotation Completion
-"Plug 'jiangmiao/auto-pairs'
-Plug 'Raimondi/delimitMate'
+Plug 'jiangmiao/auto-pairs'
+"Plug 'Raimondi/delimitMate'
 
 "Commenting
 Plug 'preservim/nerdcommenter'
@@ -153,9 +155,23 @@ let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
 "nmap <C-/> <leader>c<space>
 "vmap <C-/> <leader>c<space>
 
-""""""""""""
-" UI changes
-""""""""""""
+"AutoPairs
+"Disabling stuff
+let g:AutoPairsFlyMode = 0
+let g:AutoPairsMapBS = 0
+let g:AutoPairsMapCh = 0
+let g:AutoPairsCenterLine = 0
+let g:AutoPairsMapSpace = 0
+let g:AutoPairsMultilineClose = 0
+let g:AutoPairsShortcutToggle = ''
+"let g:AutoPairsShortcutFastWrap = ''
+let g:AutoPairsShortcutJump = ''
+let g:AutoPairsShortcutBackInsert = ''
+"custom completion
+
+""""""""""""""""""""""""
+" USER DEFINED SETTINGS
+""""""""""""""""""""""""
 set tabstop=4		" width of a tab character
 set shiftwidth=4	" width of a tab character in auto indentation
 set mouse=a			" using mouse in all modes
@@ -186,10 +202,6 @@ inoremap <C-s> <Esc>:w<Esc>a
 " disabling higlight with Esc
 nnoremap <Esc> <Esc>:nohlsearch<CR>
 
-"cursor movement in insert mode
-"inoremap <C-j> <Esc>j$a
-"inoremap <C-k> <Esc>k$a
-
 "opening the terminal
 nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
 inoremap <C-t> <Esc>:lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
@@ -202,6 +214,9 @@ tnoremap <C-\><C-N> <Esc>
 
 "changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
+
+"makefile integration
+nmap <f9> :lcd %:p:h<CR>:make<CR>
 
 """"""""""""""""
 " Split Settings
@@ -237,5 +252,5 @@ tnoremap <C-Up> <C-\><C-n>:resize +1<CR>a
 tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a 
 
 "bracket completion for {<CR>}
-inoremap <silent> {<CR> {<CR>}<ESC>O
+"inoremap <silent> {<CR> {<CR>}<ESC>O
 
