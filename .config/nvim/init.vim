@@ -23,6 +23,9 @@ Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-pyclang'
 Plug 'ncm2/ncm2-ultisnips'
 
+"Deoplete
+" Plug 'Shougo/deoplete.nvim'
+
 " OneDark Theme
 Plug 'rakr/vim-one'
 
@@ -50,10 +53,9 @@ Plug 'honza/vim-snippets'
 
 "Bracket, quotation Completion
 Plug 'jiangmiao/auto-pairs'
-"Plug 'Raimondi/delimitMate'
 
 "Commenting
-Plug 'preservim/nerdcommenter'
+Plug 'tpope/vim-commentary'
 
 "git Support
 Plug 'tpope/vim-fugitive'
@@ -82,8 +84,19 @@ set hidden
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
+
+"Deoplete
+" let g:deoplete#enable_at_startup = 1
+
 " Use Enter to select suggestions
-imap <expr> <CR> pumvisible() ? ((complete_info()["selected"] == "-1") ? "\<C-n>\<C-y>\<Plug>(ultisnips_expand)" : "\<C-y>\<Plug>(ultisnips_expand)") : "\<CR>"
+" function! s:select_and_expand()
+" 	call feedkeys("\<C-n>", 'n')
+" 	call ncm2_ultisnips#expand_or("\<C-y>",'n')
+" 	return ''
+" endfunction
+imap <expr> <CR> pumvisible() ? ((complete_info()["selected"] == "-1") ? "\<C-n>\<Plug>(ultisnips_expand)" : ncm2_ultisnips#expand_or("\<C-y>",'n')) : "\<CR>"
+" inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<C-n>\<C-y>\<Plug>(ultisnips_expand)"
+                " \ :ncm2_ultisnips#expand_or("\<C-y>",'n')):"\<CR>")
 " Use <TAB> to select the popup menu:
 "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "<Tab>"
 "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -149,22 +162,20 @@ let g:ale_lint_on_insert_leave = '0'
 " NerdTree Toggle
 nnoremap <C-n> :NERDTreeToggle<CR>
 
-"Nerdcommenter
-let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-"imap <C-/> <Esc><leader>c<space>a
-"nmap <C-/> <leader>c<space>
-"vmap <C-/> <leader>c<space>
+"Vim-Commentary
+autocmd FileType c setlocal commentstring=//%s
 
 "AutoPairs
 "Disabling stuff
+"let g:AutoPairsShortcutFastWrap = ''
+let g:AutoPairsMapBS = 1
+let g:AutoPairsMapCR = 1
 let g:AutoPairsFlyMode = 0
-let g:AutoPairsMapBS = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsCenterLine = 0
 let g:AutoPairsMapSpace = 0
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutToggle = ''
-"let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutBackInsert = ''
 "custom completion
@@ -249,7 +260,7 @@ tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
 tnoremap <C-Left> <C-\><C-n>:vertical resize -1<CR>a
 tnoremap <C-Down> <C-\><C-n>:resize -1<CR>a
 tnoremap <C-Up> <C-\><C-n>:resize +1<CR>a
-tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a 
+tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
 
 "bracket completion for {<CR>}
 "inoremap <silent> {<CR> {<CR>}<ESC>O
