@@ -1,6 +1,11 @@
 #Enable colors and change prompt
+# loading colors
 autoload -U colors && colors
+# cool colorscheme in prompt
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+
+# making backspace work properly in vi mode
+bindkey "^?" backward-delete-char
 
 # History
 HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.histfile
@@ -17,6 +22,9 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-alias git-dotfiles='git --git-dir=/home/moshiur/dotfiles/ --work-tree=/home/moshiur'
-alias ls='ls --color=auto'
+# managing dotfiles
+alias git-dotfiles='git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+#safe removal ?
 alias rm='rm -I'
+# color in ls
+alias ls='ls --color=auto'
