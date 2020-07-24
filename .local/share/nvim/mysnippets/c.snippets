@@ -1,8 +1,20 @@
-snippet #include "#include <>"
-#include <${1:header}>
+snippet #include "#include <header.h>"
+#include <${1:header.h}>
 endsnippet
 
-snippet main "int main() {...}"
+snippet #ifndef
+#ifndef ${1}
+	${0}
+#endif
+endsnippet
+
+snippet #ifdef
+#ifdef ${1}
+	${0}
+#endif
+endsnippet
+
+snippet main "int main(int argc, char **argv) {statement;}"
 main(int argc, char **argv)
 {
 	${0}
@@ -10,81 +22,81 @@ main(int argc, char **argv)
 }
 endsnippet
 
-snippet if "if() {} statement"
+snippet if "if(condition) {statement;}"
 if(${1:/*condition*/})
 {
 	${0:/*statement*/}
 }
 endsnippet
 
-snippet else "else {} statement"
+snippet else "else {statement;}"
 else
 {
 	${0:/*statement*/}
 }
 endsnippet
 
-snippet while "While() {} loop"
+snippet while "While(condition) {statement;}"
 while(${1:/*condition*/})
 {
 	${0:/*statement*/}
 }
 endsnippet
 
-snippet do "do{} while() loop"
+snippet do "do{statement;} while(condition)"
 do
 {
 	${0:/*statement*/}
 } while(${1:/*condition*/});
 endsnippet
 
-snippet for "for() {} loop"
+snippet for "for(initializer; condition; statement){statement;}"
 for(int i = 0; i < ${1:count}; ++i)
 {
 	${0:/*statement*/}
 }
 endsnippet
 
-snippet forr "for() {} loop"
-for(${1:/*initialize variable; condition; increment*/})
+snippet forr "for(initializer; condition; statement){statement;}"
+for(${1:/*initialize variable; condition; statement*/})
 {
 	${0:/*statement*/}
 }
 endsnippet
 
-snippet scanf "scanf() function"
+snippet scanf "scanf(const char *restrict __format, ...)"
 scanf("${1:%i}", ${2});
 endsnippet
 
-snippet snprintf "int snprintf(char* buffer, size_t max_len, const char* format, ...)"
+snippet snprintf "int snprintf(char* buffer, size_t max_len, const char *restrict __format, ...)"
 snprintf(${1:buffer}, ${2:size}, "${3:format}", ${4});
 endsnippet
 
-snippet strtod "double strtod(char* string, char** endptr)"
-strtod(${1}, ${2:endptr});
-endsnippet
-
-snippet strtol "long strtol(char* string, char** endptr, int base)"
-strtol(${1}, ${2:endptr}, ${3:base});
-endsnippet
-
-snippet struct "struct name {}"
+snippet struct
 struct ${1:name}
 {
 	${2:/*declare_variables*/}
 };
 endsnippet
 
-snippet enum "enum name {}"
+snippet enum
 enum ${1:name}
 {
 	${2:/*declare_enumeration-constants*/}
 };
 endsnippet
 
-snippet union "union name {}"
+snippet union
 union ${1:name}
 {
 	${2:/*declate_variables_here*/}
 };
+endsnippet
+
+snippet switch "switch(int variable){cases}"
+switch(${1:variable})
+{
+	case ${2:variable case} :
+		${0}
+}
 endsnippet

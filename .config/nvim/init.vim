@@ -1,38 +1,44 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Vim-Plug
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""
+" ININIALIZING CONFIGS
+"""""""""""""""""""""""
+if ! filereadable(system('echo -n "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim"'))
+	echo "Downloading junegunn/vim-plug to manage plugins..."
+	silent !sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	autocmd VimEnter * PlugInstall
+endif
 
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('$HOME/.local/share/nvim/plugged')
 
-" Make sure you use single quotes\
+"""""""""""""
+" Vim-Plug
+"""""""""""""
+
+call plug#begin(system('echo -n "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/plugged"'))
 
 " Neovim Completion Manager 2
-" assuming you're using vim-plug: https://github.com/junegunn/vim-plug
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
-" NOTE: you need to install completion sources to get completions. Check
-" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-pyclang'
 Plug 'ncm2/ncm2-ultisnips'
 
-"Deoplete
+" Deoplete
 " Plug 'Shougo/deoplete.nvim'
+" Plug 'Shougo/deoplete-clangx'
+" Plug 'deoplete-plugins/deoplete-jedi'
 
-" OneDark Theme
+" Themes
 Plug 'rakr/vim-one'
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 " Vim Airline
 Plug 'vim-airline/vim-airline'
 
-" C Syntax Highlighting Enhancement
+"Syntax Highlighting Enhancement
 Plug 'octol/vim-cpp-enhanced-highlight'
 
 "latex Support
@@ -63,56 +69,140 @@ Plug 'tpope/vim-fugitive'
 " Initialize plugin system
 call plug#end()
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" USER DEFINED SETTINGS
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"Enable Buffer History Even After Switching buffers
-set hidden
-
-" Caps Lock Mapped to Esc
-"autocmd VimEnter * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-"autocmd VimLeave * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
-
-"""""""""
+"""""""""""
 " PlugIns
-"""""""""
-" For Neovim Completion Manager
+"""""""""""
+
+" Neovim Completion Manager 2
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
+" Vim-Tex integration
+augroup my_cm_setup
+	autocmd!
+	autocmd Filetype tex call ncm2#register_source({
+				\ 'name': 'vimtex',
+				\ 'priority': 8,
+				\ 'scope': ['tex'],
+				\ 'mark': 'tex',
+				\ 'word_pattern': '\w+',
+				\ 'complete_pattern': g:vimtex#re#ncm2,
+				\ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+				\ })
+augroup END
+" Make it fast
+let g:ncm2#popup_delay = 5
+" Fuzzy matcher
+" let g:ncm2#matcher = 'substrfuzzy'
 
 "Deoplete
 " let g:deoplete#enable_at_startup = 1
+" set completeopt-=preview
+" call deoplete#custom#option({
+" 			\ 'auto_refresh_delay': 0,
+" 			\ 'num_processes': 0,
+" 			\ 'refresh_always': v:false,
+" 			\ 'smart_case': v:true,
+" 			\ })
+" call deoplete#custom#source('_', 'matchers', ['matcher_full_fuzzy'])
+" call deoplete#custom#source('_', 'sorters', ['sorter_word'])
+" call deoplete#custom#var('omni', 'input_patterns', {
+" 			\ 'tex': g:vimtex#re#deoplete
+" 			\})
+
+"Ultisnips
+let g:UltiSnipsSnippetDirectories=["UltiSnips", system('echo -n "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/mysnippets"')]
+let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
+" let g:UltiSnipsJumpForwardTrigger="<TAB>"
+
+" Themes
+colorscheme one
+
+"Syntax Highlighting
+let g:cpp_posix_standard = 1
+
+" vim-airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+" Use patched fonts
+let g:airline_powerline_fonts = 1
+
+" For ALE
+let g:ale_c_gcc_options='-std=gnu17 -Wall'
+let g:ale_c_clang_options='-std=c17 -Wall'
+let g:ale_sign_error = '●'
+let g:ale_sign_warning = '.'
+let g:ale_lint_on_text_changed = '0'
+let g:ale_lint_on_enter = '0'
+let g:ale_lint_on_insert_leave = '0'
+"nmap <C-e>k <Plug>(ale_previous_wrap)
+"nmap <C-e>j <Plug>(ale_next_wrap)
+"imap <C-e>k <Esc><Plug>(ale_previous_wrap)
+"imap <C-e>j <Esc><Plug>(ale_next_wrap)
+
+" NerdTree Toggle
+nnoremap <C-n> :NERDTreeToggle<CR>
+
+"Vim-Commentary
+autocmd FileType c setlocal commentstring=//%s
+
+"AutoPairs
+"let g:AutoPairsShortcutFastWrap = ''
+let g:AutoPairsMapBS = 1
+let g:AutoPairsMapCR = 1
+let g:AutoPairsFlyMode = 0
+let g:AutoPairsMapCh = 0
+let g:AutoPairsCenterLine = 0
+let g:AutoPairsMapSpace = 0
+let g:AutoPairsMultilineClose = 0
+let g:AutoPairsShortcutToggle = ''
+let g:AutoPairsShortcutJump = ''
+let g:AutoPairsShortcutBackInsert = ''
+
+
+""""""""""""""""""
+" OTHER SETTINGS
+""""""""""""""""""
+
+" Basics
+set tabstop=4		" width of a tab character
+set shiftwidth=4	" width of a tab character in auto indentation
+set mouse=a			" using mouse in all modes
+set number			" show line number
+set relativenumber	" show relative number
+set termguicolors
+" popup menu height and width
+set pumheight=5
+"set pumwidth=15
+" Enable Buffer History Even After Switching buffers
+set hidden
+" Disables automatic commenting on newline:
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+" Spell-check set to <leader>o, 'o' for 'orthography':
+map <leader>o :setlocal spell! spelllang=en_us<CR>
+" Runs a script that cleans out tex build files whenever I close out of a .tex file.
+autocmd VimLeave *.tex !texclear %
+" Save file as sudo on files that require root permission
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+" Automatically deletes all trailing whitespace and newlines at end of file on save.
+autocmd BufWritePre * %s/\s\+$//e
+autocmd BufWritepre * %s/\n\+\%$//e
+" Caps Lock Mapped to Esc
+"autocmd VimEnter * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+"autocmd VimLeave * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
 
 " Use Enter to select suggestions
-" function! s:select_and_expand()
-" 	call feedkeys("\<C-n>", 'n')
-" 	call ncm2_ultisnips#expand_or("\<C-y>",'n')
-" 	return ''
-" endfunction
-imap <expr> <CR> pumvisible() ? ((complete_info()["selected"] == "-1") ? "\<C-n>\<Plug>(ultisnips_expand)" : ncm2_ultisnips#expand_or("\<C-y>",'n')) : "\<CR>"
-" inoremap <expr><CR> (pumvisible()?(empty(v:completed_item)?"\<C-n>\<C-y>\<Plug>(ultisnips_expand)"
-                " \ :ncm2_ultisnips#expand_or("\<C-y>",'n')):"\<CR>")
-" Use <TAB> to select the popup menu:
-"inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "<Tab>"
-"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+imap <expr> <CR> pumvisible() ? ((complete_info()["selected"] == "-1") ? "\<C-n>\<C-y>\<Plug>(ultisnips_expand)" : "\<C-y>\<Plug>(ultisnips_expand)") : "\<CR>"
 "disable arrow keys
 inoremap <expr> <up> pumvisible() ? "<C-y><up>":"<up>"
 inoremap <expr> <down> pumvisible() ? "<C-y><down>":"<down>"
 inoremap <expr> <left> pumvisible() ? "<C-y><left>":"<left>"
 inoremap <expr> <right> pumvisible() ? "<C-y><right>":"<right>"
-" popup menu height and width
-set pumheight=5
-"set pumwidth=15
-
-"Ultisnips
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsSnippetDirectories=["UltiSnips", "/home/moshiur/.local/share/nvim/mysnippets"]
-let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
 
 "Using Tab for selecting suggestions and jumping to locations in snippets
 let g:ulti_jump_forwards_res = 0
@@ -137,66 +227,12 @@ function! s:i_stab()
 endfunction
 inoremap <silent> <S-TAB> <C-R>=(<SID>i_stab())<CR>
 
-" For Themes
-colorscheme one
-set termguicolors
-
-"For vim-airline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#show_close_button = 0
-" Use patched fonts
-let g:airline_powerline_fonts = 1
-
-" For ALE
-let g:ale_sign_error = '●'
-let g:ale_sign_warning = '.'
-let g:ale_lint_on_text_changed = '0'
-let g:ale_lint_on_insert_leave = '0'
-"nmap <C-e>k <Plug>(ale_previous_wrap)
-"nmap <C-e>j <Plug>(ale_next_wrap)
-"imap <C-e>k <Esc><Plug>(ale_previous_wrap)
-"imap <C-e>j <Esc><Plug>(ale_next_wrap)
-
-" NerdTree Toggle
-nnoremap <C-n> :NERDTreeToggle<CR>
-
-"Vim-Commentary
-autocmd FileType c setlocal commentstring=//%s
-
-"AutoPairs
-"Disabling stuff
-"let g:AutoPairsShortcutFastWrap = ''
-let g:AutoPairsMapBS = 1
-let g:AutoPairsMapCR = 1
-let g:AutoPairsFlyMode = 0
-let g:AutoPairsMapCh = 0
-let g:AutoPairsCenterLine = 0
-let g:AutoPairsMapSpace = 0
-let g:AutoPairsMultilineClose = 0
-let g:AutoPairsShortcutToggle = ''
-let g:AutoPairsShortcutJump = ''
-let g:AutoPairsShortcutBackInsert = ''
-"custom completion
-
-""""""""""""""""""""""""
-" USER DEFINED SETTINGS
-""""""""""""""""""""""""
-set tabstop=4		" width of a tab character
-set shiftwidth=4	" width of a tab character in auto indentation
-set mouse=a			" using mouse in all modes
-set number			" show line number
-set relativenumber	" show relative number
-
-"""""""""""""
+"""""""""""""""
 " Keybindings
-"""""""""""""
+"""""""""""""""
 " copying to + register in normal and visual mode
-"nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 " cutting to + register in normal and visual mode
-"nnoremap <C-x> "+d
 vnoremap <C-x> "+d
 " pasting from + register in normal, insert and visual mode
 nnoremap <C-v> "+p
@@ -205,19 +241,15 @@ inoremap <C-v> <Esc>"+pa
 " enabling ctrl+s in normal and insert mode
 nnoremap <C-s> :w<Esc>
 inoremap <C-s> <Esc>:w<Esc>a
-" selecting all in normal, insert and visual mode
-"nnoremap <C-a> ggVG$
-"vnoremap <C-a> <Esc>ggVG$
-"inoremap <C-a> <Esc>ggVG$
 
 " disabling higlight with Esc
 nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 "opening the terminal
-nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
-inoremap <C-t> <Esc>:lcd %:p:h<CR>:65vs<CR>:terminal bash<CR>
-nnoremap <A-t> :lcd %:p:h<CR>:15sp<CR>:terminal bash<CR>
-inoremap <A-t> <Esc>:lcd %:p:h<CR>:15sp<CR>:terminal bash<CR>
+nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal<CR>
+inoremap <C-t> <Esc>:lcd %:p:h<CR>:65vs<CR>:terminal<CR>
+nnoremap <A-t> :lcd %:p:h<CR>:15sp<CR>:terminal<CR>
+inoremap <A-t> <Esc>:lcd %:p:h<CR>:15sp<CR>:terminal<CR>
 
 " Terminal mappings
 tnoremap <Esc> <C-\><C-N>
@@ -264,4 +296,3 @@ tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
 
 "bracket completion for {<CR>}
 "inoremap <silent> {<CR> {<CR>}<ESC>O
-
