@@ -22,9 +22,9 @@ autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 # Use vim keys in tab complete menu:
 bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
-bindkey -M menuselect 'j' vi-down-line-or-history
 # Change cursor shape for different vi modes
 function zle-keymap-select
 {
@@ -50,10 +50,12 @@ TIMEFMT=$'\n%J\ntxt\t%XKB\ndata\t%DKB\nmax\t%MKB\ncpu\t%P\nuser\t%U\nsys\t%S\nre
 # PLUGINS
 # Syntax highlighting
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# Auto suggestions
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # History Substring Search
 source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd j history-substring-search-down
+bindkey -M vicmd k history-substring-search-up
 
 # Managing dotfiles
 alias git-dotfiles='git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
