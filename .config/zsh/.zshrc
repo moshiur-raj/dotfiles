@@ -53,8 +53,8 @@ TIMEFMT=$'\n%J\ntxt\t%XKB\ndata\t%DKB\nmax\t%MKB\ncpu\t%P\nuser\t%U\nsys\t%S\nre
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # History Substring Search
 source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
