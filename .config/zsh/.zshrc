@@ -8,13 +8,12 @@ HISTSIZE=1000
 SAVEHIST=1000
 
 # Autocompletion
-zstyle ':completion:*:*:git:*' script ~/.local/share/zsh/git-completion.bash
-fpath=(~/.local/share/zsh $fpath)
 autoload -Uz compinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots) # include hidden files
+setopt COMPLETE_ALIASES	# completion for alisases
 
 # vi mode
 bindkey -v
