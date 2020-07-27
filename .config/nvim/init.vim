@@ -236,14 +236,14 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-inoremap <A-h> <Esc><C-w>ha
-inoremap <A-j> <Esc><C-w>ja
-inoremap <A-k> <Esc><C-w>ka
-inoremap <A-l> <Esc><C-w>la
-tnoremap <A-h> <C-\><C-n><C-w>ha
-tnoremap <A-j> <C-\><C-n><C-w>ja
-tnoremap <A-k> <C-\><C-n><C-w>ka
-tnoremap <A-l> <C-\><C-n><C-w>la
+inoremap <A-h> <Esc><C-w>h
+inoremap <A-j> <Esc><C-w>j
+inoremap <A-k> <Esc><C-w>k
+inoremap <A-l> <Esc><C-w>l
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
 " Resizing windows
 nnoremap <C-Left> :vertical resize -1<CR>
 nnoremap <C-Down> :resize -1<CR>
