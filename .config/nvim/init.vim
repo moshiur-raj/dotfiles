@@ -94,7 +94,8 @@ let g:ncm2#popup_delay = 5
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["UltiSnips", system('echo -n "$HOME/.local/share/nvim/mysnippets"')]
 let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
-" let g:UltiSnipsJumpForwardTrigger="<TAB>"
+let g:UltiSnipsJumpForwardTrigger="<TAB>"
+let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
 
 " Themes
 colorscheme one
@@ -186,27 +187,9 @@ inoremap <expr> <left> pumvisible() ? "<C-y><left>":"<left>"
 inoremap <expr> <right> pumvisible() ? "<C-y><right>":"<right>"
 
 " Using Tab for selecting suggestions and jumping to locations in snippets
-let g:ulti_jump_forwards_res = 0
-function! s:ulti_jump_forwards()
-	call UltiSnips#JumpForwards()
-	return g:ulti_jump_forwards_res
-endfunction
-
-function! s:i_tab()
-	return pumvisible() ? "\<C-n>" : (<SID>ulti_jump_forwards() ? "" : "\<Tab>")
-endfunction
-inoremap <silent> <TAB> <C-R>=(<SID>i_tab())<CR>
-
-let g:ulti_jump_backwards_res = 0
-function! s:ulti_jump_backwards()
-    call UltiSnips#JumpBackwards()
-    return g:ulti_jump_backwards_res
-endfunction
-
-function! s:i_stab()
-	return pumvisible() ? "\<C-p>" : (<SID>ulti_jump_backwards() ? "" : "\<S-Tab>")
-endfunction
-inoremap <silent> <S-TAB> <C-R>=(<SID>i_stab())<CR>
+" WHY DOES THIS WORK ?????
+inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : UltiSnips#JumpForwards()
+inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : UltiSnips#JumpBackwards()
 
 """""""""""""""
 " Keybindings
