@@ -223,8 +223,9 @@ inoremap <C-v> <Esc>"+pa
 nnoremap <C-s> :w<Esc>
 inoremap <C-s> <Esc>:w<Esc>a
 
-" Disabling higlight with Esc
-nnoremap <Esc> <Esc>:nohlsearch<CR>
+" Disabling higlight
+set nohlsearch
+" nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
 nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal<CR>

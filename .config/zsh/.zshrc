@@ -62,5 +62,6 @@ bindkey -M vicmd k history-substring-search-up
 alias git-dotfiles='git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
 # Safe removal ?
 alias rm='rm -I'
-# Color in ls
-alias ls='ls --color=auto'
+# Adding Colors
+alias ls='ls -hN --color=auto --group-directories-first'
+alias grep='grep --color=auto'
