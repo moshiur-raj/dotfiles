@@ -206,15 +206,16 @@ inoremap <C-v> <Esc>"+pa
 nnoremap <C-s> :w<Esc>
 inoremap <C-s> <Esc>:w<Esc>a
 
-" Disabling higlight
+" Higlights
+set cursorline
 set nohlsearch
 " nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
-nnoremap <C-t> :lcd %:p:h<CR>:65vs<CR>:terminal<CR>
-inoremap <C-t> <Esc>:lcd %:p:h<CR>:65vs<CR>:terminal<CR>
-nnoremap <A-t> :lcd %:p:h<CR>:15sp<CR>:terminal<CR>
-inoremap <A-t> <Esc>:lcd %:p:h<CR>:15sp<CR>:terminal<CR>
+nnoremap <C-t> :65vs<CR>:terminal<CR>
+inoremap <C-t> <Esc>:65vs<CR>:terminal<CR>
+nnoremap <A-t> :15sp<CR>:terminal<CR>
+inoremap <A-t> <Esc>:15sp<CR>:terminal<CR>
 
 " Terminal mappings
 tnoremap <Esc> <C-\><C-N>
