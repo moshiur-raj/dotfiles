@@ -66,3 +66,4 @@ alias rm='rm -I'
 # Adding Colors
 alias ls='ls -hN --color=auto --group-directories-first'
 alias grep='grep --color=auto'
+xset r rate 300 50
