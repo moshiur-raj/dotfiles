@@ -194,17 +194,18 @@ inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : UltiSnips#JumpBackwards()
 """""""""""""""
 " Keybindings
 """""""""""""""
-" Copying to + register in normal and visual mode
+" Copying to + register in visual mode
 vnoremap <C-c> "+y
-" Cutting to + register in normal and visual mode
+" Cutting to + register visual mode
 vnoremap <C-x> "+d
 " Pasting from + register in normal, insert and visual mode
 nnoremap <C-v> "+p
+nnoremap <C-S>v <C-v>
 vnoremap <C-v> "+p
 inoremap <C-v> <Esc>"+pa
 " Enabling ctrl+s in normal and insert mode
-nnoremap <C-s> :w<Esc>
-inoremap <C-s> <Esc>:w<Esc>a
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
 
 " Higlights
 set cursorline
@@ -217,15 +218,15 @@ inoremap <C-t> <Esc>:65vs<CR>:terminal<CR>
 nnoremap <A-t> :15sp<CR>:terminal<CR>
 inoremap <A-t> <Esc>:15sp<CR>:terminal<CR>
 
-" Terminal mappings
-tnoremap <Esc> <C-\><C-N>
-tnoremap <C-\><C-N> <Esc>
+" Terminal Mappings
+" tnoremap <Esc> <C-\><C-N>
+" tnoremap <C-\><C-N> <Esc>
 
 " Changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
 
 " Makefile integration
-nmap <f9> :lcd %:p:h<CR>:make<CR>
+nmap <f9> :make<CR>
 
 """"""""""""""""
 " Split Settings

@@ -2,6 +2,9 @@
 autoload -U colors && colors
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
+# Disable ctrl-s to freeze terminal
+stty stop undef
+
 # History
 HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.histfile
 HISTSIZE=1000
@@ -66,4 +69,3 @@ alias rm='rm -I'
 # Adding Colors
 alias ls='ls -hN --color=auto --group-directories-first'
 alias grep='grep --color=auto'
-xset r rate 300 50
