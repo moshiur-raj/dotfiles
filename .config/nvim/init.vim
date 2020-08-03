@@ -200,7 +200,7 @@ vnoremap <C-c> "+y
 vnoremap <C-x> "+d
 " Pasting from + register in normal, insert and visual mode
 nnoremap <C-v> "+p
-nnoremap <C-S>v <C-v>
+nnoremap <A-v> <C-v>
 vnoremap <C-v> "+p
 inoremap <C-v> <Esc>"+pa
 " Enabling ctrl+s in normal and insert mode
