@@ -63,7 +63,7 @@ bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
 # Managing dotfiles
-alias git-dotfiles='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
+alias git-dotfiles='git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
 # Safe removal ?
 alias rm='rm -I'
 # Adding Colors
