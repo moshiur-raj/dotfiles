@@ -25,12 +25,8 @@ Plug 'ncm2/ncm2-ultisnips'
 
 " Themes
 Plug 'rakr/vim-one'
-Plug 'drewtempelmeyer/palenight.vim'
-Plug 'joshdick/onedark.vim'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'dracula/vim', { 'as': 'dracula' }
 
-" Vim Airline
+" Statusline
 Plug 'vim-airline/vim-airline'
 
 " Syntax highlighting enhancement
@@ -38,9 +34,6 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 
 " Latex support
 Plug 'lervag/vimtex'
-
-" NerdTree
-Plug 'preservim/nerdtree'
 
 " Jump to locations
 Plug 'justinmk/vim-sneak'
@@ -110,7 +103,7 @@ let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 " Use patched fonts
-let g:airline_powerline_fonts = 1
+" let g:airline_powerline_fonts = 1
 
 " For ALE
 let g:ale_c_gcc_options='-std=gnu17 -Wall'
@@ -125,17 +118,12 @@ let g:ale_lint_on_insert_leave = '0'
 " imap <C-e>k <Esc><Plug>(ale_previous_wrap)
 " imap <C-e>j <Esc><Plug>(ale_next_wrap)
 
-" NerdTree Toggle
-nnoremap <C-n> :NERDTreeToggle<CR>
-
 " Vim-Commentary
 autocmd FileType c setlocal commentstring=//%s
 
 " AutoPairs
-" let g:AutoPairsShortcutFastWrap = ''
 " Disabled due to compalitibility issues with ncm2, made custom map for cr below
 let g:AutoPairsMapCR = 0
-let g:AutoPairsMapBS = 1
 let g:AutoPairsFlyMode = 0
 let g:AutoPairsMapCh = 0
 let g:AutoPairsCenterLine = 0
@@ -173,9 +161,6 @@ cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
 autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritepre * %s/\n\+\%$//e
-" Caps Lock Mapped to Esc
-" autocmd VimEnter * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-" autocmd VimLeave * silent! !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
 
 " Use Enter to select suggestions, expand snippet or execute autopairs cr
 inoremap <silent> <Plug>(MyCR) <CR><C-R>=AutoPairsReturn()<CR>
@@ -209,18 +194,14 @@ inoremap <C-s> <Esc>:w<CR>a
 
 " Higlights
 set cursorline
-set nohlsearch
-" nnoremap <Esc> <Esc>:nohlsearch<CR>
+" Disable highlights on pressing ESC
+nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
 nnoremap <C-t> :65vs<CR>:terminal<CR>
 inoremap <C-t> <Esc>:65vs<CR>:terminal<CR>
 nnoremap <A-t> :15sp<CR>:terminal<CR>
 inoremap <A-t> <Esc>:15sp<CR>:terminal<CR>
-
-" Terminal Mappings
-" tnoremap <Esc> <C-\><C-N>
-" tnoremap <C-\><C-N> <Esc>
 
 " Changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
@@ -233,7 +214,6 @@ nmap <f9> :make<CR>
 """"""""""""""""
 set splitright
 set splitbelow
-" Split Keybindings
 " Switching windows
 nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
@@ -247,16 +227,17 @@ tnoremap <A-h> <C-\><C-n><C-w>h
 tnoremap <A-j> <C-\><C-n><C-w>j
 tnoremap <A-k> <C-\><C-n><C-w>k
 tnoremap <A-l> <C-\><C-n><C-w>l
+" Command mode mappings
+cnoremap <C-h> <LEFT>
+cnoremap <C-j> <DOWN>
+cnoremap <C-k> <UP>
+cnoremap <C-l> <RIGHT>
 " Resizing windows
-nnoremap <C-Left> :vertical resize -1<CR>
-nnoremap <C-Down> :resize -1<CR>
-nnoremap <C-Up> :resize +1<CR>
-nnoremap <C-Right> :vertical resize +1<CR>
-inoremap <C-Left> <Esc>:vertical resize -1<CR>a
-inoremap <C-Down> <Esc>:resize -1<CR>a
-inoremap <C-Up> <Esc>:resize +1<CR>a
-tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
-tnoremap <C-Left> <C-\><C-n>:vertical resize -1<CR>a
-tnoremap <C-Down> <C-\><C-n>:resize -1<CR>a
-tnoremap <C-Up> <C-\><C-n>:resize +1<CR>a
-tnoremap <C-Right> <C-\><C-n>:vertical resize +1<CR>a
+nnoremap <C-h> :vertical resize -1<CR>
+nnoremap <C-j> :resize -1<CR>
+nnoremap <C-k> :resize +1<CR>
+nnoremap <C-l> :vertical resize +1<CR>
+tnoremap <C-h> <C-\><C-n>:vertical resize -1<CR>a
+tnoremap <C-j> <C-\><C-n>:resize -1<CR>a
+tnoremap <C-k> <C-\><C-n>:resize +1<CR>a
+tnoremap <C-l> <C-\><C-n>:vertical resize +1<CR>a
