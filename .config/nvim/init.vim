@@ -54,6 +54,9 @@ Plug 'tpope/vim-commentary'
 " Git support
 Plug 'tpope/vim-fugitive'
 
+" Tree viewer
+" Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': ':UpdateRemotePlugins'}
+
 call plug#end()
 
 
@@ -87,8 +90,8 @@ let g:ncm2#popup_delay = 5
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["UltiSnips", system('echo -n "$HOME/.local/share/nvim/mysnippets"')]
 let g:UltiSnipsExpandTrigger="<Plug>(ultisnips_expand)"
-let g:UltiSnipsJumpForwardTrigger="<TAB>"
-let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
+" let g:UltiSnipsJumpForwardTrigger="<TAB>"
+" let g:UltiSnipsJumpBackwardTrigger="<S-TAB>"
 
 " Themes
 colorscheme one
@@ -133,6 +136,9 @@ let g:AutoPairsShortcutToggle = ''
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutBackInsert = ''
 
+" Vimtex
+let g:tex_flavor = 'latex'
+
 
 """"""""""""""""""
 " OTHER SETTINGS
@@ -156,8 +162,6 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 nmap <leader>o :setlocal spell! spelllang=en_us<CR>
 " Runs a script that cleans out tex build files whenever I close out of a .tex file.
 autocmd VimLeave *.tex !texclear %
-" Save file as sudo on files that require root permission
-cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
 autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritepre * %s/\n\+\%$//e
@@ -172,9 +176,27 @@ inoremap <expr> <left> pumvisible() ? "<C-y><left>":"<left>"
 inoremap <expr> <right> pumvisible() ? "<C-y><right>":"<right>"
 
 " Using Tab for selecting suggestions and jumping to locations in snippets
-" WHY DOES THIS WORK ?????
-inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : UltiSnips#JumpForwards()
-inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : UltiSnips#JumpBackwards()
+let g:ulti_jump_forwards_res = 0
+function! s:ulti_jump_forwards()
+    call UltiSnips#JumpForwards()
+    return g:ulti_jump_forwards_res
+endfunction
+
+function! s:i_tab()
+    return pumvisible() ? "\<C-n>" : <SID>ulti_jump_forwards() ? "" : "\<Tab>"
+endfunction
+inoremap <silent> <TAB> <C-R>=(<SID>i_tab())<CR>
+
+let g:ulti_jump_backwards_res = 0
+function! s:ulti_jump_backwards()
+    call UltiSnips#JumpBackwards()
+    return g:ulti_jump_backwards_res
+endfunction
+
+function! s:i_shift_tab()
+    return pumvisible() ? "\<C-p>" : <SID>ulti_jump_backwards() ? "" : "\<S-Tab>"
+endfunction
+inoremap <silent> <S-TAB> <C-R>=(<SID>i_shift_tab())<CR>
 
 """""""""""""""
 " Keybindings
@@ -198,10 +220,10 @@ set cursorline
 nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
-nnoremap <C-t> :65vs<CR>:terminal<CR>
-inoremap <C-t> <Esc>:65vs<CR>:terminal<CR>
-nnoremap <A-t> :15sp<CR>:terminal<CR>
-inoremap <A-t> <Esc>:15sp<CR>:terminal<CR>
+nnoremap <C-t> :rightbelow 60vs<CR>:terminal<CR>
+inoremap <C-t> <Esc>:rightbelow 60vs<CR>:terminal<CR>
+nnoremap <A-t> :rightbelow 15sp<CR>:terminal<CR>
+inoremap <A-t> <Esc>:rightbelow 15sp<CR>:terminal<CR>
 
 " Changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
@@ -212,8 +234,8 @@ nmap <f9> :make<CR>
 """"""""""""""""
 " Split Settings
 """"""""""""""""
-set splitright
-set splitbelow
+" set splitright
+" set splitbelow
 " Switching windows
 nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j

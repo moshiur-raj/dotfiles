@@ -16,10 +16,10 @@ window:
     columns: 130
     lines: 40
 
-    # Window title
-    # title: Terminal
-    # Allow terminal applications to change Alacritty's window title.
-    dynamic_title: true
+  # Window title
+  title: Terminal
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
 
 # Font configuration
 font:

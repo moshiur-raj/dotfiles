@@ -6,7 +6,7 @@ PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magent
 stty stop undef
 
 # History
-HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.histfile
+HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
