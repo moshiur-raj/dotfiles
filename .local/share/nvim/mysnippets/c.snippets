@@ -68,6 +68,10 @@ snippet scanf "scanf(const char *restrict __format, ...)"
 scanf("${1:%i}", ${2});
 endsnippet
 
+snippet printf "printf(const char *restrict __format, ...)"
+printf("${1:%s\n}"${1/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$2${1/([^%]|%%)*(%.)?.*/(?2:\);)/}
+endsnippet
+
 snippet snprintf "int snprintf(char* buffer, size_t max_len, const char *restrict __format, ...)"
 snprintf(${1:buffer}, ${2:size}, "${3:format}", ${4});
 endsnippet
