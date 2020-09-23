@@ -56,8 +56,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 
 " Tree viewer
-" Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': ':UpdateRemotePlugins'}
-Plug 'wincent/terminus'
+Plug 'lambdalisue/fern.vim'
 
 call plug#end()
 
@@ -140,6 +139,9 @@ let g:AutoPairsShortcutBackInsert = ''
 
 " Vimtex
 let g:tex_flavor = 'latex'
+
+" Fern vim
+nnoremap <C-f> :Fern . -drawer -toggle<CR>
 
 
 """"""""""""""""""
