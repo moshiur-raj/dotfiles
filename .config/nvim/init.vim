@@ -30,7 +30,8 @@ Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 
 " Syntax highlighting enhancement
-Plug 'octol/vim-cpp-enhanced-highlight'
+" Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'bfrg/vim-cpp-modern'
 
 " Latex support
 Plug 'lervag/vimtex'
@@ -56,6 +57,7 @@ Plug 'tpope/vim-fugitive'
 
 " Tree viewer
 " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': ':UpdateRemotePlugins'}
+Plug 'wincent/terminus'
 
 call plug#end()
 
@@ -220,8 +222,8 @@ set cursorline
 nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
-nnoremap <C-t> :rightbelow 60vs<CR>:terminal<CR>
-inoremap <C-t> <Esc>:rightbelow 60vs<CR>:terminal<CR>
+nnoremap <C-t> :rightbelow 65vs<CR>:terminal<CR>
+inoremap <C-t> <Esc>:rightbelow 65vs<CR>:terminal<CR>
 nnoremap <A-t> :rightbelow 15sp<CR>:terminal<CR>
 inoremap <A-t> <Esc>:rightbelow 15sp<CR>:terminal<CR>
 
