@@ -63,7 +63,7 @@ bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
 # fzf quick find
-export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim ~/projects)
+export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
 f() {du $FZF_QUICK_FIND_PATHS -a --exclude "*/.git" | awk '{print $2}' | fzf | xargs -r $EDITOR}
 
 # Aliases
