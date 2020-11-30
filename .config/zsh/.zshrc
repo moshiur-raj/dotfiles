@@ -1,6 +1,6 @@
 #Enable colors and change prompt
 autoload -U colors && colors
-PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+PS1=" %{$fg[magenta]%}%~ %{$reset_color%}$%b "
 
 # Disable ctrl-s to freeze terminal
 stty stop undef
@@ -62,8 +62,13 @@ source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring
 bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
+# fzf quick find
+export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim ~/projects)
+f() {du $FZF_QUICK_FIND_PATHS -a --exclude "*/.git" | awk '{print $2}' | fzf | xargs -r $EDITOR}
+
+# Aliases
 # Managing dotfiles
-alias git-dotfiles='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
+alias gd='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
 # Safe removal ?
 alias rm='rm -I'
 # Adding Colors
