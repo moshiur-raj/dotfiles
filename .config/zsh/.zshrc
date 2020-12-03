@@ -1,12 +1,12 @@
 #Enable colors and change prompt
 autoload -U colors && colors
-PS1=" %{$fg[magenta]%}%~ %{$reset_color%}$%b "
+PS1=" %B%F{magenta}%~ %b%F{yellow}>>> %f"
 
 # Disable ctrl-s to freeze terminal
 stty stop undef
 
 # History
-HISTFILE=${XDG_CACHE_HOME:-$HOME/.cache}/.histfile
+HISTFILE=$HOME/.cache/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
@@ -64,7 +64,10 @@ bindkey -M vicmd k history-substring-search-up
 
 # fzf quick find
 export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
-f() {du $FZF_QUICK_FIND_PATHS -a --exclude "*/.git" | awk '{print $2}' | fzf | xargs -r $EDITOR}
+f() {du $FZF_QUICK_FIND_PATHS -a --exclude "*/.git" --exclude "*/.clangd" | awk '{print $2}' | fzf | xargs -r $EDITOR}
+
+# Use nvim for man
+export MANPAGER='nvim +Man!'
 
 # Aliases
 # Managing dotfiles
