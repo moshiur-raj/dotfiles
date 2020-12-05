@@ -56,7 +56,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 
 " Tree viewer
-Plug 'lambdalisue/fern.vim'
+Plug 'preservim/nerdtree'
 
 call plug#end()
 
@@ -84,9 +84,11 @@ augroup my_cm_setup
 				\ })
 augroup END
 " Make it fast
-let g:ncm2#popup_delay = 5
+" let g:ncm2#popup_delay = 5
 " Fuzzy matcher
 " let g:ncm2#matcher = 'substrfuzzy'
+let g:ncm2_pyclang#Library_path = '/usr/lib/libclang.so'
+let g:ncm2_pyclang#database_path = ['compile_commands.json']
 
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["UltiSnips", system('echo -n "$HOME/.local/share/nvim/mysnippets"')]
@@ -110,8 +112,8 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " let g:airline_powerline_fonts = 1
 
 " For ALE
-let g:ale_c_gcc_options='-std=gnu17 -Wall'
-let g:ale_c_clang_options='-std=c17 -Wall'
+let g:ale_c_cc_executable='clang'
+let g:ale_c_cc_options='-std=gnu11 -Wall'
 let g:ale_sign_error = '●'
 let g:ale_sign_warning = '.'
 let g:ale_lint_on_text_changed = '0'
@@ -140,8 +142,8 @@ let g:AutoPairsShortcutBackInsert = ''
 " Vimtex
 let g:tex_flavor = 'latex'
 
-" Fern vim
-nnoremap <C-f> :Fern . -drawer -toggle<CR>
+" Nerd Tree
+nnoremap <C-n> :NERDTreeToggle<CR>
 
 
 """"""""""""""""""
