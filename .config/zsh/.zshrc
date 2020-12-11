@@ -64,7 +64,7 @@ bindkey -M vicmd k history-substring-search-up
 
 # fzf quick find
 export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
-f() {du $FZF_QUICK_FIND_PATHS -a --exclude "*/.git" --exclude "*/.clangd" | awk '{print $2}' | fzf | xargs -r $EDITOR}
+f() { find $FZF_QUICK_FIND_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
 
 # Use nvim for man
 export MANPAGER='nvim +Man!'
