@@ -226,10 +226,10 @@ set cursorline
 nnoremap <Esc> <Esc>:nohlsearch<CR>
 
 " Opening the terminal
-nnoremap <C-t> :rightbelow 65vs<CR>:terminal<CR>
-inoremap <C-t> <Esc>:rightbelow 65vs<CR>:terminal<CR>
-nnoremap <A-t> :rightbelow 15sp<CR>:terminal<CR>
-inoremap <A-t> <Esc>:rightbelow 15sp<CR>:terminal<CR>
+nnoremap <C-t> :lcd %:p:h<CR>:rightbelow 65vs<CR>:terminal<CR>
+inoremap <C-t> <Esc>:lcd %:p:h<CR>:rightbelow 65vs<CR>:terminal<CR>
+nnoremap <A-t> :lcd %:p:h<CR>:rightbelow 15sp<CR>:terminal<CR>
+inoremap <A-t> <Esc>:lcd %:p:h<CR>:rightbelow 15sp<CR>:terminal<CR>
 
 " Changing directory to current file directory
 nnoremap cd :lcd %:p:h<CR>
