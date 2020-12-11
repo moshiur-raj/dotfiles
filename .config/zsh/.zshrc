@@ -62,9 +62,13 @@ source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring
 bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
-# fzf quick find
+# fzf quick find and edit
 export FZF_QUICK_FIND_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
-f() { find $FZF_QUICK_FIND_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
+ff() { find $FZF_QUICK_FIND_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
+# fzf quick find completion
+fzf_quick_find_and_print() { LBUFFER="${LBUFFER}$(find $FZF_QUICK_FIND_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf)" }
+zle -N fzf_quick_find_and_print
+bindkey "^f" fzf_quick_find_and_print
 
 # Use nvim for man
 export MANPAGER='nvim +Man!'
