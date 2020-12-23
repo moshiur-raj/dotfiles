@@ -63,13 +63,25 @@ bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
 # fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
+export FZF_QUICK_EDIT_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list} ~/.local/share/nvim/mysnippets ~/projects)
 export FZF_QUICK_COMPLETION_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d} ~/.local/share/nvim/mysnippets ~/projects)
 ef() { find $FZF_QUICK_EDIT_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
 # fzf quick completion
 fzf_quick_completion() { LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf)" }
 zle -N fzf_quick_completion
 bindkey "^f" fzf_quick_completion
+
+# Use lf to switch directories and bind it to ctrl-o
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp" >/dev/null
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+bindkey -s '^o' 'lfcd\n'
 
 # Use nvim for man
 export MANPAGER='nvim +Man!'
@@ -78,7 +90,12 @@ export MANPAGER='nvim +Man!'
 # Managing dotfiles
 alias gd='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
 # Safe removal ?
-alias rm='rm -I'
+alias rm='rm -Iv'
 # Adding Colors
 alias ls='ls -hN --color=auto --group-directories-first'
 alias grep='grep --color=auto'
+# Ask if overwriting
+alias cp="cp -iv"
+alias mv="mv -iv"
+# Make parent directory
+alias mkdir="mkdir -pv"
