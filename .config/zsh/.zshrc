@@ -87,7 +87,7 @@ bindkey -s '^o' 'lfcd\n'
 export MANPAGER='nvim +Man!'
 
 # doasedit
-alias doasedit='doas env EDITOR=$EDITOR $HOME/.local/share/zsh/scripts/doasedit'
+alias doasedit='doas env NONROOTUSER=$USERNAME EDITOR=$EDITOR $HOME/.local/share/zsh/scripts/doasedit'
 
 # Aliases
 # Managing dotfiles

@@ -2,7 +2,7 @@
 
 if [[ $# -lt 1 ]]; then echo Not enough arguments && exit 1; fi
 
-non_root_user="moshiur"
+non_root_user=$NONROOTUSER
 declare -a file temp_file mod_time1 mod_time2
 
 for i in $(seq 1 $#)
@@ -16,7 +16,7 @@ do
 
 	doaseditdir="/tmp/doasedit"
 	mkdir -p $doaseditdir
-	temp_file[i]="$doaseditdir/$(echo "/tmp/doasedit${$}_$i" | md5sum | awk '{ print $1 }')"
+	temp_file[i]="$doaseditdir/$(basename ${file[i]})_$(echo "${doaseditdir}_${$}_$i" | md5sum | awk '{ print $1 }')"
 
 	if [[ -f ${file[i]} ]]; then
 		cp ${file[i]} ${temp_file[i]}
@@ -27,7 +27,7 @@ do
 		temp_file[i]=
 		continue
 	fi &&
-	chmod g= ${temp_file[i]} && chmod o= ${temp_file[i]} &&
+	chmod 600 ${temp_file[i]} &&
 	chown $non_root_user ${temp_file[i]} &&
 	mod_time1[i]="$(stat -c %y ${temp_file[i]})"
 done
@@ -39,11 +39,12 @@ do
 	if [[ $temp_file[i] == "" ]]; then continue; fi
 
 	mod_time2[i]="$(stat -c %y ${temp_file[i]})" &&
-	if [[ ${mod_time1[i]} == ${mod_time2[i]} ]]; then
-		printf "%s not modified\n" "${file[i]}"
-		rm ${temp_file[i]}
-	else
+	if [[ ${mod_time1[i]} != ${mod_time2[i]} ]]; then
 		cat ${temp_file[i]} > ${file[i]} &&
+		rm ${temp_file[i]}
+		echo Modified ${file[i]}
+	else
+		echo ${file[i]} not modified
 		rm ${temp_file[i]}
 	fi
 done
