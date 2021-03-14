@@ -63,8 +63,8 @@ bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
 # fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/nvim/mysnippets ~/projects)
-export FZF_QUICK_COMPLETION_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default} ~/.local/share/nvim/mysnippets ~/projects)
+export FZF_QUICK_EDIT_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/{nvim/mysnippets,zsh} ~/projects)
+export FZF_QUICK_COMPLETION_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default} ~/.local/share/{nvim/mysnippets,zsh} ~/projects)
 ef() { find $FZF_QUICK_EDIT_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
 # fzf quick completion
 fzf_quick_completion() { LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf)" }
