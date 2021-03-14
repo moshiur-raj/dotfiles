@@ -86,14 +86,18 @@ bindkey -s '^o' 'lfcd\n'
 # Use nvim for man
 export MANPAGER='nvim +Man!'
 
+# doasedit
+alias doasedit='doas env EDITOR=$EDITOR $HOME/.local/share/zsh/scripts/doasedit'
+
 # Aliases
 # Managing dotfiles
 alias gd='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
 # Safe removal ?
 alias rm='rm -Iv'
-# Adding Colors
+# Group directories first and add colors in ls
 alias ls='ls -hN --color=auto --group-directories-first'
-alias grep='grep --color=auto'
+# Color support in grep
+alias grep="grep --color=auto"
 # Ask if overwriting
 alias cp="cp -iv"
 alias mv="mv -iv"
