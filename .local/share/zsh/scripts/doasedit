@@ -18,17 +18,18 @@ do
 	mkdir -p $doaseditdir
 	temp_file[i]="$doaseditdir/$(basename ${file[i]})_$(echo "${doaseditdir}_${$}_$i" | md5sum | awk '{ print $1 }')"
 
+	touch ${temp_file[i]}
+	chmod 600 ${temp_file[i]} &&
+	chown $non_root_user ${temp_file[i]} &&
+
 	if [[ -f ${file[i]} ]]; then
-		cp ${file[i]} ${temp_file[i]}
-	elif [[ -d $(dirname ${file[i]}) ]]; then
-		touch ${temp_file[i]}
-	else
+		cat ${file[i]} > ${temp_file[i]}
+	elif ! [[ -d $(dirname ${file[i]}) ]]; then
 		echo No such dir : $(dirname ${file[i]})
+		if [[ $# -eq 1 ]]; then exit 1; fi;
 		temp_file[i]=
 		continue
 	fi &&
-	chmod 600 ${temp_file[i]} &&
-	chown $non_root_user ${temp_file[i]} &&
 	mod_time1[i]="$(stat -c %y ${temp_file[i]})"
 done
 
