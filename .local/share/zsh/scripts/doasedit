@@ -1,51 +1,57 @@
 #! /usr/bin/zsh
 
-if [[ $# -lt 1 ]]; then echo Not enough arguments && exit 1; fi
+[[ $USERNAME != "root" ]] && echo please run as root && exit 1
+( [[ -z $NONROOTUSER ]] || [[ -z $EDITOR ]] ) && echo please set NONROOTUSER and EDITOR && exit 1
+( [[ $# -lt 1 ]] || [[ $@ =~ ".*/proc/self/fd/.+" ]] ) && echo argument error && exit 1
+( [[ $# -eq 1 ]] && ! [[ -d $(dirname $@) ]] ) && echo No such dir : $(dirname $@) && exit 1
 
-non_root_user=$NONROOTUSER
-declare -a file temp_file mod_time1 mod_time2
+doaseditdir="/tmp/doasedit" &&
+mkdir -p $doaseditdir &&
 
+declare -a file temp_file mod_time1 mod_time2 &&
 for i in $(seq 1 $#)
 do
-	arg="${@[i]}"
+	arg="${@[i]}" &&
 	if [[ $arg[1] == "/" ]]; then
 		file[i]="$arg"
 	else
 		file[i]="$PWD/$arg"
-	fi
+	fi &&
 
-	doaseditdir="/tmp/doasedit"
-	mkdir -p $doaseditdir
-	temp_file[i]="$doaseditdir/$(basename ${file[i]})_$(echo "${doaseditdir}_${$}_$i" | md5sum | awk '{ print $1 }')"
-
-	touch ${temp_file[i]}
-	chmod 600 ${temp_file[i]} &&
-	chown $non_root_user ${temp_file[i]} &&
-
-	if [[ -f ${file[i]} ]]; then
-		cat ${file[i]} > ${temp_file[i]}
-	elif ! [[ -d $(dirname ${file[i]}) ]]; then
-		echo No such dir : $(dirname ${file[i]})
-		if [[ $# -eq 1 ]]; then exit 1; fi;
-		temp_file[i]=
+	if [[ -d $(dirname ${file[i]}) ]]; then
+		temp_file[i]="$doaseditdir/$(basename ${file[i]})__$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')" &&
+		touch ${temp_file[i]} &&
+		chmod 600 ${temp_file[i]} &&
+		chown $NONROOTUSER ${temp_file[i]} &&
+		chgrp $NONROOTUSER ${temp_file[i]} &&
+		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
+	else
+		echo No such dir : $(dirname ${file[i]}) &&
+		temp_file[i]= &&
+		mod_time1[i]= &&
 		continue
 	fi &&
-	mod_time1[i]="$(stat -c %y ${temp_file[i]})"
-done
 
-doas -u $non_root_user /usr/bin/$EDITOR ${temp_file[@]}
+	if [[ -f ${file[i]} ]]; then
+		cat ${file[i]} > ${temp_file[i]} &&
+		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
+	fi
+
+done &&
+
+doas -u $NONROOTUSER /usr/bin/$EDITOR ${temp_file[@]} &&
 
 for i in $(seq 1 $#)
 do
-	if [[ $temp_file[i] == "" ]]; then continue; fi
+	[[ $temp_file[i] == "" ]] && continue
 
 	mod_time2[i]="$(stat -c %y ${temp_file[i]})" &&
 	if [[ ${mod_time1[i]} != ${mod_time2[i]} ]]; then
 		cat ${temp_file[i]} > ${file[i]} &&
-		rm ${temp_file[i]}
 		echo Modified ${file[i]}
 	else
 		echo ${file[i]} not modified
-		rm ${temp_file[i]}
 	fi
+
+	rm ${temp_file[i]}
 done
