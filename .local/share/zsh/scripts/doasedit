@@ -6,7 +6,12 @@
 ( [[ $# -eq 1 ]] && ! [[ -d $(dirname $@) ]] ) && echo No such dir : $(dirname $@) && exit 1
 
 doaseditdir="/tmp/doasedit" &&
-mkdir -p $doaseditdir &&
+if [[ -d $doaseditdir ]]; then
+	[[ $(ls -l $(dirname $doaseditdir) | grep $(basename $doaseditdir) | awk '{ print $1 $3 $4}') != "drwx--x---root$NONROOTUSER" ]] && echo improper permissions : $doaseditdir && exit 1
+else
+	mkdir -m 710 $doaseditdir &&
+	chgrp $NONROOTUSER $doaseditdir
+fi
 
 declare -a file temp_file mod_time1 mod_time2 &&
 for i in $(seq 1 $#)
@@ -18,26 +23,21 @@ do
 		file[i]="$PWD/$arg"
 	fi &&
 
-	if [[ -d $(dirname ${file[i]}) ]]; then
-		temp_file[i]="$doaseditdir/$(basename ${file[i]})__$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')" &&
+	temp_file[i]="$doaseditdir/$(basename ${file[i]})__$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')" &&
+
+	if [[ -f ${file[i]} ]]; then
+		install -g $NONROOTUSER -m 660 ${file[i]} ${temp_file[i]} &&
+		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
+	elif [[ -d $(dirname ${temp_file[i]}) ]]; then
 		touch ${temp_file[i]} &&
-		chmod 600 ${temp_file[i]} &&
-		chown $NONROOTUSER ${temp_file[i]} &&
-		chgrp $NONROOTUSER ${temp_file[i]} &&
 		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
 	else
 		echo No such dir : $(dirname ${file[i]}) &&
 		temp_file[i]= &&
 		mod_time1[i]= &&
 		continue
-	fi &&
-
-	if [[ -f ${file[i]} ]]; then
-		cat ${file[i]} > ${temp_file[i]} &&
-		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
 	fi
-
-done &&
+done
 
 doas -u $NONROOTUSER /usr/bin/$EDITOR ${temp_file[@]} &&
 
