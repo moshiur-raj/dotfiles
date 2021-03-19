@@ -1,11 +1,19 @@
 #! /usr/bin/zsh
 
+# check if env vars are set properly
 [[ $USERNAME != "root" ]] && echo please run as root && exit 1
+[[ $NONROOTUSER == "root" ]] && echo please use doasedit as a non root user && exit 1
 ( [[ -z $NONROOTUSER ]] || [[ -z $EDITOR ]] ) && echo please set NONROOTUSER and EDITOR && exit 1
+# do not allow process substitution
 ( [[ $# -lt 1 ]] || [[ $@ =~ ".*/proc/self/fd/.+" ]] ) && echo argument error && exit 1
+# if there is only one argument and the directory for the file does not exist then exit
 ( [[ $# -eq 1 ]] && ! [[ -d $(dirname $@) ]] ) && echo No such dir : $(dirname $@) && exit 1
 
+# directory for storing temporary files
 doaseditdir="/tmp/doasedit" &&
+# if the directory exists then check for permissions. otherwise create the directory
+# the directory should be owned by root and the group should be NONROOTUSER.
+# NONROOTUSER can only execute the directory and others can do nothing
 if [[ -d $doaseditdir ]]; then
 	[[ $(ls -l $(dirname $doaseditdir) | grep $(basename $doaseditdir) | awk '{ print $1 $3 $4}') != "drwx--x---root$NONROOTUSER" ]] && echo improper permissions : $doaseditdir && exit 1
 else
@@ -13,38 +21,54 @@ else
 	chgrp $NONROOTUSER $doaseditdir
 fi
 
+# declaring some arrays
 declare -a file temp_file mod_time1 mod_time2 &&
+
 for i in $(seq 1 $#)
 do
 	arg="${@[i]}" &&
+	# if absolute path is given use that otherwise expand the location
 	if [[ $arg[1] == "/" ]]; then
 		file[i]="$arg"
 	else
 		file[i]="$PWD/$arg"
 	fi &&
 
+
+	# if the argument is a directory or the directory containing the file does not exist then go to the next iteration
+	( [[ -d ${file[i]} ]] && echo please open a file ) || echo No such dir : $(dirname ${file[i]}) &&
+	temp_file[i]= &&
+	mod_time1[i]= &&
+	continue
+
+	# absolute path of the temp_file : filename__hash
 	temp_file[i]="$doaseditdir/$(basename ${file[i]})__$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')" &&
 
+	# if argument is a valid file then copy it to temp_file with proper permissions otherwise make an empty temp_file
+	# the temp_file should be owned by root and can be read and written by NONROOTUSER
 	if [[ -f ${file[i]} ]]; then
 		install -g $NONROOTUSER -m 660 ${file[i]} ${temp_file[i]} &&
-		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
-	elif [[ -d $(dirname ${temp_file[i]}) ]]; then
+	elif [[ -d $(dirname ${temp_file[i]}) ]] && ! [[ -d ${file[i]} ]]; then
 		touch ${temp_file[i]} &&
-		mod_time1[i]="$(stat -c %y ${temp_file[i]})"
-	else
-		echo No such dir : $(dirname ${file[i]}) &&
-		temp_file[i]= &&
-		mod_time1[i]= &&
-		continue
-	fi
+	fi &&
+
+	# get the initial modification time
+	mod_time1[i]="$(stat -c %y ${temp_file[i]})"
 done
 
+# if all file[i] are empty strings then exit
+[[ -z $(printf %s ${temp_file[1]}) ]] && echo argument error && exit 1
+
+# open valid files in EDITOR
 doas -u $NONROOTUSER /usr/bin/$EDITOR ${temp_file[@]} &&
 
+# copy the contents to the original file
 for i in $(seq 1 $#)
 do
+	# if ith argument is not a valid file then go to next iteration
 	[[ $temp_file[i] == "" ]] && continue
 
+	# compare the final and initial modification time. if modified then copy the contents
 	mod_time2[i]="$(stat -c %y ${temp_file[i]})" &&
 	if [[ ${mod_time1[i]} != ${mod_time2[i]} ]]; then
 		cat ${temp_file[i]} > ${file[i]} &&
@@ -53,5 +77,6 @@ do
 		echo ${file[i]} not modified
 	fi
 
+	# remove the temporary file created for editing in non root environment
 	rm ${temp_file[i]}
 done
