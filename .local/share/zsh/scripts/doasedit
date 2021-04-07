@@ -70,42 +70,53 @@ do
 	# if argument is a valid file then copy it to temp_file with proper permissions otherwise make an empty temp_file
 	# the temp_file should be owned by root and can be read and written by NONROOTUSER
 	if [[ -f ${file[i]} ]]; then
-		# if the file can be edited without root priviledges then exit
-		doas -u $NONROOTUSER test -r ${file[i]} && doas -u $NONROOTUSER test -w ${file[i]} && {
-			echo ${args[i]} : editing a readable and writable file is not permitted
+		# if the file cannot be read or modified by root then exit
+		test -r ${file[i]} || {
+			echo ${file[i]} : cannot be read by root
 			# since temp_file[i] is not created
-			unset "temp_file[i]"
-			clear_and_exit
+			unset "temp_file[i]"; clear_and_exit
 		}
+		test -w ${file[i]} || {
+			echo ${file[i]} : cannot be modified by root
+			unset "temp_file[i]"; clear_and_exit
+		}
+		# if the file can be edited without root priviledges then exit
+		doas -u $NONROOTUSER test -O ${file[i]} || doas -u $NONROOTUSER test -G ${file[i]} ||
+			{ doas -u $NONROOTUSER test -r ${file[i]} && doas -u $NONROOTUSER test -w ${file[i]}; } && {
+				echo ${args[i]} is editable without root priviledges
+				unset "temp_file[i]"; clear_and_exit
+			}
 		# copy the file to temp dir with proper permissions
-		install -g $NONROOTUSER -m 660 ${file[i]} ${temp_file[i]} ||
-			{ echo Falied to copy ${args[i]} ; exit 1; }
+		install -g $NONROOTUSER -m 660 ${file[i]} ${temp_file[i]} || {
+			echo Falied to copy ${args[i]}
+			unset "temp_file[i]"; clear_and_exit
+		}
 	elif [[ -d $directory ]]; then
+		# if the directory cannot be executed or modified by root then exit
+		test -x $directory && test -w $directory || {
+			echo $directory : cannot create new files here
+			unset "temp_file[i]"; clear_and_exit
+		}
 		# if the argument is a directory then exit
 		[[ -d ${file[i]} ]] && {
 			echo ${args[i]} : cannot edit a directory
-			# since temp_file[i] is not created
-			unset "temp_file[i]"
-			clear_and_exit
+			unset "temp_file[i]"; clear_and_exit
 		}
 		# if the directory is writable without root priviledges then exit
 		doas -u $NONROOTUSER test -w $directory && {
 			echo ${args[i]} : editing files in a writable directory is not permitted
-			# since temp_file[i] is not created
-			unset "temp_file[i]"
-			clear_and_exit
+			unset "temp_file[i]"; clear_and_exit
 		}
 		# create the temp file
 		touch ${temp_file[i]} || {
 			echo ${args[i]} : Failed to create temp file
 			exit 1
 		}
+		chgrp $NONROOTUSER ${temp_file[i]} && chmod 660 ${temp_file[i]}
 	# if both the file and the directory containing the file does not exist then exit
 	else
 		echo ${args[i]} : No such dir $(dirname ${file[i]})
-		# since temp_file[i] is not created
-		unset "temp_file[i]"
-		clear_and_exit
+		unset "temp_file[i]"; clear_and_exit
 	fi
 done
 
@@ -118,16 +129,16 @@ doas -u $NONROOTUSER $EDITOR ${temp_file[@]} || {
 for (( i=0; i < $#; i++ ))
 do
 	# compare the final and initial modification time. if modified then copy the contents
-	if [[ $(diff ${file[i]} ${temp_file[i]}) ]]; then
+	if ! [[ -f ${file[i]} ]] || [[ $(diff ${file[i]} ${temp_file[i]}) ]]; then
 		cat ${temp_file[i]} > ${file[i]} || {
 			echo Failed to modify ${args[i]}
+			echo Backup kept at ${temp_file[i]}
 			continue
 		} &&
 		echo Modified ${args[i]}
+		# remove the temporary file created for editing in non root environment
+		rm ${temp_file[i]}
 	else
 		echo ${args[i]} not modified
 	fi
-
-	# remove the temporary file created for editing in non root environment
-	rm ${temp_file[i]}
 done
