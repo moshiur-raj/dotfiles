@@ -1,6 +1,6 @@
 #Enable colors and change prompt
 autoload -U colors && colors
-PS1=" %B%F{magenta}%~ %b%F{yellow}>>> %f"
+PS1=" %b%F{magenta}%2~ %B%F{red}>>> %b%f"
 
 # Disable ctrl-s to freeze terminal
 stty stop undef
@@ -62,12 +62,22 @@ source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring
 bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
+# fzf keybindings
+# export FZF_DEFAULT_OPTS='--no-height --reverse'
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
 # fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/{nvim/mysnippets,zsh} ~/projects)
-export FZF_QUICK_COMPLETION_PATHS=(~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default} ~/.local/share/{nvim/mysnippets,zsh} ~/projects)
-ef() { find $FZF_QUICK_EDIT_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR }
+export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/{shell,nvim/mysnippets,zsh,applications} ~/projects)
+export FZF_QUICK_COMPLETION_PATHS=(~/.bashrc ~/.ssh ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default} ~/.local/share/{shell,nvim/mysnippets,zsh,applications} ~/projects)
+ef() {
+	find $FZF_QUICK_EDIT_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r $EDITOR
+}
+
 # fzf quick completion
-fzf_quick_completion() { LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf)" }
+fzf_quick_completion() {
+	LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf)"
+}
 zle -N fzf_quick_completion
 bindkey "^f" fzf_quick_completion
 
@@ -86,18 +96,8 @@ bindkey -s '^o' 'lfcd\n'
 # Use nvim for man
 export MANPAGER='nvim +Man!'
 
-# doasedit
-alias doasedit='doas env NONROOTUSER=$USERNAME EDITOR=$EDITOR $HOME/.local/share/zsh/scripts/doasedit'
+# Souce aliases
+source $HOME/.local/share/shell/alias.sh
 
-# Aliases
-# Managing dotfiles
-alias gd='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
-# Safe removal ?
-alias rm='rm -Iv'
-# Group directories first and add colors in ls
-alias ls='ls -hN --color=auto --group-directories-first'
-# Color support in grep
-alias grep="grep --color=auto"
-# Ask if overwriting
-alias cp="cp -iv"
-alias mv="mv -iv"
+# Load pathces
+source $HOME/.local/share/zsh/scripts/patches.sh
