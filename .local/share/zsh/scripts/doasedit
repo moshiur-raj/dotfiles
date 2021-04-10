@@ -15,7 +15,7 @@ command -v doas echo ls grep awk date md5sum rm diff cat install chgrp dirname b
 [[ $NONROOTUSER == "root" ]] && {
 	echo please run doasedit from a non root user; exit 1
 }
-{ [[ -z $NONROOTUSER ]] || [[ -z $EDITOR ]] ;} && {
+{ [[ -z $NONROOTUSER ]] || [[ -z $EDITOR ]] || [[ -z $XDG_RUNTIME_DIR_NONROOT ]] ;} && {
 	echo please set env vars properly; exit 1
 }
 # if number of arguments is zero then exit
@@ -121,7 +121,7 @@ do
 done
 
 # open files in EDITOR
-doas -u $NONROOTUSER $EDITOR ${temp_file[@]} || {
+doas -u $NONROOTUSER env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR_NONROOT $EDITOR ${temp_file[@]} || {
 	echo Failed to open files in $EDITOR; clear_and_exit
 }
 
