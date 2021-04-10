@@ -5,7 +5,7 @@ PS1=" \e[32m\W >>> "
 HISTFILE=$HOME/.cache/.histfile
 
 # Use nvim for man
-MANPAGER='nvim +Man!'
+export MANPAGER='nvim +Man!'
 
 #Source aliases
 source $HOME/.local/share/shell/alias.sh
