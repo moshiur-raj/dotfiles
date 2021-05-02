@@ -1,5 +1,5 @@
 # Youtube-dl
-alias youtube-dl="youtube-dl --merge-output-format mkv --add-metadata"
+alias youtube-dl="youtube-dl --merge-output-format mkv --add-metadata --embed-subs --write-sub --sub-lang en"
 # doasedit
 alias doasedit='doas env XDG_RUNTIME_DIR_NONROOT=$XDG_RUNTIME_DIR NONROOTUSER=$USERNAME EDITOR=$EDITOR $HOME/.local/share/zsh/scripts/doasedit'
 # Managing dotfiles
