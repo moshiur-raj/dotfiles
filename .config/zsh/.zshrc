@@ -68,7 +68,7 @@ source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
 
 # fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/{shell,nvim/mysnippets,zsh,applications} ~/projects)
+export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default} ~/.local/share/{shell,nvim/mysnippets,zsh,applications} ~/projects ~/Nextcloud/Notes)
 export FZF_QUICK_COMPLETION_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default} ~/.local/share/{shell,nvim/mysnippets,zsh,applications} ~/projects)
 ef() {
 	find $FZF_QUICK_EDIT_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r -d "\n" $EDITOR
@@ -76,7 +76,7 @@ ef() {
 
 # fzf quick completion
 fzf_quick_completion() {
-	LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf)"
+	LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf | xargs -d "\n" printf "%q" )"
 }
 zle -N fzf_quick_completion
 bindkey "^f" fzf_quick_completion
