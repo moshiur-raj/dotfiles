@@ -3,6 +3,9 @@
 """"""""""
 call plug#begin(system('echo -n $HOME/.local/share/nvim/plugged'))
 
+Plug 'rakr/vim-one'
+Plug 'vim-airline/vim-airline'
+
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-pyclang'
@@ -10,20 +13,16 @@ Plug 'ncm2/ncm2-jedi'
 let g:ncm2_ultisnips#source = {'priority': 9}
 Plug 'ncm2/ncm2-ultisnips' 
 
-Plug 'rakr/vim-one'
-Plug 'vim-airline/vim-airline'
-
-Plug 'justinmk/vim-sneak'
 
 Plug 'dense-analysis/ale'
-Plug 'bfrg/vim-cpp-modern'
-
 Plug 'lervag/vimtex' 
-Plug 'SirVer/ultisnips'
+Plug 'bfrg/vim-cpp-modern'
+Plug 'tpope/vim-commentary'
 
+Plug 'SirVer/ultisnips'
+Plug 'justinmk/vim-sneak'
 Plug 'tmsvg/pear-tree'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
 
 call plug#end()
 
@@ -37,14 +36,18 @@ let g:ncm2_pyclang#Library_path = '/usr/lib/libclang.so'
 let g:ncm2_pyclang#database_path = ['compile_commands.json']
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-inoremap <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
+imap <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<plug>(PearTreeExpand)"
 
 " Vimtex
 let g:tex_flavor = 'latex'
 
 " Pear Tree
 let g:pear_tree_repeatable_expand = 0
+let g:pear_tree_smart_openers = 1
+let g:pear_tree_smart_closers = 1
+let g:pear_tree_smart_backspace = 1
 let g:pear_tree_map_special_keys = 0
+imap <bs> <plug>(PearTreeBackspace)
 
 " Vim Airlime
 let g:airline_section_z = '%p%% ln:%l/%L ☰ cn:%c'
@@ -56,10 +59,7 @@ let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " Vim Sneak
-map s <plug>Sneak_s
-" map S <plug>Sneak_S
-omap s <plug>Sneak_s
-omap S <plug>Sneak_S
+let g:sneak#label = 1
 
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["UltiSnips", system('echo -n $HOME/.local/share/nvim/mysnippets')]
@@ -73,7 +73,12 @@ let g:ale_sign_warning = '.'
 let g:ale_lint_on_text_changed = 0
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
-let g:ale_tex_lacheck_executable = v:null
+nmap <a-j> <plug>(ale_next_wrap)
+nmap <a-k> <plug>(ale_previous_wrap)
+
+autocmd FileType c let b:ale_linters=['clang']
+autocmd FileType python let b:ale_linters=['flake8']
+autocmd FileType tex let b:ale_linters=['chktex']
 
 " Vim-Commentary
 autocmd FileType c setlocal commentstring=//%s
@@ -91,10 +96,9 @@ set relativenumber
 set cursorline
 set hidden
 set pumheight=8
-set iskeyword-=_
 
 autocmd BufEnter * set formatoptions -=r | set formatoptions-=o
-autocmd FileType c,python,shell setlocal colorcolumn=100
+autocmd FileType c,python,sh setlocal colorcolumn=100
 autocmd FileType text,tex,markdown setlocal spell spelllang=en_us
 
 " Change directory to current file
@@ -117,7 +121,12 @@ vnoremap <c-v> "+p
 nnoremap <c-v> "+p
 nnoremap <a-v> <c-v>
 
-nnoremap <esc> <esc>:nohlsearch<cr>
+noremap <s-h> 0
+noremap <s-l> $
+noremap 0	  <s-h>
+noremap $	  <s-l>
+
+nnoremap <silent> <esc> <esc>:nohlsearch<cr>
 
 " Navigation in Command Mode
 cnoremap <C-h> <left>
