@@ -112,8 +112,8 @@ let g:netrw_liststyle=3
 """"""""""""""
 " KEYBINDINGS
 """"""""""""""
-nnoremap <c-s> :update<cr>
-inoremap <c-s> <c-o>:update<cr>
+nnoremap <c-s> :write<cr>
+inoremap <c-s> <c-o>:write<cr>
 inoremap <c-v> <esc>"+pa
 vnoremap <c-c> "+y
 vnoremap <c-x> "+x
@@ -129,10 +129,10 @@ noremap $	  <s-l>
 nnoremap <silent> <esc> <esc>:nohlsearch<cr>
 
 " Navigation in Command Mode
-cnoremap <C-h> <left>
-cnoremap <C-j> <down>
-cnoremap <C-k> <up>
-cnoremap <C-l> <right>
+cnoremap <a-h> <left>
+cnoremap <a-j> <down>
+cnoremap <a-k> <up>
+cnoremap <a-l> <right>
 
 " Switching Windows
 nnoremap <c-h> <c-w>h
@@ -149,5 +149,5 @@ tnoremap <c-k> <c-\><c-n><c-w>k
 tnoremap <c-l> <c-\><c-n><c-w>l
 
 " Opening Terminal
-nnoremap <c-t> :rightbelow 55 vsplit<cr>:terminal<cr>
-nnoremap <a-t> :rightbelow 15 split<cr>:terminal<cr>
+nnoremap <c-t> :let $TERM_DIR=expand('%:p:h')<cr>:rightbelow 55 vsplit +terminal<cr>icd $TERM_DIR && clear<cr>
+nnoremap <a-t> :let $TERM_DIR=expand('%:p:h')<cr>:rightbelow 15 split +terminal<cr>icd $TERM_DIR && clear<cr>
