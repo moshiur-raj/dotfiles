@@ -6,37 +6,64 @@ call plug#begin(system('echo -n $HOME/.local/share/nvim/plugged'))
 Plug 'rakr/vim-one'
 Plug 'vim-airline/vim-airline'
 
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-pyclang'
-Plug 'ncm2/ncm2-jedi'
-let g:ncm2_ultisnips#source = {'priority': 9}
-Plug 'ncm2/ncm2-ultisnips' 
+Plug 'hrsh7th/nvim-compe'
 
-
-Plug 'dense-analysis/ale'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'lervag/vimtex' 
-Plug 'bfrg/vim-cpp-modern'
 Plug 'tpope/vim-commentary'
 
 Plug 'SirVer/ultisnips'
 Plug 'justinmk/vim-sneak'
 Plug 'tmsvg/pear-tree'
 Plug 'tpope/vim-surround'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
 " One Dark Theme
 colorscheme one
 
-" Ncm2
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-let g:ncm2_pyclang#Library_path = '/usr/lib/libclang.so'
-let g:ncm2_pyclang#database_path = ['compile_commands.json']
+" Compe
+set completeopt=menuone,noselect
+lua << EOF
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = {
+    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
+    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+    max_width = 120,
+    min_width = 60,
+    max_height = math.floor(vim.o.lines * 0.3),
+    min_height = 1,
+  };
+
+  source = {
+    omni = {filetypes = {'tex'}};
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    ultisnips = true;
+  };
+}
+EOF
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-imap <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<plug>(PearTreeExpand)"
+imap <expr> <cr> pumvisible() ? compe#confirm({'keys': "\<plug>(ultisnips_expand)", 'mode': ''}) : "\<plug>(PearTreeExpand)"
 
 " Vimtex
 let g:tex_flavor = 'latex'
@@ -53,10 +80,22 @@ imap <bs> <plug>(PearTreeBackspace)
 let g:airline_section_z = '%p%% ln:%l/%L ☰ cn:%c'
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline#extensions#tabline#show_close_button = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+nmap <leader>0 <Plug>AirlineSelectTab0
+nmap <a-h> <Plug>AirlineSelectPrevTab
+nmap <a-l> <Plug>AirlineSelectNextTab
 
 " Vim Sneak
 let g:sneak#label = 1
@@ -67,21 +106,28 @@ let g:UltiSnipsExpandTrigger="<plug>(ultisnips_expand)"
 let g:UltiSnipsJumpForwardTrigger="<a-j>"
 let g:UltiSnipsJumpBackwardTrigger="<a-k>"
 
-" Ale
-let g:ale_sign_error = '●'
-let g:ale_sign_warning = '.'
-let g:ale_lint_on_text_changed = 0
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_insert_leave = 0
-nmap <a-j> <plug>(ale_next_wrap)
-nmap <a-k> <plug>(ale_previous_wrap)
+" Treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup{
+  highlight = {
+    enable = true,
+  },
+}
+EOF
 
-autocmd FileType c let b:ale_linters=['clang']
-autocmd FileType python let b:ale_linters=['flake8']
-autocmd FileType tex let b:ale_linters=['chktex']
+" Lsp
+lua << EOF
+require'lspconfig'.clangd.setup{
+root_dir = require('lspconfig/util').root_pattern("compile_commands.json")
+}
+require'lspconfig'.pyright.setup{}
+EOF
 
 " Vim-Commentary
 autocmd FileType c setlocal commentstring=//%s
+
+" Fzf
+let g:fzf_layout = { 'down': '40%' }
 
 
 """"""""""
@@ -147,7 +193,13 @@ tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j
 tnoremap <c-k> <c-\><c-n><c-w>k
 tnoremap <c-l> <c-\><c-n><c-w>l
+" For fzf.vim
+tnoremap <a-j> <c-j>
+tnoremap <a-k> <c-k>
 
 " Opening Terminal
 nnoremap <c-t> :let $TERM_DIR=expand('%:p:h')<cr>:rightbelow 55 vsplit +terminal<cr>icd $TERM_DIR && clear<cr>
 nnoremap <a-t> :let $TERM_DIR=expand('%:p:h')<cr>:rightbelow 15 split +terminal<cr>icd $TERM_DIR && clear<cr>
+
+" Run the current file
+autocmd FileType python nnoremap <buffer> <f10> :!python "%"<cr>
