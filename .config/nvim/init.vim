@@ -3,8 +3,9 @@
 """"""""""
 call plug#begin(system('echo -n $HOME/.local/share/nvim/plugged'))
 
-Plug 'rakr/vim-one'
+Plug 'navarasu/onedark.nvim'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 Plug 'hrsh7th/nvim-compe'
 
@@ -23,7 +24,7 @@ Plug 'junegunn/fzf.vim'
 call plug#end()
 
 " One Dark Theme
-colorscheme one
+colorscheme onedark
 
 " Compe
 set completeopt=menuone,noselect
@@ -53,7 +54,7 @@ require'compe'.setup {
   source = {
     omni = {filetypes = {'tex'}};
     path = true;
-    buffer = true;
+    buffer = false;
     calc = true;
     nvim_lsp = true;
     nvim_lua = true;
@@ -63,7 +64,8 @@ require'compe'.setup {
 EOF
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-imap <expr> <cr> pumvisible() ? compe#confirm({'keys': "\<plug>(ultisnips_expand)", 'mode': ''}) : "\<plug>(PearTreeExpand)"
+imap <expr> <cr> (complete_info()["selected"] != "-1") ? compe#confirm({'keys': "\<plug>(ultisnips_expand)", 'mode': ''}) : "\<plug>(PearTreeExpand)"
+inoremap <expr> <c-y> compe#close('<c-y>')
 
 " Vimtex
 let g:tex_flavor = 'latex'
@@ -121,13 +123,20 @@ require'lspconfig'.clangd.setup{
 root_dir = require('lspconfig/util').root_pattern("compile_commands.json")
 }
 require'lspconfig'.pyright.setup{}
+
+local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+local opts = { noremap=true, silent=true }
+buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 EOF
 
 " Vim-Commentary
 autocmd FileType c setlocal commentstring=//%s
-
-" Fzf
-let g:fzf_layout = { 'down': '40%' }
 
 
 """"""""""
@@ -166,11 +175,6 @@ vnoremap <c-x> "+x
 vnoremap <c-v> "+p
 nnoremap <c-v> "+p
 nnoremap <a-v> <c-v>
-
-noremap <s-h> 0
-noremap <s-l> $
-noremap 0	  <s-h>
-noremap $	  <s-l>
 
 nnoremap <silent> <esc> <esc>:nohlsearch<cr>
 
