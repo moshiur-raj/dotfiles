@@ -1,0 +1,34 @@
+snippet c_build_config
+project('${1:project name}', 'c',
+  version: '${2: version}',
+  default_options: [
+	'warning_level=3',
+	'werror=true',
+	'c_std=gnu99',
+	'buildtype=custom',
+	'optimization=2',
+	'debug=false',
+  ]
+)
+
+global_cflags = [
+  '-fsigned-char',
+  '-fPIC',
+  '-fPIE',
+  '-fno-plt',
+  '-march=native',
+  '-Winline',
+  '-Wconversion',
+  '-pipe',
+  '-flto'
+]
+add_project_arguments(global_cflags, language: 'c')
+
+global_cldflags = [
+  '-pie',
+  '-flto',
+  '-Wl,-z,relro',
+  '-Wl,-z,now'
+]
+add_project_link_arguments(global_cldflags, language: 'c')
+endsnippet
