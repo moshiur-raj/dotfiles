@@ -22,16 +22,23 @@ vim.o.pumwidth = 16
 vim.cmd('autocmd BufEnter * set formatoptions -=r | set formatoptions-=o')
 vim.cmd('autocmd FileType c,python,sh setlocal colorcolumn=100')
 vim.cmd('autocmd FileType text,tex,markdown setlocal spell spelllang=en_us')
+-- filetype of header files should be c
 vim.cmd('autocmd BufEnter *.h set filetype=c')
+-- use // for commenting in c code
 vim.cmd('autocmd FileType c setlocal commentstring=//%s')
+-- run current python script
+vim.cmd('autocmd FileType python nnoremap <buffer> <f10> <cmd>!python "%"<cr>')
 
 
 ---------------
 -- Keybindings
 ---------------
 --
-local function termcode(str)
+local function tcode(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+local function keymap(mode, key, map, arg)
+	return vim.api.nvim_set_keymap(mode, key, map, arg)
 end
 local function inoremap(key, map)
 	return vim.api.nvim_set_keymap('i', key, map, {expr = false, noremap = true, silent = true})
@@ -43,14 +50,14 @@ local function vnoremap(key, map)
 	return vim.api.nvim_set_keymap('v', key, map, {expr = false, noremap = true, silent = true})
 end
 local function cnoremap(key, map)
-	return vim.api.nvim_set_keymap('c', key, map, {expr = false, noremap = true, silent = true})
+	return vim.api.nvim_set_keymap('c', key, map, {expr = false, noremap = true, silent = false})
 end
 local function tnoremap(key, map)
 	return vim.api.nvim_set_keymap('t', key, map, {expr = false, noremap = true, silent = true})
 end
 -- use ctrl + s to save, ctrl + c to copy, ctrl + x to cut, ctl + v to paste
-inoremap('<c-s>', '<c-o>:update<cr>')
-nnoremap('<c-s>', ':update<cr>')
+inoremap('<c-s>', '<c-o><cmd>update<cr>')
+nnoremap('<c-s>', '<cmd>update<cr>')
 vnoremap('<c-c>', '"+y')
 vnoremap('<c-x>', '"+x')
 inoremap('<c-v>', '<esc>"+pa')
@@ -58,7 +65,7 @@ nnoremap('<c-v>', '"+p')
 vnoremap('<c-v>', '"+p')
 nnoremap('<a-v>', '<c-v>') -- visual block mode compatibility
 -- use esc to cancel search highlights
-nnoremap('<esc>', '<esc>:nohlsearch<cr>')
+nnoremap('<esc>', '<esc><cmd>nohlsearch<cr>')
 -- move between windows
 nnoremap('<c-h>', '<c-w>h')
 nnoremap('<c-j>', '<c-w>j')
@@ -69,50 +76,82 @@ tnoremap('<c-j>', '<c-\\><c-N><c-w>j')
 tnoremap('<c-k>', '<c-\\><c-N><c-w>k')
 tnoremap('<c-l>', '<c-\\><c-N><c-w>l')
 -- move between tabs
-nnoremap('<a-h>', ':tabprev<cr>')
-nnoremap('<a-l>', ':tabnext<cr>')
-tnoremap('<a-h>', '<c-\\><c-N>:tabprev<cr>')
-tnoremap('<a-l>', '<c-\\><c-N>:tabnext<cr>')
+nnoremap('<a-h>', '<cmd>tabprev<cr>')
+nnoremap('<a-l>', '<cmd>tabnext<cr>')
+tnoremap('<a-h>', '<c-\\><c-N><cmd>tabprev<cr>')
+tnoremap('<a-l>', '<c-\\><c-N><cmd>tabnext<cr>')
 -- reorder tabs
-nnoremap(']t', ':tabmove +1<cr>')
-nnoremap('[t', ':tabmove -1<cr>')
+nnoremap(']t', '<cmd>tabmove +1<cr>')
+nnoremap('[t', '<cmd>tabmove -1<cr>')
 -- delete buffer but do not ruin the window layout
-nnoremap('<leader>bd', ':bp|bd #<cr>')
+nnoremap('<leader>bd', '<cmd>bp|bd #<cr>')
 -- change directory to the current file
-nnoremap('<leader>cd', 'cd :lcd %:p:h<cr>')
+nnoremap('<leader>cd', '<cmd>lcd %:p:h<cr><cmd>pwd<cr>')
 -- navigation in command mode
-cnoremap('<c-h>', '<left>')
-cnoremap('<c-j>', '<down>')
-cnoremap('<c-k>', '<up>')
-cnoremap('<c-l>', '<right>')
+cnoremap('<a-h>', '<left>')
+cnoremap('<a-j>', '<down>')
+cnoremap('<a-k>', '<up>')
+cnoremap('<a-l>', '<right>')
 -- opening terminal
-nnoremap('<c-t>', ':let $TERM_DIR=expand(\'%:p:h\')<cr>:rightbelow 55 vsplit +terminal<cr>icd $TERM_DIR && clear<cr>')
-nnoremap('<a-t>', ':let $TERM_DIR=expand(\'%:p:h\')<cr>:rightbelow 15 split +terminal<cr>icd $TERM_DIR && clear<cr>')
--- run current python script
-vim.cmd('autocmd FileType python nnoremap <buffer> <f10> :!python "%"<cr>')
+nnoremap('<c-t>', '<cmd>rightbelow 55 vsplit +terminal<cr>')
+nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 --
 -- plugin-specific
 --
+-- onedark
+-- lualine
+-- bufferline
 -- move between buffers
-nnoremap('<a-j>', ':BufferLineCycleNext<cr>')
-nnoremap('<a-k>', ':BufferLineCyclePrev<cr>')
-tnoremap('<a-j>', ':<c-\\><c-N>BufferLineCycleNext<cr>')
-tnoremap('<a-k>', ':<c-\\><c-N>BufferLineCyclePrev<cr>')
+nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
+nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
+tnoremap('<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
+tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 -- reorder buffer
-nnoremap(']b', ':BufferLineMoveNext')
-nnoremap('[b', ':BufferLineMovePrev')
--- toggle nvim-tree
-nnoremap('<c-n>', ':NvimTreeToggle<cr>')
--- Telescope
+nnoremap(']b', '<cmd>BufferLineMoveNext<cr>')
+nnoremap('[b', '<cmd>BufferLineMovePrev<cr>')
+-- nvim-tree
+nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
+-- telescope
 nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
 nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
 nnoremap('<leader>tb', '<cmd>Telescope buffers<cr>')
 nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
--- Compe
-vim.cmd('inoremap <expr> <tab> pumvisible() ? "<c-n>" : "<tab>"')
-vim.cmd('inoremap <expr> <s-tab> pumvisible() ? "<c-p>" : "<s-tab>"')
-vim.cmd('inoremap <expr> <c-y> compe#close(\'<c-y>\')')
+-- scroll-view
+-- compe
+-- use tab for selection
+function _G.smart_tab()
+	return vim.fn.pumvisible() == 1 and tcode('<c-n>') or tcode('<tab>')
+end
+keymap('i', '<tab>', 'v:lua.smart_tab()', {expr = true, noremap = true})
+function _G.smart_stab()
+	return vim.fn.pumvisible() == 1 and tcode('<c-p>') or tcode('<s-tab>')
+end
+keymap('i', '<s-tab>', 'v:lua.smart_stab()', {expr = true, noremap = true})
+-- close popup menu using escape
+function _G.smart_esc()
+	return vim.fn.pumvisible() == 1 and vim.fn['compe#close']() or tcode('<esc>')
+end
+keymap('i', '<esc>', 'v:lua.smart_esc()', {expr = true, noremap = true})
+-- lspconfig
+-- treesitter
+-- indent-blankline
+-- vim-commentary
+-- vim-surround
+-- autopair
+-- <cr> expansion
+require("nvim-autopairs.completion.compe").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true -- it will auto insert `(` after select function or method item
+})
+-- ultisnips
+vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
+vim.g.UltiSnipsJumpForwardTrigger = '<a-j>'
+vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
+-- vim-sneak
+-- neoscroll
+-- vim-fugitive
+
 
 -----------
 -- Plugins
@@ -149,13 +188,14 @@ require'nvim-web-devicons'.setup {
 }
 
 -- Nvim-tree
-vim.g.nvim_tree_width = 50
+vim.g.nvim_tree_width = 40
 
 -- Telescope
 
 -- Scrollview
 
 -- Compe
+vim.o.completeopt = 'menuone,noselect'
 require('compe').setup {
 	enabled = true;
 	autocomplete = true;
@@ -179,6 +219,7 @@ require('compe').setup {
   	};
 
 	source = {
+		omni = {filetypes = {'tex'}};
 		path = true;
 		buffer = false;
 		calc = true;
@@ -319,16 +360,10 @@ vim.g.indent_blankline_context_patterns = {
 require('nvim-autopairs').setup({
   disable_filetype = { "TelescopePrompt" , "vim" },
 })
-require("nvim-autopairs.completion.compe").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true -- it will auto insert `(` after select function or method item
-})
 
 -- Ultisnips
-vim.cmd('let g:UltiSnipsSnippetDirectories=["UltiSnips", system(\'echo -n $HOME/.local/share/nvim/mysnippets\')]')
-vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
-vim.g.UltiSnipsJumpForwardTrigger = '<a-j>'
-vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
+-- custom snippets directory
+vim.g.UltiSnipsSnippetDirectories ={'Ultisnips', vim.env.HOME .. '/.local/share/nvim/mysnippets'}
 
 -- Sneak
 
