@@ -25,7 +25,7 @@ vim.cmd('autocmd FileType text,tex,markdown setlocal spell spelllang=en_us')
 -- filetype of header files should be c
 vim.cmd('autocmd BufEnter *.h set filetype=c')
 -- use // for commenting in c code
-vim.cmd('autocmd FileType c setlocal commentstring=//%s')
+vim.cmd('autocmd BufEnter *.c,*.h setlocal commentstring=//%s')
 -- run current python script
 vim.cmd('autocmd FileType python nnoremap <buffer> <f10> <cmd>!python "%"<cr>')
 
@@ -50,7 +50,7 @@ local function vnoremap(key, map)
 	return vim.api.nvim_set_keymap('v', key, map, {expr = false, noremap = true, silent = true})
 end
 local function cnoremap(key, map)
-	return vim.api.nvim_set_keymap('c', key, map, {expr = false, noremap = true, silent = false})
+	return vim.api.nvim_set_keymap('c', key, map, {expr = false, noremap = true})
 end
 local function tnoremap(key, map)
 	return vim.api.nvim_set_keymap('t', key, map, {expr = false, noremap = true, silent = true})
@@ -75,14 +75,25 @@ tnoremap('<c-h>', '<c-\\><c-N><c-w>h')
 tnoremap('<c-j>', '<c-\\><c-N><c-w>j')
 tnoremap('<c-k>', '<c-\\><c-N><c-w>k')
 tnoremap('<c-l>', '<c-\\><c-N><c-w>l')
+-- close window
+nnoremap('<c-q>', '<cmd>:quit<cr>')
+-- resize window
+nnoremap('<c-left>', '<cmd>vertical resize -1<cr>')
+nnoremap('<c-down>', '<cmd>resize -1<cr>')
+nnoremap('<c-up>', '<cmd>resize +1<cr>')
+nnoremap('<c-right>', '<cmd>vertical resize +1<cr>')
+tnoremap('<c-left>', '<c-\\><c-N><c-w>h')
+tnoremap('<c-down>', '<c-\\><c-N><c-w>j')
+tnoremap('<c-up>', '<c-\\><c-N><c-w>k')
+tnoremap('<c-right>', '<c-\\><c-N><c-w>l')
 -- move between tabs
 nnoremap('<a-h>', '<cmd>tabprev<cr>')
 nnoremap('<a-l>', '<cmd>tabnext<cr>')
 tnoremap('<a-h>', '<c-\\><c-N><cmd>tabprev<cr>')
 tnoremap('<a-l>', '<c-\\><c-N><cmd>tabnext<cr>')
 -- reorder tabs
-nnoremap(']t', '<cmd>tabmove +1<cr>')
-nnoremap('[t', '<cmd>tabmove -1<cr>')
+nnoremap('<a-L>', '<cmd>tabmove +1<cr>')
+nnoremap('<a-H>', '<cmd>tabmove -1<cr>')
 -- delete buffer but do not ruin the window layout
 nnoremap('<leader>bd', '<cmd>bp|bd #<cr>')
 -- change directory to the current file
@@ -101,14 +112,16 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 -- onedark
 -- lualine
 -- bufferline
+-- pick a buffer
+nnoremap('gb', '<cmd>BufferLinePick<cr>')
 -- move between buffers
 nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
 nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
 tnoremap('<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
 tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 -- reorder buffer
-nnoremap(']b', '<cmd>BufferLineMoveNext<cr>')
-nnoremap('[b', '<cmd>BufferLineMovePrev<cr>')
+nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
+nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 -- nvim-tree
 nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
 -- telescope
@@ -128,11 +141,8 @@ function _G.smart_stab()
 	return vim.fn.pumvisible() == 1 and tcode('<c-p>') or tcode('<s-tab>')
 end
 keymap('i', '<s-tab>', 'v:lua.smart_stab()', {expr = true, noremap = true})
--- close popup menu using escape
-function _G.smart_esc()
-	return vim.fn.pumvisible() == 1 and vim.fn['compe#close']() or tcode('<esc>')
-end
-keymap('i', '<esc>', 'v:lua.smart_esc()', {expr = true, noremap = true})
+-- close popup menu using <c-y>
+keymap('i', '<c-y>', 'compe#close(\'<c-y>\')', {expr = true, noremap = true})
 -- lspconfig
 -- treesitter
 -- indent-blankline
@@ -163,22 +173,51 @@ vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
 require('onedark').setup()
 
 -- Lualine
-require('lualine').setup({
-	options = {
-		theme = 'onedark'
-	}
-})
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'onedark',
+    component_separators = {'|', '|'},
+    section_separators = {'', ''},
+    disabled_filetypes = {}
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {{'FugitiveHead', icon = ''}},
+    lualine_c = {{'filename', path = 1}},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {{'location'}, {'diagnostics', sources = {'nvim_lsp'}}}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {'fugitive', 'nvim-tree'}
+}
 
 -- Bufferline
 require('bufferline').setup({
   options = {
-	numbers = "ordinal",
-	number_style = "",
-    diagnostics = "nvim_lsp",
+	numbers = 'ordinal',
+	number_style = '',
+	right_mouse_command = nil,
+    diagnostics = 'nvim_lsp',
     diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      return "("..count..")"
+      return '('..count..')'
     end,
-	offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "left"}}
+	offsets = {{filetype = 'NvimTree', text = 'File Explorer', text_align = 'left'}},
+	-- do not show terminals in bufferline
+	custom_filter = function(bufn)
+		if not string.match(vim.fn.bufname(bufn), 'term://') then
+			return true
+		end
+	end,
   }
 })
 
@@ -189,6 +228,8 @@ require'nvim-web-devicons'.setup {
 
 -- Nvim-tree
 vim.g.nvim_tree_width = 40
+vim.g.nvim_tree_disable_netrw = 1
+vim.g.nvim_tree_auto_open = 1
 
 -- Telescope
 
@@ -211,7 +252,7 @@ require('compe').setup {
 	max_menu_width = 100;
 	documentation = {
 		border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-		winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+		winhighlight = 'NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder',
 		max_width = 120,
 		min_width = 60,
 		max_height = math.floor(vim.o.lines * 0.3),
@@ -261,7 +302,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  -- buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
 end
 
@@ -276,7 +317,7 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 }
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "pyright", "clangd" }
+local servers = {'pyright', 'clangd'}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -288,10 +329,9 @@ for _, lsp in ipairs(servers) do
 end
 
 -- Treesitter
-require'nvim-treesitter.configs'.setup{
-  highlight = {
-    enable = true,
-  },
+require('nvim-treesitter.configs').setup{
+  highlight = {enable = true},
+  -- indent = {enable = true}
 }
 
 -- Indent-blankline
