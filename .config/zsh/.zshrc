@@ -18,10 +18,13 @@ compinit
 _comp_options+=(globdots) # include hidden files
 setopt COMPLETE_ALIASES	# completion for alisases
 
+# Use cd as a replacement for pushd
+setopt autopushd
+
 # vi mode
 bindkey -v
 export KEYTIMEOUT=1 # Wait 0.1s for key sequences
-bindkey "^?" backward-delete-char # Making backspace work properly in vi mode
+# bindkey "^?" backward-delete-char # Making backspace work properly in vi mode
 # Edit line in vim with ctrl-e
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
