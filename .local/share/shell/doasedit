@@ -1,0 +1,144 @@
+#! /usr/bin/sh
+
+# unalias stuff
+unalias doas echo ls grep awk date md5sum rm diff cat install chgrp dirname basename exit 2> /dev/null
+
+# check dependencies
+command -v doas echo ls grep awk date md5sum rm diff cat install chgrp dirname basename exit > /dev/null || {
+	echo dependencies not satisfied; exit 1
+}
+
+# check if env vars are set properly
+[[ $USER != "root" ]] && {
+	echo please run with root priviledges; exit 1
+}
+[[ $NONROOTUSER == "root" ]] && {
+	echo please run doasedit from a non root user; exit 1
+}
+{ [[ -z $NONROOTUSER ]] || [[ -z $EDITOR ]] || [[ -z $XDG_RUNTIME_DIR_NONROOT ]] ;} && {
+	echo please set env vars properly; exit 1
+}
+# if number of arguments is zero then exit
+[[ $# -eq 0 ]] && {
+	echo No arguments; exit 1
+}
+# do not allow process substitution in arguments
+[[ $@ =~ ".*/proc/self/fd/.+" ]] && {
+	echo please do not use process substitution in arguments; exit 1
+}
+
+# directory for storing temporary files
+doaseditdir="/tmp/doasedit"
+# if the directory exists then check for permissions. otherwise create the directory
+# the directory should be owned by root and the group should be NONROOTUSER.
+# NONROOTUSER can only execute the directory and others can do nothing
+doaseditdir_permission="drwx--x---root$NONROOTUSER"
+if [[ -d $doaseditdir ]]; then
+	[[ $(ls -l $(dirname $doaseditdir) | grep $(basename $doaseditdir) |
+	awk '{ print $1 $3 $4 }') != $doaseditdir_permission ]] && {
+		echo improper permissions for $doaseditdir; exit 1
+	}
+else
+	{ mkdir -m 710 $doaseditdir &&
+	chgrp $NONROOTUSER $doaseditdir; } ||
+	{ echo failed to create temp directory; exit 1; }
+fi
+
+# declaring some arrays
+declare -a file temp_file
+# clear files and exit
+clear_and_exit () {
+	! [[ -z $(printf %s ${temp_file[@]}) ]] && rm ${temp_file[@]}
+	exit 1
+}
+
+args=("$@")
+for (( i=0; i < $#; i++ ))
+do
+	# if absolute path is given use that otherwise expand the location
+	if [[ ${args[i]:0:1} == "/" ]]; then
+		file[i]="${args[i]}"
+	else
+		file[i]="$PWD/${args[i]}"
+	fi
+	directory="$(dirname ${file[i]})"
+
+
+	# absolute path of the temp_file : filename__hash
+	temp_file[i]="$doaseditdir/$(basename ${file[i]})__$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')"
+
+	# if argument is a valid file then copy it to temp_file with proper permissions otherwise make an empty temp_file
+	# the temp_file should be owned by root and can be read and written by NONROOTUSER
+	if [[ -f ${file[i]} ]]; then
+		# if the file cannot be read or modified by root then exit
+		test -r ${file[i]} || {
+			echo ${file[i]} : cannot be read by root
+			# since temp_file[i] is not created
+			unset "temp_file[i]"; clear_and_exit
+		}
+		test -w ${file[i]} || {
+			echo ${file[i]} : cannot be modified by root
+			unset "temp_file[i]"; clear_and_exit
+		}
+		# if the file can be edited without root priviledges then exit
+		doas -u $NONROOTUSER test -O ${file[i]} || doas -u $NONROOTUSER test -G ${file[i]} ||
+			{ doas -u $NONROOTUSER test -r ${file[i]} && doas -u $NONROOTUSER test -w ${file[i]}; } && {
+				echo ${args[i]} is editable without root priviledges
+				unset "temp_file[i]"; clear_and_exit
+			}
+		# copy the file to temp dir with proper permissions
+		install -g $NONROOTUSER -m 660 ${file[i]} ${temp_file[i]} || {
+			echo Falied to copy ${args[i]}
+			unset "temp_file[i]"; clear_and_exit
+		}
+	elif [[ -d $directory ]]; then
+		# if the directory cannot be executed or modified by root then exit
+		test -x $directory && test -w $directory || {
+			echo $directory : cannot create new files here
+			unset "temp_file[i]"; clear_and_exit
+		}
+		# if the argument is a directory then exit
+		[[ -d ${file[i]} ]] && {
+			echo ${args[i]} : cannot edit a directory
+			unset "temp_file[i]"; clear_and_exit
+		}
+		# if the directory is writable without root priviledges then exit
+		doas -u $NONROOTUSER test -w $directory && {
+			echo ${args[i]} : editing files in a writable directory is not permitted
+			unset "temp_file[i]"; clear_and_exit
+		}
+		# create the temp file
+		touch ${temp_file[i]} || {
+			echo ${args[i]} : Failed to create temp file
+			exit 1
+		}
+		chgrp $NONROOTUSER ${temp_file[i]} && chmod 660 ${temp_file[i]}
+	# if both the file and the directory containing the file does not exist then exit
+	else
+		echo ${args[i]} : No such dir $(dirname ${file[i]})
+		unset "temp_file[i]"; clear_and_exit
+	fi
+done
+
+# open files in EDITOR
+doas -u $NONROOTUSER env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR_NONROOT $EDITOR ${temp_file[@]} || {
+	echo Failed to open files in $EDITOR; clear_and_exit
+}
+
+# copy the contents to the original file
+for (( i=0; i < $#; i++ ))
+do
+	# compare the final and initial modification time. if modified then copy the contents
+	if ! [[ -f ${file[i]} ]] || [[ cmp ${file[i]} ${temp_file[i]} ]]; then
+		cat ${temp_file[i]} > ${file[i]} || {
+			echo Failed to modify ${args[i]}
+			echo Backup kept at ${temp_file[i]}
+			continue
+		} &&
+		echo Modified ${args[i]}
+		# remove the temporary file created for editing in non root environment
+		rm ${temp_file[i]}
+	else
+		echo ${args[i]} not modified
+	fi
+done
