@@ -129,7 +129,7 @@ doas -u $NONROOTUSER env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR_NONROOT $EDITOR ${temp
 for (( i=0; i < $#; i++ ))
 do
 	# compare the final and initial modification time. if modified then copy the contents
-	if ! [[ -f ${file[i]} ]] || [[ cmp ${file[i]} ${temp_file[i]} ]]; then
+	if ! [[ -f ${file[i]} ]] || [[ cmp -s ${file[i]} ${temp_file[i]} ]]; then
 		cat ${temp_file[i]} > ${file[i]} || {
 			echo Failed to modify ${args[i]}
 			echo Backup kept at ${temp_file[i]}
