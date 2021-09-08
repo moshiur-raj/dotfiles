@@ -23,6 +23,7 @@ setopt autopushd
 
 # vi mode
 bindkey -v
+bindkey -v '^?' backward-delete-char
 export KEYTIMEOUT=1 # Wait 0.1s for key sequences
 # bindkey "^?" backward-delete-char # Making backspace work properly in vi mode
 # Edit line in vim with ctrl-e
