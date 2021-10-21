@@ -107,60 +107,6 @@ cnoremap('<a-l>', '<right>')
 nnoremap('<c-t>', '<cmd>rightbelow 55 vsplit +terminal<cr>')
 nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 --
--- plugin-specific
---
--- onedark
--- lualine
--- bufferline
--- pick a buffer
-nnoremap('gb', '<cmd>BufferLinePick<cr>')
--- move between buffers
-nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
-nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
-tnoremap('<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
-tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
--- reorder buffer
-nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
-nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
--- nvim-tree
-nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
--- telescope
-nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
-nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
-nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
-nnoremap('<leader>tb', '<cmd>Telescope buffers<cr>')
-nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
--- scroll-view
--- compe
--- use tab for selection
-function _G.smart_tab()
-	return vim.fn.pumvisible() == 1 and tcode('<c-n>') or tcode('<tab>')
-end
-keymap('i', '<tab>', 'v:lua.smart_tab()', {expr = true, noremap = true})
-function _G.smart_stab()
-	return vim.fn.pumvisible() == 1 and tcode('<c-p>') or tcode('<s-tab>')
-end
-keymap('i', '<s-tab>', 'v:lua.smart_stab()', {expr = true, noremap = true})
--- close popup menu using <c-y>
-keymap('i', '<c-y>', 'compe#close(\'<c-y>\')', {expr = true, noremap = true})
--- lspconfig
--- treesitter
--- indent-blankline
--- vim-commentary
--- vim-surround
--- autopair
--- <cr> expansion
-require("nvim-autopairs.completion.compe").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true -- it will auto insert `(` after select function or method item
-})
--- ultisnips
-vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
-vim.g.UltiSnipsJumpForwardTrigger = '<a-j>'
-vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
--- vim-sneak
--- neoscroll
--- vim-fugitive
 
 
 -----------
@@ -177,13 +123,13 @@ require('lualine').setup {
   options = {
     icons_enabled = true,
     theme = 'onedark',
-    component_separators = {'|', '|'},
-    section_separators = {'', ''},
+    component_separators = {left = '|', right = '|'},
+    section_separators = {left = '', right = ''},
     disabled_filetypes = {}
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {{'FugitiveHead', icon = ''}},
+    lualine_b = {'branch'},
     lualine_c = {{'filename', path = 1}},
     lualine_x = {'encoding', 'fileformat', 'filetype'},
     lualine_y = {'progress'},
@@ -205,9 +151,9 @@ require('lualine').setup {
 require('bufferline').setup({
   options = {
 	numbers = 'ordinal',
-	number_style = '',
 	right_mouse_command = nil,
     diagnostics = 'nvim_lsp',
+	diagnostics_update_in_insert = false,
     diagnostics_indicator = function(count, level, diagnostics_dict, context)
       return '('..count..')'
     end,
@@ -220,6 +166,16 @@ require('bufferline').setup({
 	end,
   }
 })
+-- pick a buffer
+nnoremap('gb', '<cmd>BufferLinePick<cr>')
+-- move between buffers
+nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
+nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
+tnoremap('<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
+tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
+-- reorder buffer
+nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
+nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Web-devicons
 require'nvim-web-devicons'.setup {
@@ -227,48 +183,103 @@ require'nvim-web-devicons'.setup {
 }
 
 -- Nvim-tree
-vim.g.nvim_tree_width = 40
-vim.g.nvim_tree_disable_netrw = 1
-vim.g.nvim_tree_auto_open = 1
+require'nvim-tree'.setup {
+	disable_netrw       = true,
+	hijack_netrw        = true,
+	open_on_setup       = false,
+	ignore_ft_on_setup  = {},
+	update_to_buf_dir   = {
+		enable = true,
+		auto_open = true,
+	},
+	auto_close          = false,
+	open_on_tab         = false,
+	hijack_cursor       = false,
+	update_cwd          = false,
+	diagnostics     	= {enable = true},
+	update_focused_file = {
+		enable      = false,
+		update_cwd  = false,
+		ignore_list = {}
+	},
+	system_open = {
+		cmd  = nil,
+		args = {}
+	},
+	view = {
+		width = 40,
+		height = 30,
+		side = 'left',
+		auto_resize = false,
+		mappings = {
+			custom_only = false,
+			list = {}
+		}
+	}
+}
+nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
 
 -- Telescope
+nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
+nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
+nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
+nnoremap('<leader>tb', '<cmd>Telescope buffers<cr>')
+nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
 
 -- Scrollview
 
--- Compe
-vim.o.completeopt = 'menuone,noselect'
-require('compe').setup {
-	enabled = true;
-	autocomplete = true;
-	debug = false;
-	min_length = 1;
-	preselect = 'enable';
-	throttle_time = 80;
-	source_timeout = 200;
-	resolve_timeout = 800;
-	incomplete_delay = 400;
-	max_abbr_width = 100;
-	max_kind_width = 100;
-	max_menu_width = 100;
-	documentation = {
-		border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-		winhighlight = 'NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder',
-		max_width = 120,
-		min_width = 60,
-		max_height = math.floor(vim.o.lines * 0.3),
-		min_height = 1,
-  	};
+-- Nvim-cmp
+vim.o.completeopt = 'menu,menuone,noselect'
+ -- Setup nvim-cmp.
+local cmp = require('cmp')
+cmp.setup({
+ snippet = {
+	 expand = function(args)
+		 -- For `vsnip` user.
+		 -- vim.fn["vsnip#anonymous"](args.body)
 
-	source = {
-		omni = {filetypes = {'tex'}};
-		path = true;
-		buffer = false;
-		calc = true;
-		nvim_lsp = true;
-		nvim_lua = true;
-		ultisnips = true;
-	};
+		 -- For `luasnip` user.
+		 -- require('luasnip').lsp_expand(args.body)
+
+		 -- For `ultisnips` user.
+		 vim.fn["UltiSnips#Anon"](args.body)
+	 end,
+ },
+ mapping = {
+	 -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+	 -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
+	 -- ['<C-Space>'] = cmp.mapping.complete(),
+	 -- ['<C-e>'] = cmp.mapping.close(),
+	 ['<CR>'] = cmp.mapping.confirm({ select = true }),
+	 ['<TAB>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+	 ['<S-TAB>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+ },
+ sources = {
+	 { name = 'ultisnips' },
+	 { name = 'nvim_lsp' },
+	 { name = 'buffer' },
+	 { name = 'path' },
+	 { name = 'spell' },
+ }
+})
+-- Setup lspconfig.
+require('lspconfig')['clangd'].setup {
+	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
+require('lspconfig')['pyright'].setup {
+	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+}
+-- you need setup cmp first put this after cmp.setup()
+require("nvim-autopairs.completion.cmp").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
+  auto_select = true, -- automatically select the first item
+  insert = false, -- use insert confirm behavior instead of replace
+  map_char = { -- modifies the function or method delimiter by filetypes
+    all = '(',
+    tex = '{'
+  }
+})
 
 -- Lspconfig
 local nvim_lsp = require('lspconfig')
@@ -295,7 +306,7 @@ local on_attach = function(client, bufnr)
   -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
@@ -404,6 +415,10 @@ require('nvim-autopairs').setup({
 -- Ultisnips
 -- custom snippets directory
 vim.g.UltiSnipsSnippetDirectories ={'Ultisnips', vim.env.HOME .. '/.local/share/nvim/mysnippets'}
+-- keymaps
+vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
+vim.g.UltiSnipsJumpForwardTrigger = '<a-j>'
+vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
 
 -- Sneak
 
