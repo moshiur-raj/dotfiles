@@ -5,7 +5,7 @@ return require('packer').startup(function()
 	use 'navarasu/onedark.nvim'
 	-- Statusline
 	use {
-		'shadmansaleh/lualine.nvim',
+		'nvim-lualine/lualine.nvim',
 		requires = {'kyazdani42/nvim-web-devicons', opt = true}
 	}
 	-- Bufferline
