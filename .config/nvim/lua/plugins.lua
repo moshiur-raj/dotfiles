@@ -26,7 +26,10 @@ return require('packer').startup(function()
 	-- Scroll View
 	use 'dstein64/nvim-scrollview'
 	-- Completion Plugin
-	use 'hrsh7th/nvim-compe'
+	use {
+		'hrsh7th/nvim-cmp',
+		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'f3fora/cmp-spell'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
+	}
 	-- Lsp
 	use 'neovim/nvim-lspconfig'
 	-- Treesitter
