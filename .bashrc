@@ -7,8 +7,11 @@ HISTFILE=$HOME/.cache/.histfile
 # Use nvim for man
 export MANPAGER='nvim +Man!'
 
-#Source aliases
+# Source aliases
 source $HOME/.local/share/shell/alias.sh
+
+# Source patches
+source $HOME/.local/share/shell/patches.sh
 
 # VTE Support
 [ $TILIX_ID ] || [ $VTE_VERSION ] && source /etc/profile.d/vte.sh
