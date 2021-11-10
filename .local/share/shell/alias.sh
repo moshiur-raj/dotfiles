@@ -1,3 +1,5 @@
+# Emacs
+alias emacs="emacsclient -nc"
 # Youtube-dl
 alias youtube-dl="youtube-dl --merge-output-format mkv --add-metadata --embed-subs --write-sub --sub-lang en -f bestvideo\[height\<\=1080\]\[vcodec\=vp9\]\+bestaudio"
 # doasedit
