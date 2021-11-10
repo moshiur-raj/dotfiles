@@ -1,6 +1,6 @@
 #Enable colors and change prompt
 autoload -U colors && colors
-PS1=" %b%F{magenta}%2~ %B%F{red}＞ %b%f"
+PS1="%b%F{magenta} %2~ %B%F{red}＞ %b%f"
 
 # Disable ctrl-s to freeze terminal
 stty stop undef
@@ -85,18 +85,6 @@ fzf_quick_completion() {
 zle -N fzf_quick_completion
 bindkey "^f" fzf_quick_completion
 
-# Use lf to switch directories and bind it to ctrl-o
-lfcd () {
-    tmp="$(mktemp)"
-    lf -last-dir-path="$tmp" "$@"
-    if [ -f "$tmp" ]; then
-        dir="$(cat "$tmp")"
-        rm -f "$tmp" >/dev/null
-        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-    fi
-}
-bindkey -s '^o' 'lfcd\n'
-
 # Use nvim for man
 export MANPAGER='nvim +Man!'
 
@@ -104,4 +92,4 @@ export MANPAGER='nvim +Man!'
 source $HOME/.local/share/shell/alias.sh
 
 # Load pathces
-source $HOME/.local/share/zsh/scripts/patches.sh
+source $HOME/.local/share/shell/patches.sh
