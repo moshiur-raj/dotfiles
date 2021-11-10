@@ -251,35 +251,28 @@ cmp.setup({
 	 -- ['<C-Space>'] = cmp.mapping.complete(),
 	 -- ['<C-e>'] = cmp.mapping.close(),
 	 ['<CR>'] = cmp.mapping.confirm({ select = true }),
+	 ['<ESC>'] = cmp.mapping.close(),
 	 ['<TAB>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
 	 ['<S-TAB>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
  },
  sources = {
 	 { name = 'ultisnips' },
 	 { name = 'nvim_lsp' },
-	 { name = 'buffer' },
+	 { name = 'buffer', keyword_length = 7 },
 	 { name = 'path' },
-	 { name = 'spell' },
+	 { name = 'spell', keyword_length = 7 },
  }
 })
--- Setup lspconfig.
+-- lsp integration
 require('lspconfig')['clangd'].setup {
 	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
 require('lspconfig')['pyright'].setup {
 	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
--- you need setup cmp first put this after cmp.setup()
-require("nvim-autopairs.completion.cmp").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true, -- it will auto insert `(` (map_char) after select function or method item
-  auto_select = true, -- automatically select the first item
-  insert = false, -- use insert confirm behavior instead of replace
-  map_char = { -- modifies the function or method delimiter by filetypes
-    all = '(',
-    tex = '{'
-  }
-})
+-- autopairs integration
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done())
 
 -- Lspconfig
 local nvim_lsp = require('lspconfig')
@@ -417,8 +410,8 @@ require('nvim-autopairs').setup({
 vim.g.UltiSnipsSnippetDirectories ={'Ultisnips', vim.env.HOME .. '/.local/share/nvim/mysnippets'}
 -- keymaps
 vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
-vim.g.UltiSnipsJumpForwardTrigger = '<a-j>'
-vim.g.UltiSnipsJumpBackwardTrigger = '<a-k>'
+vim.g.UltiSnipsJumpForwardTrigger = '<TAB>'
+vim.g.UltiSnipsJumpBackwardTrigger = '<S-TAB>'
 
 -- Sneak
 
