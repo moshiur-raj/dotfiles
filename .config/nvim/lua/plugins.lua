@@ -28,7 +28,7 @@ return require('packer').startup(function()
 	-- Completion Plugin
 	use {
 		'hrsh7th/nvim-cmp',
-		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'f3fora/cmp-spell'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
+		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'f3fora/cmp-spell'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
 	}
 	-- Lsp
 	use 'neovim/nvim-lspconfig'

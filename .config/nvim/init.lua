@@ -256,13 +256,27 @@ cmp.setup({
 	 ['<S-TAB>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
  },
  sources = {
-	 { name = 'ultisnips' },
+	 { name = 'ultisnips', keyword_length = 3 },
 	 { name = 'nvim_lsp' },
+	 -- { name = 'omni', keyword_length = 0},
 	 { name = 'buffer', keyword_length = 7 },
 	 { name = 'path' },
 	 { name = 'spell', keyword_length = 7 },
  }
 })
+-- vimtex integration
+vim.cmd(string.gsub([[
+autocmd FileType tex lua require('cmp').setup.buffer{
+sources = {
+{ name = 'ultisnips', keyword_length = 3 },
+{ name = 'nvim_lsp' },
+{ name = 'omni', keyword_length = 0},
+{ name = 'buffer', keyword_length = 7 },
+{ name = 'path' },
+{ name = 'spell', keyword_length = 7 },
+}
+}
+]], '\n', ''))
 -- lsp integration
 require('lspconfig')['clangd'].setup {
 	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
