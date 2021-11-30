@@ -122,18 +122,20 @@ require('onedark').setup()
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'onedark',
-    component_separators = {left = '|', right = '|'},
-    section_separators = {left = '', right = ''},
-    disabled_filetypes = {}
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch'},
-    lualine_c = {{'filename', path = 1}},
+    lualine_b = {'branch', 'diff',
+                  {'diagnostics', sources={'nvim_lsp', 'coc'}}},
+    lualine_c = {'filename'},
     lualine_x = {'encoding', 'fileformat', 'filetype'},
     lualine_y = {'progress'},
-    lualine_z = {{'location'}, {'diagnostics', sources = {'nvim_lsp'}}}
+    lualine_z = {'location'}
   },
   inactive_sections = {
     lualine_a = {},
@@ -148,7 +150,7 @@ require('lualine').setup {
 }
 
 -- Bufferline
-require('bufferline').setup({
+require('bufferline').setup {
   options = {
 	numbers = 'ordinal',
 	right_mouse_command = nil,
@@ -165,7 +167,7 @@ require('bufferline').setup({
 		end
 	end,
   }
-})
+}
 -- pick a buffer
 nnoremap('gb', '<cmd>BufferLinePick<cr>')
 -- move between buffers
@@ -178,25 +180,35 @@ nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Web-devicons
-require'nvim-web-devicons'.setup {
+require('nvim-web-devicons').setup {
  default = true;
 }
 
 -- Nvim-tree
-require'nvim-tree'.setup {
+-- following options are the default
+-- each of these are documented in `:help nvim-tree.OPTION_NAME`
+require('nvim-tree').setup {
 	disable_netrw       = true,
 	hijack_netrw        = true,
 	open_on_setup       = false,
 	ignore_ft_on_setup  = {},
-	update_to_buf_dir   = {
-		enable = true,
-		auto_open = true,
-	},
 	auto_close          = false,
 	open_on_tab         = false,
 	hijack_cursor       = false,
 	update_cwd          = false,
-	diagnostics     	= {enable = true},
+	update_to_buf_dir   = {
+		enable = true,
+		auto_open = true,
+	},
+	diagnostics = {
+		enable = true,
+		icons = {
+			hint = "",
+			info = "",
+			warning = "",
+			error = "",
+		}
+	},
 	update_focused_file = {
 		enable      = false,
 		update_cwd  = false,
@@ -206,15 +218,31 @@ require'nvim-tree'.setup {
 		cmd  = nil,
 		args = {}
 	},
+	filters = {
+		dotfiles = false,
+		custom = {}
+	},
+	git = {
+		enable = true,
+		ignore = true,
+		timeout = 500,
+	},
 	view = {
-		width = 40,
+		width = 30,
 		height = 30,
+		hide_root_folder = false,
 		side = 'left',
 		auto_resize = false,
 		mappings = {
 			custom_only = false,
 			list = {}
-		}
+		},
+		number = false,
+		relativenumber = false
+	},
+	trash = {
+		cmd = "trash",
+		require_confirm = true
 	}
 }
 nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
@@ -239,10 +267,6 @@ cmp.setup({
 	 end,
  },
  mapping = {
-	 -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-	 -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
-	 -- ['<C-Space>'] = cmp.mapping.complete(),
-	 -- ['<C-e>'] = cmp.mapping.close(),
 	 ['<CR>'] = cmp.mapping.confirm({ select = true }),
 	 ['<ESC>'] = cmp.mapping.close(),
 	 ['<TAB>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
@@ -270,11 +294,12 @@ sources = {
 }
 ]], '\n', ''))
 -- lsp integration
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require('lspconfig')['clangd'].setup {
-	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+	capabilities = capabilities
 }
 require('lspconfig')['pyright'].setup {
-	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+	capabilities = capabilities
 }
 -- autopairs integration
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
@@ -282,49 +307,22 @@ cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done())
 
 -- Lspconfig
 local nvim_lsp = require('lspconfig')
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  --Enable completion triggered by <c-x><c-o>
-  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
   -- Mappings.
   local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  -- buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
 end
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    'documentation',
-    'detail',
-    'additionalTextEdits',
-  }
-}
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = {'pyright', 'clangd'}
@@ -339,67 +337,77 @@ for _, lsp in ipairs(servers) do
 end
 
 -- Treesitter
-require('nvim-treesitter.configs').setup{
-  highlight = {enable = true},
-  -- indent = {enable = true}
+require('nvim-treesitter.configs').setup {
+  ensure_installed = "maintained",
+  sync_install = false,
+  ignore_install = {}, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {},  -- list of language that will be disabled
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {enable = true},
 }
 
 -- Indent-blankline
-vim.g.indent_blankline_strict_tabs = true
-vim.g.indent_blankline_char = '┊'
-vim.g.indent_blankline_use_treesitter = true
-vim.g.indent_blankline_show_trailing_blankline_indent = false
-vim.g.indentLine_fileType = {'c', 'python', 'sh'}
-vim.g.indent_blankline_show_current_context = true
-vim.g.indent_blankline_context_patterns = {
-	"abstract_class_declaration", "abstract_method_signature",
-	"accessibility_modifier", "ambient_declaration", "arguments", "array",
-	"array_pattern", "array_type", "arrow_function", "as_expression",
-	"asserts", "assignment_expression", "assignment_pattern",
-	"augmented_assignment_expression", "await_expression",
-	"binary_expression", "break_statement", "call_expression",
-	"call_signature", "catch_clause", "class", "class_body",
-	"class_declaration", "class_heritage", "computed_property_name",
-	"conditional_type", "constraint", "construct_signature",
-	"constructor_type", "continue_statement", "debugger_statement",
-	"declaration", "decorator", "default_type", "do_statement",
-	"else_clause", "empty_statement", "enum_assignment", "enum_body",
-	"enum_declaration", "existential_type", "export_clause",
-	"export_specifier", "export_statement", "expression",
-	"expression_statement", "extends_clause", "finally_clause",
-	"flow_maybe_type", "for_in_statement", "for_statement",
-	"formal_parameters", "function", "function_declaration",
-	"function_signature", "function_type", "generator_function",
-	"generator_function_declaration", "generic_type", "if_statement",
-	"implements_clause", "import", "import_alias", "import_clause",
-	"import_require_clause", "import_specifier", "import_statement",
-	"index_signature", "index_type_query", "infer_type",
-	"interface_declaration", "internal_module", "intersection_type",
-	"jsx_attribute", "jsx_closing_element", "jsx_element", "jsx_expression",
-	"jsx_fragment", "jsx_namespace_name", "jsx_opening_element",
-	"jsx_self_closing_element", "labeled_statement", "lexical_declaration",
-	"literal_type", "lookup_type", "mapped_type_clause",
-	"member_expression", "meta_property", "method_definition",
-	"method_signature", "module", "named_imports", "namespace_import",
-	"nested_identifier", "nested_type_identifier", "new_expression",
-	"non_null_expression", "object", "object_assignment_pattern",
-	"object_pattern", "object_type", "omitting_type_annotation",
-	"opting_type_annotation", "optional_parameter", "optional_type", "pair",
-	"pair_pattern", "parenthesized_expression", "parenthesized_type",
-	"pattern", "predefined_type", "primary_expression", "program",
-	"property_signature", "public_field_definition", "readonly_type",
-	"regex", "required_parameter", "rest_pattern", "rest_type",
-	"return_statement", "sequence_expression", "spread_element",
-	"statement", "statement_block", "string", "subscript_expression",
-	"switch_body", "switch_case", "switch_default", "switch_statement",
-	"template_string", "template_substitution", "ternary_expression",
-	"throw_statement", "try_statement", "tuple_type",
-	"type_alias_declaration", "type_annotation", "type_arguments",
-	"type_parameter", "type_parameters", "type_predicate",
-	"type_predicate_annotation", "type_query", "unary_expression",
-	"union_type", "update_expression", "variable_declaration",
-	"variable_declarator", "while_statement", "with_statement",
-	"yield_expression"
+require('indent_blankline').setup {
+    show_current_context = true,
+    show_current_context_start = true,
+	show_trailing_blankline_indent = false,
+	strict_tabs = true,
+	char = '┊',
+	use_treesitter = true,
+	filetype = {'c', 'python', 'sh'},
+	context_patterns = {
+		"abstract_class_declaration", "abstract_method_signature",
+		"accessibility_modifier", "ambient_declaration", "arguments", "array",
+		"array_pattern", "array_type", "arrow_function", "as_expression",
+		"asserts", "assignment_expression", "assignment_pattern",
+		"augmented_assignment_expression", "await_expression",
+		"binary_expression", "break_statement", "call_expression",
+		"call_signature", "catch_clause", "class", "class_body",
+		"class_declaration", "class_heritage", "computed_property_name",
+		"conditional_type", "constraint", "construct_signature",
+		"constructor_type", "continue_statement", "debugger_statement",
+		"declaration", "decorator", "default_type", "do_statement",
+		"else_clause", "empty_statement", "enum_assignment", "enum_body",
+		"enum_declaration", "existential_type", "export_clause",
+		"export_specifier", "export_statement", "expression",
+		"expression_statement", "extends_clause", "finally_clause",
+		"flow_maybe_type", "for_in_statement", "for_statement",
+		"formal_parameters", "function", "function_declaration",
+		"function_signature", "function_type", "generator_function",
+		"generator_function_declaration", "generic_type", "if_statement",
+		"implements_clause", "import", "import_alias", "import_clause",
+		"import_require_clause", "import_specifier", "import_statement",
+		"index_signature", "index_type_query", "infer_type",
+		"interface_declaration", "internal_module", "intersection_type",
+		"jsx_attribute", "jsx_closing_element", "jsx_element", "jsx_expression",
+		"jsx_fragment", "jsx_namespace_name", "jsx_opening_element",
+		"jsx_self_closing_element", "labeled_statement", "lexical_declaration",
+		"literal_type", "lookup_type", "mapped_type_clause",
+		"member_expression", "meta_property", "method_definition",
+		"method_signature", "module", "named_imports", "namespace_import",
+		"nested_identifier", "nested_type_identifier", "new_expression",
+		"non_null_expression", "object", "object_assignment_pattern",
+		"object_pattern", "object_type", "omitting_type_annotation",
+		"opting_type_annotation", "optional_parameter", "optional_type", "pair",
+		"pair_pattern", "parenthesized_expression", "parenthesized_type",
+		"pattern", "predefined_type", "primary_expression", "program",
+		"property_signature", "public_field_definition", "readonly_type",
+		"regex", "required_parameter", "rest_pattern", "rest_type",
+		"return_statement", "sequence_expression", "spread_element",
+		"statement", "statement_block", "string", "subscript_expression",
+		"switch_body", "switch_case", "switch_default", "switch_statement",
+		"template_string", "template_substitution", "ternary_expression",
+		"throw_statement", "try_statement", "tuple_type",
+		"type_alias_declaration", "type_annotation", "type_arguments",
+		"type_parameter", "type_parameters", "type_predicate",
+		"type_predicate_annotation", "type_query", "unary_expression",
+		"union_type", "update_expression", "variable_declaration",
+		"variable_declarator", "while_statement", "with_statement",
+		"yield_expression"
+	},
 }
 
 -- Commentary
@@ -426,7 +434,8 @@ snippy.setup({
 -- Sneak
 
 -- Neoscroll
-require('neoscroll').setup()
+require('neoscroll').setup {}
+
 -- Vimtex
 vim.g.tex_flavor = 'latex'
 
