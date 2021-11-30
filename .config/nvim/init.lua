@@ -228,21 +228,14 @@ nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
 
 -- Scrollview
 
--- Nvim-cmp
+-- Cmp
 vim.o.completeopt = 'menu,menuone,noselect'
  -- Setup nvim-cmp.
 local cmp = require('cmp')
 cmp.setup({
  snippet = {
 	 expand = function(args)
-		 -- For `vsnip` user.
-		 -- vim.fn["vsnip#anonymous"](args.body)
-
-		 -- For `luasnip` user.
-		 -- require('luasnip').lsp_expand(args.body)
-
-		 -- For `ultisnips` user.
-		 vim.fn["UltiSnips#Anon"](args.body)
+		 require('snippy').expand_snippet(args.body)
 	 end,
  },
  mapping = {
@@ -256,9 +249,8 @@ cmp.setup({
 	 ['<S-TAB>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
  },
  sources = {
-	 { name = 'ultisnips', keyword_length = 3 },
+	 { name = 'snippy', keyword_length = 2},
 	 { name = 'nvim_lsp' },
-	 -- { name = 'omni', keyword_length = 0},
 	 { name = 'buffer', keyword_length = 7 },
 	 { name = 'path' },
 	 { name = 'spell', keyword_length = 7 },
@@ -268,9 +260,9 @@ cmp.setup({
 vim.cmd(string.gsub([[
 autocmd FileType tex lua require('cmp').setup.buffer{
 sources = {
-{ name = 'ultisnips', keyword_length = 3 },
+{ name = 'snippy', keyword_length = 2 },
 { name = 'nvim_lsp' },
-{ name = 'omni', keyword_length = 0},
+{ name = 'omni'},
 { name = 'buffer', keyword_length = 7 },
 { name = 'path' },
 { name = 'spell', keyword_length = 7 },
@@ -419,13 +411,17 @@ require('nvim-autopairs').setup({
   disable_filetype = { "TelescopePrompt" , "vim" },
 })
 
--- Ultisnips
+-- Snippy
 -- custom snippets directory
-vim.g.UltiSnipsSnippetDirectories ={'Ultisnips', vim.env.HOME .. '/.local/share/nvim/mysnippets'}
--- keymaps
-vim.g.UltiSnipsExpandTrigger = '<plug>(ultisnips_expand)'
-vim.g.UltiSnipsJumpForwardTrigger = '<TAB>'
-vim.g.UltiSnipsJumpBackwardTrigger = '<S-TAB>'
+local snippy = require('snippy')
+snippy.setup({
+	mappings = {
+		is = {
+			["<Tab>"] = "expand_or_advance",
+			["<S-Tab>"] = "previous",
+		},
+	},
+})
 
 -- Sneak
 

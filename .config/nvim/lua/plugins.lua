@@ -28,7 +28,7 @@ return require('packer').startup(function()
 	-- Completion Plugin
 	use {
 		'hrsh7th/nvim-cmp',
-		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'f3fora/cmp-spell'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
+		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'f3fora/cmp-spell'}, {'dcampos/cmp-snippy'}}
 	}
 	-- Lsp
 	use 'neovim/nvim-lspconfig'
@@ -46,7 +46,7 @@ return require('packer').startup(function()
 	-- Auto Pairs
 	use 'windwp/nvim-autopairs'
 	-- Snippet Support
-	use 'SirVer/ultisnips'
+	use 'dcampos/nvim-snippy'
 	-- Sneak Motion
 	use 'justinmk/vim-sneak'
 	-- Smooth Scroll
