@@ -15,7 +15,6 @@ vim.o.termguicolors = true
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
-vim.o.hidden = true
 vim.o.pumheight = 8
 vim.o.pumwidth = 16
 --
@@ -119,7 +118,7 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 require('onedark').setup()
 
 -- Lualine
-require('lualine').setup {
+require('lualine').setup({
   options = {
     icons_enabled = true,
     theme = 'auto',
@@ -147,10 +146,10 @@ require('lualine').setup {
   },
   tabline = {},
   extensions = {'fugitive', 'nvim-tree'}
-}
+})
 
 -- Bufferline
-require('bufferline').setup {
+require('bufferline').setup({
   options = {
 	numbers = 'ordinal',
 	right_mouse_command = nil,
@@ -167,7 +166,7 @@ require('bufferline').setup {
 		end
 	end,
   }
-}
+})
 -- pick a buffer
 nnoremap('gb', '<cmd>BufferLinePick<cr>')
 -- move between buffers
@@ -180,14 +179,14 @@ nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Web-devicons
-require('nvim-web-devicons').setup {
+require('nvim-web-devicons').setup({
  default = true;
-}
+})
 
 -- Nvim-tree
 -- following options are the default
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
-require('nvim-tree').setup {
+require('nvim-tree').setup({
 	disable_netrw       = true,
 	hijack_netrw        = true,
 	open_on_setup       = false,
@@ -244,7 +243,7 @@ require('nvim-tree').setup {
 		cmd = "trash",
 		require_confirm = true
 	}
-}
+})
 nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
 
 -- Telescope
@@ -267,10 +266,10 @@ cmp.setup({
 	 end,
  },
  mapping = {
-	 ['<CR>'] = cmp.mapping.confirm({ select = true }),
-	 ['<ESC>'] = cmp.mapping.close(),
-	 ['<TAB>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-	 ['<S-TAB>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+	 ['<cr>'] = cmp.mapping.confirm({ select = false }),
+	 ['<c-y>'] = cmp.mapping.close(),
+	 ['<tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+	 ['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
  },
  sources = {
 	 { name = 'snippy', keyword_length = 2},
@@ -295,12 +294,12 @@ sources = {
 ]], '\n', ''))
 -- lsp integration
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-require('lspconfig')['clangd'].setup {
+require('lspconfig')['clangd'].setup({
 	capabilities = capabilities
-}
-require('lspconfig')['pyright'].setup {
+})
+require('lspconfig')['pyright'].setup({
 	capabilities = capabilities
-}
+})
 -- autopairs integration
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done())
@@ -327,17 +326,17 @@ end
 -- map buffer local keybindings when the language server attaches
 local servers = {'pyright', 'clangd'}
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
+  nvim_lsp[lsp].setup({
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
     },
 	capabilities = capabilities,
-  }
+  })
 end
 
 -- Treesitter
-require('nvim-treesitter.configs').setup {
+require('nvim-treesitter.configs').setup({
   ensure_installed = "maintained",
   sync_install = false,
   ignore_install = {}, -- List of parsers to ignore installing
@@ -347,10 +346,10 @@ require('nvim-treesitter.configs').setup {
     additional_vim_regex_highlighting = false,
   },
   indent = {enable = true},
-}
+})
 
 -- Indent-blankline
-require('indent_blankline').setup {
+require('indent_blankline').setup({
     show_current_context = true,
     show_current_context_start = false,
 	show_trailing_blankline_indent = false,
@@ -408,7 +407,7 @@ require('indent_blankline').setup {
 		"variable_declarator", "while_statement", "with_statement",
 		"yield_expression"
 	},
-}
+})
 
 -- Commentary
 
@@ -420,13 +419,11 @@ require('nvim-autopairs').setup({
 })
 
 -- Snippy
--- custom snippets directory
-local snippy = require('snippy')
-snippy.setup({
+require('snippy').setup({
 	mappings = {
 		is = {
-			["<Tab>"] = "expand_or_advance",
-			["<S-Tab>"] = "previous",
+			["<tab>"] = "expand_or_advance",
+			["<s-tab>"] = "previous",
 		},
 	},
 })
@@ -434,7 +431,7 @@ snippy.setup({
 -- Sneak
 
 -- Neoscroll
-require('neoscroll').setup {}
+require('neoscroll').setup()
 
 -- Vimtex
 vim.g.tex_flavor = 'latex'
