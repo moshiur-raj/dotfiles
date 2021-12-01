@@ -272,7 +272,7 @@ cmp.setup({
 	 ['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
  },
  sources = {
-	 { name = 'snippy', keyword_length = 2},
+	 { name = 'snippy', keyword_length = 2 },
 	 { name = 'nvim_lsp' },
 	 { name = 'buffer', keyword_length = 7 },
 	 { name = 'path' },
@@ -285,13 +285,13 @@ autocmd FileType tex lua require('cmp').setup.buffer{
 sources = {
 { name = 'snippy', keyword_length = 2 },
 { name = 'nvim_lsp' },
-{ name = 'omni'},
+{ name = 'omni' },
 { name = 'buffer', keyword_length = 7 },
 { name = 'path' },
 { name = 'spell', keyword_length = 7 },
 }
 }
-]], '\n', ''))
+]], '\n', ' '))
 -- lsp integration
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require('lspconfig')['clangd'].setup({
