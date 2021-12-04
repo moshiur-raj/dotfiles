@@ -23,8 +23,6 @@ vim.cmd('autocmd FileType c,python,sh setlocal colorcolumn=100')
 vim.cmd('autocmd FileType text,tex,markdown setlocal spell spelllang=en_us')
 -- filetype of header files should be c
 vim.cmd('autocmd BufEnter *.h set filetype=c')
--- use // for commenting in c code
-vim.cmd('autocmd BufEnter *.c,*.h setlocal commentstring=//%s')
 -- run current python script
 vim.cmd('autocmd FileType python nnoremap <buffer> <f10> <cmd>!python "%"<cr>')
 
@@ -409,7 +407,8 @@ require('indent_blankline').setup({
 	},
 })
 
--- Commentary
+-- Comment.nvim
+require('Comment').setup()
 
 -- Surround
 

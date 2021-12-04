@@ -40,7 +40,7 @@ return require('packer').startup(function()
 	-- Indentaion Guide
 	use 'lukas-reineke/indent-blankline.nvim'
 	-- Commenting
-	use 'tpope/vim-commentary'
+	use 'numToStr/Comment.nvim'
 	-- Surround Text
 	use 'tpope/vim-surround'
 	-- Auto Pairs
