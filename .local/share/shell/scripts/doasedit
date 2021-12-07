@@ -1,10 +1,7 @@
 #! /usr/bin/bash
 
-# unalias stuff
-unalias doas echo ls grep awk date md5sum rm diff cat install chgrp dirname basename exit 2> /dev/null
-
 # check dependencies
-command -v doas echo ls grep awk date md5sum rm diff cat install chgrp dirname basename exit > /dev/null || {
+command -v doas echo ls grep awk rm cat install chgrp dirname basename cmp exit mkdir printf test touch > /dev/null || {
 	echo dependencies not satisfied; exit 1
 }
 
