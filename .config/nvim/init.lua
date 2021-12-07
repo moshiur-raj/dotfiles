@@ -166,7 +166,7 @@ require('bufferline').setup({
   }
 })
 -- pick a buffer
-nnoremap('gb', '<cmd>BufferLinePick<cr>')
+nnoremap('<leader>gb', '<cmd>BufferLinePick<cr>')
 -- move between buffers
 nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
 nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
@@ -427,7 +427,11 @@ require('snippy').setup({
 	},
 })
 
--- Sneak
+-- Lightspeed
+require('lightspeed').setup({
+  grey_out_search_area = false,
+  limit_ft_matches = 32,
+})
 
 -- Neoscroll
 require('neoscroll').setup()

@@ -48,7 +48,7 @@ return require('packer').startup(function()
 	-- Snippet Support
 	use 'dcampos/nvim-snippy'
 	-- Sneak Motion
-	use 'justinmk/vim-sneak'
+	use 'ggandor/lightspeed.nvim'
 	-- Smooth Scroll
 	use 'karb94/neoscroll.nvim'
 	-- Latex Support
