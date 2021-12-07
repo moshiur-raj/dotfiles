@@ -1,4 +1,4 @@
-#! /usr/bin/sh
+#! /usr/bin/bash
 
 # unalias stuff
 unalias doas echo ls grep awk date md5sum rm diff cat install chgrp dirname basename exit 2> /dev/null
@@ -65,7 +65,10 @@ do
 
 
 	# absolute path of the temp_file : filename__hash
-	temp_file[i]="$doaseditdir/$(echo "${$}_$i_$RANDOM_$(date)" | md5sum | awk '{ print $1 }')__$(basename ${file[i]})"
+	temp_file[i]="$doaseditdir/$(basename ${file[i]})"
+	while [[ -f ${temp_file[i]} ]]; do 
+		temp_file[i]="$doaseditdir/$RANDOM$(basename ${file[i]})"
+	done
 
 	# if argument is a valid file then copy it to temp_file with proper permissions otherwise make an empty temp_file
 	# the temp_file should be owned by root and can be read and written by NONROOTUSER
@@ -136,9 +139,9 @@ do
 			continue
 		} &&
 		echo Modified ${args[i]}
-		# remove the temporary file created for editing in non root environment
-		rm ${temp_file[i]}
 	else
 		echo ${args[i]} not modified
 	fi
+	# remove the temporary file created for editing in non root environment
+	rm ${temp_file[i]}
 done
