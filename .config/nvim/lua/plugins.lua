@@ -48,7 +48,10 @@ return require('packer').startup(function()
 	-- Snippet Support
 	use 'dcampos/nvim-snippy'
 	-- Sneak Motion
-	use 'ggandor/lightspeed.nvim'
+	use {
+		'ggandor/lightspeed.nvim',
+		requires = {'tpope/vim-repeat'}
+	}
 	-- Smooth Scroll
 	use 'karb94/neoscroll.nvim'
 	-- Latex Support
