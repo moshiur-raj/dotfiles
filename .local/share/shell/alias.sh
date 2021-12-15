@@ -15,5 +15,5 @@ alias ls='ls -hN --color=auto --group-directories-first'
 # Color support in grep
 alias grep="grep --color=auto"
 # Ask if overwriting
-alias cp="cp -iv"
+alias cp="cp --reflink=never -iv"
 alias mv="mv -iv"
