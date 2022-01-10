@@ -113,7 +113,7 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 -- Packer
 
 -- Onedark
-require('onedark').setup()
+require('onedark').load()
 
 -- Lualine
 require('lualine').setup({
