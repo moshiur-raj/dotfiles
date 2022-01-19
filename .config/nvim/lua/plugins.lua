@@ -56,6 +56,4 @@ return require('packer').startup(function()
 	use 'karb94/neoscroll.nvim'
 	-- Latex Support
 	use 'lervag/vimtex'
-	-- Git Integration
-	use 'tpope/vim-fugitive'
 end)

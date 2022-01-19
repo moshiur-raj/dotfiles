@@ -110,40 +110,13 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 -- Plugins
 -----------
 --
--- Packer
 
 -- Onedark
 require('onedark').load()
 
 -- Lualine
 require('lualine').setup({
-  options = {
-    icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {},
-    always_divide_middle = true,
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff',
-                  {'diagnostics', sources={'nvim_diagnostic'}}},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  extensions = {'fugitive', 'nvim-tree'}
+  extensions = {'nvim-tree'}
 })
 
 -- Bufferline
@@ -165,8 +138,6 @@ require('bufferline').setup({
 	end,
   }
 })
--- pick a buffer
-nnoremap('<leader>gb', '<cmd>BufferLinePick<cr>')
 -- move between buffers
 nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
 nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
@@ -176,72 +147,8 @@ tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
--- Web-devicons
-require('nvim-web-devicons').setup({
- default = true;
-})
-
 -- Nvim-tree
--- following options are the default
--- each of these are documented in `:help nvim-tree.OPTION_NAME`
-require('nvim-tree').setup({
-	disable_netrw       = true,
-	hijack_netrw        = true,
-	open_on_setup       = false,
-	ignore_ft_on_setup  = {},
-	auto_close          = false,
-	open_on_tab         = false,
-	hijack_cursor       = false,
-	update_cwd          = false,
-	update_to_buf_dir   = {
-		enable = true,
-		auto_open = true,
-	},
-	diagnostics = {
-		enable = true,
-		icons = {
-			hint = "",
-			info = "",
-			warning = "",
-			error = "",
-		}
-	},
-	update_focused_file = {
-		enable      = false,
-		update_cwd  = false,
-		ignore_list = {}
-	},
-	system_open = {
-		cmd  = nil,
-		args = {}
-	},
-	filters = {
-		dotfiles = false,
-		custom = {}
-	},
-	git = {
-		enable = true,
-		ignore = true,
-		timeout = 500,
-	},
-	view = {
-		width = 30,
-		height = 30,
-		hide_root_folder = false,
-		side = 'left',
-		auto_resize = false,
-		mappings = {
-			custom_only = false,
-			list = {}
-		},
-		number = false,
-		relativenumber = false
-	},
-	trash = {
-		cmd = "trash",
-		require_confirm = true
-	}
-})
+require('nvim-tree').setup()
 nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
 
 -- Telescope
@@ -250,8 +157,6 @@ nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
 nnoremap('<leader>tb', '<cmd>Telescope buffers<cr>')
 nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
-
--- Scrollview
 
 -- Cmp
 vim.o.completeopt = 'menu,menuone,noselect'
@@ -343,7 +248,7 @@ require('nvim-treesitter.configs').setup({
     disable = {'latex'},  -- list of language that will be disabled
     additional_vim_regex_highlighting = false,
   },
-  indent = {enable = true},
+  indent = {enable = false},
 })
 
 -- Indent-blankline
@@ -355,56 +260,6 @@ require('indent_blankline').setup({
 	char = '┊',
 	use_treesitter = true,
 	filetype = {'c', 'python', 'sh'},
-	context_patterns = {
-		"abstract_class_declaration", "abstract_method_signature",
-		"accessibility_modifier", "ambient_declaration", "arguments", "array",
-		"array_pattern", "array_type", "arrow_function", "as_expression",
-		"asserts", "assignment_expression", "assignment_pattern",
-		"augmented_assignment_expression", "await_expression",
-		"binary_expression", "break_statement", "call_expression",
-		"call_signature", "catch_clause", "class", "class_body",
-		"class_declaration", "class_heritage", "computed_property_name",
-		"conditional_type", "constraint", "construct_signature",
-		"constructor_type", "continue_statement", "debugger_statement",
-		"declaration", "decorator", "default_type", "do_statement",
-		"else_clause", "empty_statement", "enum_assignment", "enum_body",
-		"enum_declaration", "existential_type", "export_clause",
-		"export_specifier", "export_statement", "expression",
-		"expression_statement", "extends_clause", "finally_clause",
-		"flow_maybe_type", "for_in_statement", "for_statement",
-		"formal_parameters", "function", "function_declaration",
-		"function_signature", "function_type", "generator_function",
-		"generator_function_declaration", "generic_type", "if_statement",
-		"implements_clause", "import", "import_alias", "import_clause",
-		"import_require_clause", "import_specifier", "import_statement",
-		"index_signature", "index_type_query", "infer_type",
-		"interface_declaration", "internal_module", "intersection_type",
-		"jsx_attribute", "jsx_closing_element", "jsx_element", "jsx_expression",
-		"jsx_fragment", "jsx_namespace_name", "jsx_opening_element",
-		"jsx_self_closing_element", "labeled_statement", "lexical_declaration",
-		"literal_type", "lookup_type", "mapped_type_clause",
-		"member_expression", "meta_property", "method_definition",
-		"method_signature", "module", "named_imports", "namespace_import",
-		"nested_identifier", "nested_type_identifier", "new_expression",
-		"non_null_expression", "object", "object_assignment_pattern",
-		"object_pattern", "object_type", "omitting_type_annotation",
-		"opting_type_annotation", "optional_parameter", "optional_type", "pair",
-		"pair_pattern", "parenthesized_expression", "parenthesized_type",
-		"pattern", "predefined_type", "primary_expression", "program",
-		"property_signature", "public_field_definition", "readonly_type",
-		"regex", "required_parameter", "rest_pattern", "rest_type",
-		"return_statement", "sequence_expression", "spread_element",
-		"statement", "statement_block", "string", "subscript_expression",
-		"switch_body", "switch_case", "switch_default", "switch_statement",
-		"template_string", "template_substitution", "ternary_expression",
-		"throw_statement", "try_statement", "tuple_type",
-		"type_alias_declaration", "type_annotation", "type_arguments",
-		"type_parameter", "type_parameters", "type_predicate",
-		"type_predicate_annotation", "type_query", "unary_expression",
-		"union_type", "update_expression", "variable_declaration",
-		"variable_declarator", "while_statement", "with_statement",
-		"yield_expression"
-	},
 })
 
 -- Comment.nvim
@@ -429,7 +284,6 @@ require('snippy').setup({
 
 -- Lightspeed
 require('lightspeed').setup({
-  grey_out_search_area = false,
   limit_ft_matches = 32,
 })
 
@@ -438,5 +292,3 @@ require('neoscroll').setup()
 
 -- Vimtex
 vim.g.tex_flavor = 'latex'
-
--- Fugitive
