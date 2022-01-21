@@ -1,7 +1,7 @@
 # Emacs
 alias emacs="emacsclient -nc"
 # yt-dlp
-alias yt-dlp="yt-dlp --merge-output-format mkv --add-metadata --embed-subs --write-sub --sub-lang en -f bestvideo\[height\<\=1080\]\[vcodec\=vp9\]\+bestaudio"
+alias yt-dlp="yt-dlp --merge-output-format mkv --add-metadata --embed-subs --write-sub --sub-langs en.\* -f bestvideo\[height\<\=1080\]\[vcodec\=vp9\]\+bestaudio"
 # doasedit
 alias doasedit='doas env XDG_RUNTIME_DIR_NONROOT=$XDG_RUNTIME_DIR NONROOTUSER=$USERNAME EDITOR=$EDITOR $HOME/.local/share/shell/scripts/doasedit'
 # Managing dotfiles
