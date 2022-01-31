@@ -13,11 +13,6 @@ return require('packer').startup(function()
 		'akinsho/nvim-bufferline.lua',
 		requires = 'kyazdani42/nvim-web-devicons'
 	}
-	-- File Explorer
-	use {
-		'kyazdani42/nvim-tree.lua',
-		requires = {'kyazdani42/nvim-web-devicons'}
-	}
 	-- Fuzzy Finder
 	use {
 		'nvim-telescope/telescope.nvim',
@@ -28,7 +23,7 @@ return require('packer').startup(function()
 	-- Completion Plugin
 	use {
 		'hrsh7th/nvim-cmp',
-		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'f3fora/cmp-spell'}, {'dcampos/cmp-snippy'}}
+		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'dcampos/cmp-snippy'}}
 	}
 	-- Lsp
 	use 'neovim/nvim-lspconfig'
@@ -56,4 +51,6 @@ return require('packer').startup(function()
 	use 'karb94/neoscroll.nvim'
 	-- Latex Support
 	use 'lervag/vimtex'
+	-- Autotag
+	use 'windwp/nvim-ts-autotag'
 end)

@@ -20,7 +20,7 @@ vim.o.pumwidth = 16
 --
 vim.cmd('autocmd BufEnter * set formatoptions -=r | set formatoptions-=o')
 vim.cmd('autocmd FileType c,python,sh setlocal colorcolumn=100')
-vim.cmd('autocmd FileType text,tex,markdown setlocal spell spelllang=en_us')
+vim.cmd('autocmd FileType text,tex,markdown,html setlocal spell spelllang=en_us')
 -- filetype of header files should be c
 vim.cmd('autocmd BufEnter *.h set filetype=c')
 -- run current python script
@@ -147,10 +147,6 @@ tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
--- Nvim-tree
-require('nvim-tree').setup()
-nnoremap('<c-n>', '<cmd>NvimTreeToggle<cr>')
-
 -- Telescope
 nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
 nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
@@ -179,7 +175,6 @@ cmp.setup({
 	 { name = 'nvim_lsp' },
 	 { name = 'buffer', keyword_length = 7 },
 	 { name = 'path' },
-	 { name = 'spell', keyword_length = 7 },
  }
 })
 -- vimtex integration
@@ -191,7 +186,6 @@ sources = {
 { name = 'omni' },
 { name = 'buffer', keyword_length = 7 },
 { name = 'path' },
-{ name = 'spell', keyword_length = 7 },
 }
 }
 ]], '\n', ' '))
@@ -204,14 +198,11 @@ require('lspconfig')['pyright'].setup({
 	capabilities = capabilities
 })
 -- autopairs integration
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done())
+cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
 
 -- Lspconfig
-local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
   -- Mappings.
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -219,22 +210,21 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
 end
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = {'pyright', 'clangd'}
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup({
+  require('lspconfig')[lsp].setup({
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
     },
-	capabilities = capabilities,
   })
 end
 
@@ -259,7 +249,7 @@ require('indent_blankline').setup({
 	strict_tabs = true,
 	char = '┊',
 	use_treesitter = true,
-	filetype = {'c', 'python', 'sh'},
+	context_patterns = { "declaration", "expression", "pattern", "primary_expression", "statement", "switch_body", "function" }
 })
 
 -- Comment.nvim
@@ -292,3 +282,6 @@ require('neoscroll').setup()
 
 -- Vimtex
 vim.g.tex_flavor = 'latex'
+
+-- Autotag
+require('nvim-ts-autotag').setup()
