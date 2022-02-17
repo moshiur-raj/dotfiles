@@ -13,6 +13,8 @@ SAVEHIST=1000
 # Autocompletion
 autoload -Uz compinit
 zstyle ':completion:*' menu select
+# Case insensitive matchinng
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots) # include hidden files
