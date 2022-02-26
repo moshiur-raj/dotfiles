@@ -149,6 +149,7 @@ nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Telescope
 nnoremap('<leader>td', '<cmd>Telescope diagnostics<cr>')
+nnoremap('<leader>tr', '<cmd>Telescope lsp_references<cr>')
 nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
 nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
 nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
