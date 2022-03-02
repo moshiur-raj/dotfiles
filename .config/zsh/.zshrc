@@ -91,7 +91,7 @@ bindkey "^f" fzf_quick_completion
 export MANPAGER='nvim +Man!'
 
 # Souce aliases
-source $HOME/.local/share/shell/alias.sh
+source $HOME/.config/shell/alias.sh
 
 # Load pathces
-source $HOME/.local/share/shell/patches.sh
+source $HOME/.config/shell/patches.sh

@@ -5,7 +5,7 @@ alias yt-dlp="yt-dlp --merge-output-format mkv --add-metadata --embed-subs --sub
 # doasedit
 alias doasedit='doas env XDG_RUNTIME_DIR_NONROOT=$XDG_RUNTIME_DIR NONROOTUSER=$USERNAME EDITOR=$EDITOR $HOME/.local/share/shell/scripts/doasedit'
 # Managing dotfiles
-alias gd='git --git-dir=$HOME/.local/share/dotfiles/ --work-tree=$HOME'
+alias gd='git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
 # Managing notes
 alias gn='git --git-dir=$HOME/.local/share/notes/ --work-tree=$HOME/Documents/Notes'
 # Safe removal ?
