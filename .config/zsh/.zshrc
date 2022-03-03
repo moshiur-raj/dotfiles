@@ -74,8 +74,8 @@ source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
 
 # fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default,shell} ~/.local/share/{applications} ~/projects ~/Nextcloud/Notes)
-export FZF_QUICK_COMPLETION_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default,shell} ~/.local/share/{zsh,applications} ~/projects)
+export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default,shell} ~/.local/share/applications ~/projects ~/Nextcloud/Notes)
+export FZF_QUICK_COMPLETION_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default,shell} ~/.local/share/applications ~/projects)
 ef() {
 	find $FZF_QUICK_EDIT_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r -d "\n" $EDITOR
 }
