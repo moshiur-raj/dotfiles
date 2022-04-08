@@ -1,0 +1,27 @@
+#!/usr/bin/bash
+
+printf "\n ==> Cleaning Pacman Cache\n"
+doas paccache -ruk 0
+doas paccache -rk 2
+
+printf "\n ==> Cleaning Unrequired Dependencies\n"
+doas pacman -Rscn $(pacman -Qtdq)
+flatpak uninstall --unused
+
+printf "\n ==> Backing Up Installed Application list\n"
+printf "\n ==> Explicitly Installed\n" > /mnt/storage0/Backups/applist.txt
+pacman -Qq --explicit >> /mnt/storage0/Backups/applist.txt
+printf "\n ==> As Dependencies\n" >> /mnt/storage0/Backups/applist.txt
+pacman -Qq --deps >> /mnt/storage0/Backups/applist.txt
+cp -f /mnt/storage0/Backups/applist.txt ~/Nextcloud/Backups/
+
+printf "\n ==> Backing Up Code Repositories\n"
+CNTX="users"; NAME="moshiur-raj"; PAGE=1
+mkdir /tmp/repositories || echo "/tmp/repos already exists"
+curl "https://api.github.com/$CNTX/$NAME/repos?page=$PAGE&per_page=100" |
+  grep -e 'clone_url*' |
+  cut -d \" -f 4 |
+  xargs -L1 git -C /tmp/repositories clone
+tar czf /tmp/repositories.tar.gz --directory=/tmp/ repositories
+rm -rf /tmp/repositories
+mv /tmp/repositories.tar.gz /mnt/storage0/Backups/
