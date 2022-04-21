@@ -3,19 +3,16 @@ printf "=============================\n%s\n%s\n" \
        "     Updating Flatpaks" \
        "============================="
 flatpak update
-printf "\n"
 
-printf "=============================\n%s\n%s\n" \
-       " Updating Official Packages" \
-       "============================="
+printf "\n=============================\n%s\n%s\n" \
+         " Updating Official Packages" \
+         "============================="
 doas pacman -Syu
-printf "\n"
 
-printf "=============================\n%s\n%s\n" \
-       "    Updating AUR Packages" \
-       "============================="
+printf "\n=============================\n%s\n%s\n" \
+         "    Updating AUR Packages" \
+         "============================="
 paru -Sau
-printf "\n"
 
-printf "Done - Press any key to exit."
+printf "\nDone - Press any key to exit."
 read
