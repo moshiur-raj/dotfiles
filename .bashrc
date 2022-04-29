@@ -1,5 +1,5 @@
 # Prompt
-PS1=" \e[32m\W >>> "
+PS1=" >>> "
 
 #History
 HISTFILE=$HOME/.cache/.histfile
@@ -8,7 +8,7 @@ HISTFILE=$HOME/.cache/.histfile
 export MANPAGER='nvim +Man!'
 
 # Source aliases
-source $HOME/.local/share/shell/alias.sh
+source $HOME/.config/shell/alias.sh
 
 # Source patches
-source $HOME/.local/share/shell/patches.sh
+source $HOME/.config/shell/patches.sh
