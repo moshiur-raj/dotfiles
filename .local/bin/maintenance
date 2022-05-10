@@ -8,6 +8,9 @@ printf "\n ==> Cleaning Unrequired Dependencies\n"
 doas pacman -Rscn $(pacman -Qtdq)
 flatpak uninstall --unused
 
+printf "\n ==> Updating Pacman Remote Database\n"
+doas pacman -Fy
+
 printf "\n ==> Backing Up Installed Application list\n"
 printf "\n ==> Explicitly Installed\n" > /mnt/storage0/Backups/applist.txt
 pacman -Qq --explicit >> /mnt/storage0/Backups/applist.txt
@@ -25,3 +28,5 @@ curl "https://api.github.com/$CNTX/$NAME/repos?page=$PAGE&per_page=100" |
 tar czf /tmp/repositories.tar.gz --directory=/tmp/ repositories
 rm -rf /tmp/repositories
 mv /tmp/repositories.tar.gz /mnt/storage0/Backups/
+
+printf "\n\n == DONE ==\n"
