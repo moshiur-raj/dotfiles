@@ -37,7 +37,7 @@ return require('packer').startup(function()
 	-- Commenting
 	use 'numToStr/Comment.nvim'
 	-- Surround Text
-	use 'tpope/vim-surround'
+	use 'kylechui/nvim-surround'
 	-- Auto Pairs
 	use 'windwp/nvim-autopairs'
 	-- Snippet Support
