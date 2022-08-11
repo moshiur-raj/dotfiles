@@ -193,13 +193,10 @@ autocmd('FileType', { pattern = 'tex', group = vimtex_augroup,
 			{ name = 'buffer', keyword_length = 7 },
 			{ name = 'path' },
 		}
-	}
-	end,
+	} end,
 })
--- lsp integration
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 -- autopairs integration
-cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
+cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done({  map_char = { tex = '' } }))
 
 -- Lspconfig
 local opts = { noremap=true, silent = true }
@@ -228,7 +225,8 @@ local servers = {'pyright', 'clangd'}
 for _, lsp in pairs(servers) do
 require('lspconfig')[lsp].setup {
 	on_attach = on_attach,
-	capabilities = capabilities,
+	-- cmp integration
+	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
 	flags = {
 		debounce_text_changes = 150,
 	}
@@ -266,7 +264,8 @@ require('Comment').setup()
 
 -- Autopairs
 require('nvim-autopairs').setup({
-  disable_filetype = { "TelescopePrompt" , "vim" },
+	disable_filetype = { "TelescopePrompt", "tex" },
+	fast_wrap = {},
 })
 
 -- Snippy
