@@ -60,12 +60,8 @@ do
 	fi
 	directory="$(dirname ${file[i]})"
 
-
-	# absolute path of the temp_file : filename__hash
+	# absolute path of the temp_file
 	temp_file[i]="$doaseditdir/$(basename ${file[i]})"
-	while [[ -f ${temp_file[i]} ]]; do 
-		temp_file[i]="$doaseditdir/$RANDOM$(basename ${file[i]})"
-	done
 
 	# if argument is a valid file then copy it to temp_file with proper permissions otherwise make an empty temp_file
 	# the temp_file should be owned by root and can be read and written by NONROOTUSER
