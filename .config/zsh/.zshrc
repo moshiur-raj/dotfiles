@@ -6,7 +6,6 @@ PS1="%b%F{magenta} %2~ %B%F{red}＞ %b%f"
 stty stop undef
 
 # History
-HISTFILE=$HOME/.cache/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
@@ -63,35 +62,18 @@ TIMEFMT=$'\n%J\ntxt\t%XKB\ndata\t%DKB\nmax\t%MKB\ncpu\t%P\nuser\t%U\nsys\t%S\nre
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # History Substring Search
 source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
-# fzf keybindings
-# export FZF_DEFAULT_OPTS='--no-height --reverse'
-source /usr/share/fzf/key-bindings.zsh
+# Fuzzy completion
 source /usr/share/fzf/completion.zsh
-
-# fzf quick edit
-export FZF_QUICK_EDIT_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,mimeapps.list,jupyter/profile_default,shell} ~/.local/share/applications ~/projects ~/Nextcloud/Notes)
-export FZF_QUICK_COMPLETION_PATHS=(~/.bashrc ~/.ssh ~/Documents ~/.config/{nvim,zsh,mpv,alacritty,environment.d,lf,jupyter/profile_default,shell} ~/.local/share/applications ~/projects)
-ef() {
-	find $FZF_QUICK_EDIT_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | fzf | xargs -r -d "\n" $EDITOR
-}
-
-# fzf quick completion
-fzf_quick_completion() {
-	LBUFFER="${LBUFFER}$(find $FZF_QUICK_COMPLETION_PATHS \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | fzf | xargs -d "\n" printf "%q" )"
-}
-zle -N fzf_quick_completion
-bindkey "^f" fzf_quick_completion
-
-# Use nvim for man
-export MANPAGER='nvim +Man!'
+source /usr/share/fzf/key-bindings.zsh
+source $XDG_CONFIG_HOME/shell/fuzzy-completion.sh
+zle -N fuzzy_completion
+bindkey "^f" fuzzy_completion
 
 # Souce aliases
-source $HOME/.config/shell/alias.sh
+source $XDG_CONFIG_HOME/shell/alias.sh
 
 # Load pathces
-source $HOME/.config/shell/patches.sh
+source $XDG_CONFIG_HOME/shell/patches.sh

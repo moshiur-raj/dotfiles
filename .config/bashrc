@@ -1,0 +1,11 @@
+# Prompt
+PS1=" >>> "
+
+# Source aliases
+source $XDG_CONFIG_HOME/shell/alias.sh
+
+# Source patches
+source $XDG_CONFIG_HOME/shell/patches.sh
+
+# Source Fuzzy Completion
+source $XDG_CONFIG_HOME/shell/fuzzy-completion.sh
