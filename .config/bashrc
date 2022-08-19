@@ -1,6 +1,9 @@
 # Prompt
 PS1=" >>> "
 
+# Location of history file
+HISTFILE=$XDG_CACHE_HOME/histfile
+
 # Source aliases
 source $XDG_CONFIG_HOME/shell/alias.sh
 

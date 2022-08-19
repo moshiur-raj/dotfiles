@@ -6,6 +6,7 @@ PS1="%b%F{magenta} %2~ %B%F{red}＞ %b%f"
 stty stop undef
 
 # History
+HISTFILE=$XDG_CACHE_HOME/histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
