@@ -261,6 +261,7 @@ require('indent_blankline').setup({
 require('Comment').setup()
 
 -- Surround
+require('nvim-surround').setup()
 
 -- Autopairs
 require('nvim-autopairs').setup({
