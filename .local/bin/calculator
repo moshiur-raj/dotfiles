@@ -26,5 +26,7 @@ from numpy import arctanh as atanh
 from numpy import fabs as abs
 from numpy import floor, ceil
 
+from scipy import constants as c
+
 from IPython import embed
 embed(colors="neutral", banner1="Calculator - Powered by numpy")
