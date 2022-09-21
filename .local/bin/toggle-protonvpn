@@ -1,9 +1,13 @@
 #!/usr/bin/bash
 
 if [[ $(pgrep --exact openvpn) ]]; then
-	[[ $(pgrep --exact qbittorrent) ]] && notify-send "ProtonVPN" "You Can Resume The Torrents Now" -w -a "ProtonVPN"
 	protonvpn-cli d
+	[[ $(pgrep --exact qbittorrent) ]] && notify-send "ProtonVPN" "You Can Resume Torrents Now" -a "ProtonVPN"
 else
-	[[ $(pgrep --exact qbittorrent) ]] && reply=$(notify-send "ProtonVPN" "Make Sure Torrents Are Inactive and Close This Notification to Continue" -w -a "ProtonVPN" -A "Quit")
-	[[ $reply != "0" ]] && protonvpn-cli c -f
+	if [[ $(pgrep --exact qbittorrent) ]]; then
+		reply=$(notify-send "ProtonVPN" "Make Sure Torrents Are Inactive" -e -a "ProtonVPN" -A "Quit" -A "Continue")
+		[[ $reply = "1" ]] && protonvpn-cli c -f
+	else
+		protonvpn-cli c -f
+	fi
 fi
