@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+if [[ $(pgrep --exact openvpn) ]]; then
+	protonvpn-cli d
+else
+	[[ $(pgrep --exact qbittorrent) ]] && reply=$(notify-send "ProtonVPN" "Make Sure Torrents Are Inactive and Close This Notification to Continue" -w -a "ProtonVPN" -A "Quit")
+	[[ $reply != "0" ]] && protonvpn-cli c -f
+fi
