@@ -20,7 +20,8 @@ cp -f /mnt/storage0/Backups/applist.txt ~/Nextcloud/Backups/
 
 printf "\n ==> Backing Up System Configs\n"
 mkdir /tmp/sysconfigs || { echo "/tmp/sysconfigs already exists"; exit 1; }
-cp /etc/doas.conf /etc/default/grub /etc/samba/smb.conf /etc/fstab /etc/audit/audit.rules /etc/pacman.conf /etc/paru.conf /etc/ssh/sshd_config /etc/systemd/resolved.conf /tmp/sysconfigs
+cp /etc/default/grub /etc/samba/smb.conf /etc/fstab /etc/audit/audit.rules /etc/pacman.conf /etc/paru.conf /etc/ssh/sshd_config /etc/systemd/resolved.conf /tmp/sysconfigs
+doas cat /etc/doas.conf > /tmp/sysconfigs/doas.conf
 tar czf /tmp/sysconfigs.tar.gz --directory=/tmp/ sysconfigs
 rm -rf /tmp/sysconfigs
 cp -f /tmp/sysconfigs.tar.gz /mnt/storage0/Backups
