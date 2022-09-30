@@ -9,6 +9,8 @@
 [[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && unset WINIT_UNIX_BACKEND && alias alacritty="env WINIT_UNIX_BACKEND=x11 alacritty"
 # VTE Support in tilix
 [ $TILIX_ID ] || [ $VTE_VERSION ] && source /etc/profile.d/vte.sh
+# Set Terminal Title in Gnome-Console
+[ $(ps -p $PPID -o comm= ) = "kgx" ] && echo -ne "\033]0;Terminal\007"
 
 # Termux Support
 [[ $HOSTNAME == "Termux" ]] && [[ $SHELL == "$PREFIX/bin/zsh" ]] && {
