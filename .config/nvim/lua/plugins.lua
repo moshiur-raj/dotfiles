@@ -44,7 +44,7 @@ return require('packer').startup(function()
 	use 'dcampos/nvim-snippy'
 	-- Sneak Motion
 	use {
-		'ggandor/lightspeed.nvim',
+		'ggandor/leap.nvim',
 		requires = {'tpope/vim-repeat'}
 	}
 	-- Smooth Scroll

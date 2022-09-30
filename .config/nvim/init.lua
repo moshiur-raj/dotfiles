@@ -280,9 +280,7 @@ require('snippy').setup({
 })
 
 -- Lightspeed
-require('lightspeed').setup({
-	limit_ft_matches = 32,
-})
+require('leap').set_default_keymaps()
 
 -- Neoscroll
 require('neoscroll').setup()
