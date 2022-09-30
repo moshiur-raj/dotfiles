@@ -31,9 +31,9 @@ xmin *= (xmin > 0)*0.95 + ( xmin < 0)*1.05
 xmax = max(X.max(), X_.max())
 xmax *= (xmax > 0)*1.05 + ( xmax < 0)*0.95
 
-ymin = min(X.min(), X_.min())
+ymin = min(Y.min(), Y_.min())
 ymin *= (ymin > 0)*0.95 + ( ymin < 0)*1.05
-ymax = max(X.max(), X_.max())
+ymax = max(Y.max(), Y_.max())
 ymax *= (ymax > 0)*1.05 + ( ymax < 0)*0.95
 
 ax.set_xlim(xmin, xmax)
