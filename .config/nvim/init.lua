@@ -235,7 +235,7 @@ end
 
 -- Treesitter
 require('nvim-treesitter.configs').setup({
-	ensure_installed = 'all',
+	ensure_installed = {'c', 'python', 'latex', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5'},
 	sync_install = false,
 	ignore_install = {}, -- List of parsers to ignore installing
 	highlight = {
