@@ -51,6 +51,4 @@ return require('packer').startup(function()
 	use 'karb94/neoscroll.nvim'
 	-- Latex Support
 	use 'lervag/vimtex'
-	-- Autotag
-	use 'windwp/nvim-ts-autotag'
 end)
