@@ -1,3 +1,6 @@
+# Load pathces
+source $HOME/.config/shell/patches.sh
+
 #Enable colors and change prompt
 autoload -U colors && colors
 PS1="%b%F{magenta} %2~ %B%F{red}＞ %b%f"
@@ -75,6 +78,3 @@ bindkey "^f" fuzzy_completion
 
 # Souce aliases
 source $XDG_CONFIG_HOME/shell/alias.sh
-
-# Load pathces
-source $XDG_CONFIG_HOME/shell/patches.sh
