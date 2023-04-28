@@ -18,3 +18,8 @@ alias grep="grep --color=auto"
 # Ask if overwriting
 alias cp="cp -iv"
 alias mv="mv -iv"
+# Update all pip packages
+pip-update()
+{
+	pip list --outdated --user | cut -f1 -d' ' | tr " " "\n" | awk '{if(NR>=3)print}' | cut -d' ' -f1 | xargs -n1 pip install -U
+}

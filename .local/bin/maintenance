@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 
+printf "\n ==> Updating Packages\n"
+update
+pip-update
+
 printf "\n ==> Cleaning Pacman Cache\n"
 doas paccache -ruk 0
 doas paccache -rk 2
