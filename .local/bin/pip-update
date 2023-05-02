@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+pip list --outdated --user | cut -f1 -d' ' | tr " " "\n" | awk '{if(NR>=3)print}' | cut -d' ' -f1 | xargs -n1 pip install --user -U

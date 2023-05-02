@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 printf "\n ==> Updating Packages\n"
-update
+yes | update
 pip-update
 
 printf "\n ==> Cleaning Pacman Cache\n"
