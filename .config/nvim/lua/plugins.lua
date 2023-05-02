@@ -1,17 +1,19 @@
 return require('packer').startup(function()
 	-- Plugin Manager
 	use 'wbthomason/packer.nvim'
+	-- Icons
+	use 'nvim-tree/nvim-web-devicons'
 	-- Theme
 	use 'navarasu/onedark.nvim'
 	-- Statusline
 	use {
 		'nvim-lualine/lualine.nvim',
-		requires = {'kyazdani42/nvim-web-devicons', opt = true}
+		requires = {'nvim-tree/nvim-web-devicons', opt = true}
 	}
 	-- Bufferline
 	use {
 		'akinsho/nvim-bufferline.lua',
-		requires = 'kyazdani42/nvim-web-devicons'
+		requires = 'nvim-tree/nvim-web-devicons'
 	}
 	-- Fuzzy Finder
 	use {
