@@ -78,3 +78,7 @@ bindkey "^f" fuzzy_completion
 
 # Souce aliases
 source $XDG_CONFIG_HOME/shell/alias.sh
+
+# Clear output in termux
+[[ $HOSTNAME == "Termux" ]] && clear
+
