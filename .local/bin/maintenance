@@ -3,6 +3,7 @@
 printf "\n ==> Updating Packages\n"
 yes | update
 pip-update
+pipx upgrade-all
 
 printf "\n ==> Cleaning Pacman Cache\n"
 doas paccache -ruk 0
