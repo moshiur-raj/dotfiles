@@ -15,6 +15,9 @@
 # Fix pytorch on rocm
 [[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
 
+# Python venv
+source $HOME/.local/python-venv/bin/activate
+
 # Termux Support
 [[ $HOSTNAME == "Termux" ]] && [[ $SHELL == "$PREFIX/bin/zsh" ]] && {
 	source $PREFIX/share/fzf/completion.zsh
