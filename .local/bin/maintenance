@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 
+if [[ $USERNAME == "root" || !$USERNAME ]]; then
+	printf "Please run from a nonroot user\n"
+	exit 1
+fi
+
 printf "\n ==> Updating Packages\n"
 yes | update
 pip-update
