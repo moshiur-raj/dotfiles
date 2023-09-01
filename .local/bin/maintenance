@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-if [[ $USERNAME == "root" || !$USERNAME ]]; then
+if [[ $USERNAME == "root" ]]; then
 	printf "Please run from a nonroot user\n"
 	exit 1
 fi
