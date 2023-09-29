@@ -1,6 +1,8 @@
 ----------------
 -- Load Plugins
 ----------------
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+vim.opt.rtp:prepend(lazypath)
 require('plugins')
 
 
@@ -26,11 +28,11 @@ autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 autocmd('FileType', { pattern = {'c', 'python', 'sh'}, group = startup_augroup,
 	callback = function() vim.opt.colorcolumn = "100" end,
 })
-autocmd('FileType', { pattern = {'text', 'tex', 'markdown', 'html'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
 	callback = function() vim.opt.spell.spellang = 'en_us' end,
 })
 vim.cmd('autocmd FileType text,tex,markdown,html setlocal spell spelllang=en_us')
--- filetype of header files should be c
+-- filetype changes
 autocmd('BufEnter', { pattern = '*.h', group = startup_augroup,
 	callback = function() vim.opt.filetype = 'c' end,
 })
@@ -55,6 +57,9 @@ end
 local function tnoremap(key, map)
 	return vim.keymap.set('t', key, map, {expr = false, noremap=true, silent = true})
 end
+-- disable omni completion when pression ctrl+n or ctrl+p
+inoremap('<c-n>', '<nop>')
+inoremap('<c-p>', '<nop>')
 -- use ctrl + s to save, ctrl + c to copy, ctrl + x to cut, ctl + v to paste
 inoremap('<c-s>', '<c-o><cmd>update<cr>')
 nnoremap('<c-s>', '<cmd>update<cr>')
@@ -155,27 +160,41 @@ nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
 vim.o.completeopt = 'menu,menuone,noselect'
  -- Setup nvim-cmp.
 local cmp = require('cmp')
+local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 cmp.setup({
 	snippet = {
 		expand = function(args)
-			require('snippy').expand_snippet(args.body)
+			vim.fn["UltiSnips#Anon"](args.body)
 		end,
 	},
 	window = {
 		completion = cmp.config.window.bordered(),
 		documentation = cmp.config.window.bordered(),
 	},
-	mapping = {
-		['<cr>'] = cmp.mapping.confirm({ select = false }),
-		['<c-y>'] = cmp.mapping.close(),
-		['<tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-		['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-	},
 	sources = {
+		{ name = 'ultisnips', keyword_length = 2 },
 		{ name = 'nvim_lsp' },
-		{ name = 'snippy', keyword_length = 2 },
 		{ name = 'buffer', keyword_length = 5 },
 		{ name = 'path' },
+	},
+	mapping = {
+		['<cr>'] = cmp.mapping.confirm({ select = true }),
+		['<c-y>'] = cmp.mapping.close(),
+		['<c-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+		['<c-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+		["<tab>"] = cmp.mapping(
+			function(fallback)
+				cmp_ultisnips_mappings.jump_forwards(fallback)
+				-- cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+			end,
+			{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
+		),
+		["<s-tab>"] = cmp.mapping(
+			function(fallback)
+				cmp_ultisnips_mappings.jump_backwards(fallback)
+			end,
+			{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
+		),
 	}
 })
 
@@ -224,10 +243,16 @@ require('lspconfig')['clangd'].setup{
     flags = lsp_flags,
 	handlers = handlers,
 }
+require('lspconfig').texlab.setup{
+    on_attach = on_attach,
+	capabilities = require('cmp_nvim_lsp').default_capabilities(),
+    flags = lsp_flags,
+	handlers = handlers,
+}
 
 -- Treesitter
 require('nvim-treesitter.configs').setup({
-	ensure_installed = {'c', 'python', 'latex', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5'},
+	ensure_installed = {'c', 'python', 'latex', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'},
 	sync_install = false,
 	auto_install = true,
 	highlight = {
@@ -235,17 +260,27 @@ require('nvim-treesitter.configs').setup({
 		disable = {'latex'},
 		additional_vim_regex_highlighting = false,
 	},
+	indent = {
+		enable = true,
+	}
 })
 
 -- Indent-blankline
-require('indent_blankline').setup({
-    show_current_context = true,
-    show_current_context_start = false,
-	show_trailing_blankline_indent = false,
-	strict_tabs = true,
-	char = '┊',
-	use_treesitter = true,
-	context_patterns = { "declaration", "expression", "pattern", "primary_expression", "statement", "switch_body", "function" }
+require('ibl').setup({
+	indent = {
+		char = '│',
+		smart_indent_cap = true,
+		-- highlight = { "declaration", "expression", "pattern", "primary_expression", "statement", "switch_body", "function" }
+	},
+	whitespace = {
+		remove_blankline_trail = true,
+	},
+	scope = {
+		enabled = true,
+		char = '┊',
+		show_start = false,
+		show_end = false,
+	}
 })
 
 -- Comment.nvim
@@ -255,20 +290,21 @@ require('Comment').setup()
 require('nvim-surround').setup()
 
 -- Autopairs
-require('nvim-autopairs').setup({
-	disable_filetype = { "TelescopePrompt", "tex" },
-	fast_wrap = {},
+local npairs = require('nvim-autopairs')
+local Rule = require('nvim-autopairs.rule')
+npairs.setup({
+	disable_filetype = { "TelescopePrompt" },
+	-- fast_wrap = {},
 })
 cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done() )
-
--- Snippy
-require('snippy').setup({
-	mappings = {
-		is = {
-			["<tab>"] = "expand_or_advance",
-			["<s-tab>"] = "previous",
-		},
-	},
+npairs.add_rules({
+	Rule("\\(","\\)","tex"),
+	Rule("\\{","\\}","tex"),
+	Rule("\\[","\\]","tex"),
+	Rule("\\left(","\\right)","tex"),
+	Rule("\\left\\{","\\right\\}","tex"),
+	Rule("\\left[","\\right]","tex"),
+	Rule("\\left|","\\right|","tex"),
 })
 
 -- Leap
@@ -277,27 +313,6 @@ require('leap').set_default_keymaps()
 -- Neoscroll
 require('neoscroll').setup()
 
--- Vimtex
+--- Vimtex
 vim.g.tex_flavor = 'latex'
-
-local vimtex_augroup = vim.api.nvim_create_augroup('vimtex_augroup', {clear = true})
-autocmd('FileType', { pattern = 'tex', group = vimtex_augroup,
-callback = function() require('cmp').setup.buffer {
-	formatting = {
-		format = function(entry, vim_item)
-			vim_item.menu = ({
-				omni = (vim.inspect(vim_item.menu):gsub('%"', "")),
-				buffer = "[Buffer]",
-			})[entry.source.name]
-			return vim_item
-		end,
-	},
-	sources = {
-		{ name = 'snippy', keyword_length = 2 },
-		{ name = 'nvim_lsp' },
-		{ name = 'omni' },
-		{ name = 'buffer', keyword_length = 5 },
-		{ name = 'path' },
-	}
-} end,
-})
+vim.g.vimtex_complete_enabled = 0

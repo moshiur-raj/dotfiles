@@ -1,56 +1,56 @@
-return require('packer').startup(function()
+return require('lazy').setup({
 	-- Plugin Manager
-	use 'wbthomason/packer.nvim'
+	'folke/lazy.nvim',
 	-- Icons
-	use 'nvim-tree/nvim-web-devicons'
+	'nvim-tree/nvim-web-devicons',
 	-- Theme
-	use 'navarasu/onedark.nvim'
+	'navarasu/onedark.nvim',
 	-- Statusline
-	use {
+	{
 		'nvim-lualine/lualine.nvim',
-		requires = {'nvim-tree/nvim-web-devicons', opt = true}
-	}
+		dependencies = {'nvim-tree/nvim-web-devicons'}
+	},
 	-- Bufferline
-	use {
+	{
 		'akinsho/nvim-bufferline.lua',
-		requires = 'nvim-tree/nvim-web-devicons'
-	}
+		dependencies = 'nvim-tree/nvim-web-devicons'
+	},
 	-- Fuzzy Finder
-	use {
+	{
 		'nvim-telescope/telescope.nvim',
-		requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
-	}
+		dependencies = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+	},
 	-- Scroll View
-	use 'dstein64/nvim-scrollview'
+	'dstein64/nvim-scrollview',
 	-- Completion Plugin
-	use {
+	{
 		'hrsh7th/nvim-cmp',
-		requires = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/cmp-omni'}, {'dcampos/cmp-snippy'}}
-	}
-	-- Lsp
-	use 'neovim/nvim-lspconfig'
-	-- Treesitter
-	use {
-		'nvim-treesitter/nvim-treesitter',
-		run = ':TSUpdate'
-	}
-	-- Indentaion Guide
-	use 'lukas-reineke/indent-blankline.nvim'
-	-- Commenting
-	use 'numToStr/Comment.nvim'
-	-- Surround Text
-	use 'kylechui/nvim-surround'
-	-- Auto Pairs
-	use 'windwp/nvim-autopairs'
+		dependencies = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
+	},
 	-- Snippet Support
-	use 'dcampos/nvim-snippy'
+	'SirVer/ultisnips',
+	-- Lsp
+	'neovim/nvim-lspconfig',
+	-- Treesitter
+	{
+		'nvim-treesitter/nvim-treesitter',
+		build = ':TSUpdate'
+	},
+	-- Indentaion Guide
+	'lukas-reineke/indent-blankline.nvim',
+	-- Commenting
+	'numToStr/Comment.nvim',
+	-- Surround Text
+	'kylechui/nvim-surround',
+	-- Auto Pairs
+	'windwp/nvim-autopairs',
 	-- Sneak Motion
-	use {
+	{
 		'ggandor/leap.nvim',
-		requires = {'tpope/vim-repeat'}
-	}
+		dependencies = {'tpope/vim-repeat'}
+	},
 	-- Smooth Scroll
-	use 'karb94/neoscroll.nvim'
+	'karb94/neoscroll.nvim',
 	-- Latex Support
-	use 'lervag/vimtex'
-end)
+	'lervag/vimtex',
+})
