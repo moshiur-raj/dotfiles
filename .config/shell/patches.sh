@@ -5,8 +5,6 @@
 
 # Fix mpv blank screen and hw decode in gnome wayland
 [[ $HOSTNAME == "archlinux" ]] && [[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && alias mpv="gnome-session-inhibit --inhibit idle env LIBVA_DRIVER_NAME=radeonsi mpv --gpu-context=x11egl"
-# Fix alacritty title bar in gnome wayland
-[[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && unset WINIT_UNIX_BACKEND && alias alacritty="env WINIT_UNIX_BACKEND=x11 alacritty"
 # VTE Support in tilix
 [ $TILIX_ID ] || [ $VTE_VERSION ] && source /etc/profile.d/vte.sh
 # Set Terminal Title in Gnome-Console
