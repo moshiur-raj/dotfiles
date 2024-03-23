@@ -10,6 +10,8 @@ require('plugins')
 -- Vim Options
 --------------------
 --
+vim.opt.backupcopy = 'yes'
+vim.opt.foldenable = false
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.mouse = 'a'
@@ -57,6 +59,12 @@ end
 local function tnoremap(key, map)
 	return vim.keymap.set('t', key, map, {expr = false, noremap=true, silent = true})
 end
+--disable middle mouse paste
+inoremap('<MiddleMouse>', '<nop>')
+nnoremap('<MiddleMouse>', '<nop>')
+vnoremap('<MiddleMouse>', '<nop>')
+cnoremap('<MiddleMouse>', '<nop>')
+tnoremap('<MiddleMouse>', '<nop>')
 -- disable omni completion when pression ctrl+n or ctrl+p
 inoremap('<c-n>', '<nop>')
 inoremap('<c-p>', '<nop>')
@@ -120,10 +128,18 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 --
 
 -- Onedark
+require('onedark').setup {
+    style = 'cool'
+}
 require('onedark').load()
 
 -- Lualine
-require('lualine').setup()
+require('lualine').setup({
+	-- options = {
+	-- 	component_separators={left='|', right='|'},
+	-- 	section_separators = {},
+	-- }
+})
 
 -- Bufferline
 require('bufferline').setup({
@@ -148,23 +164,20 @@ nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Telescope
-nnoremap('<leader>td', '<cmd>Telescope diagnostics<cr>')
-nnoremap('<leader>tr', '<cmd>Telescope lsp_references<cr>')
-nnoremap('<leader>tf', '<cmd>Telescope find_files<cr>')
-nnoremap('<leader>tF', '<cmd>Telescope current_buffer_fuzzy_find<cr>')
-nnoremap('<leader>tg', '<cmd>Telescope live_grep<cr>')
-nnoremap('<leader>tb', '<cmd>Telescope buffers<cr>')
-nnoremap('<leader>th', '<cmd>Telescope help_tags<cr>')
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fd', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>fF', builtin.current_buffer_fuzzy_find, {})
 
 -- Cmp
 vim.o.completeopt = 'menu,menuone,noselect'
- -- Setup nvim-cmp.
 local cmp = require('cmp')
-local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 cmp.setup({
 	snippet = {
 		expand = function(args)
-			vim.fn["UltiSnips#Anon"](args.body)
+			require 'snippy'.expand_snippet(args.body)
 		end,
 	},
 	window = {
@@ -172,83 +185,73 @@ cmp.setup({
 		documentation = cmp.config.window.bordered(),
 	},
 	sources = {
-		{ name = 'ultisnips', keyword_length = 2 },
+		{ name = 'snippy', keyword_length = 2 },
 		{ name = 'nvim_lsp' },
 		{ name = 'buffer', keyword_length = 5 },
 		{ name = 'path' },
 	},
 	mapping = {
-		['<cr>'] = cmp.mapping.confirm({ select = true }),
-		['<c-y>'] = cmp.mapping.close(),
-		['<c-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-		['<c-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-		["<tab>"] = cmp.mapping(
-			function(fallback)
-				cmp_ultisnips_mappings.jump_forwards(fallback)
-				-- cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-			end,
-			{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
-		),
-		["<s-tab>"] = cmp.mapping(
-			function(fallback)
-				cmp_ultisnips_mappings.jump_backwards(fallback)
-			end,
-			{ "i", "s", --[[ "c" (to enable the mapping in command mode) ]] }
-		),
+		['<cr>'] = cmp.mapping.confirm({ select = false }),
+		['<tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+		['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
 	}
 })
 
+-- Snippy
+require('snippy').setup({
+    mappings = {
+        is = {
+            ['<Tab>'] = 'expand_or_advance',
+            ['<S-Tab>'] = 'previous',
+        },
+        nx = {
+            ['<leader>x'] = 'cut_text',
+        },
+    },
+})
+
 -- Lspconfig
-local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+-- Global mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 
-local on_attach = function(client, bufnr)
-	local bufopts = { noremap=true, silent=true, buffer=bufnr }
-	vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-	vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-	vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-	vim.keymap.set('n', '<space>wl', function()
-		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-	end, bufopts)
-	vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-	vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-	vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-	vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-	vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+-- Use LspAttach autocommand to only map the following keys
+-- after the language server attaches to the current buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>f', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+  end,
+})
+
+capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- capabilities.textDocument.completion.completionItem.snippetSupport = false
+servers = {'pyright', 'clangd', 'texlab'}
+for i = 1, #servers do
+	require('lspconfig')[servers[i]].setup{ capabilities = capabilities }
 end
-
-local lsp_flags = {
-  debounce_text_changes = 150,
-}
-local handlers =  {
-  ["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = 'rounded'}),
-  ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = 'rounded'}),
-}
-require('lspconfig')['pyright'].setup{
-    on_attach = on_attach,
-	capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    flags = lsp_flags,
-	handlers = handlers,
-}
-require('lspconfig')['clangd'].setup{
-    on_attach = on_attach,
-	capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    flags = lsp_flags,
-	handlers = handlers,
-}
-require('lspconfig').texlab.setup{
-    on_attach = on_attach,
-	capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    flags = lsp_flags,
-	handlers = handlers,
-}
 
 -- Treesitter
 require('nvim-treesitter.configs').setup({
@@ -262,6 +265,7 @@ require('nvim-treesitter.configs').setup({
 	},
 	indent = {
 		enable = true,
+		disable = {'latex'},
 	}
 })
 
@@ -277,7 +281,7 @@ require('ibl').setup({
 	},
 	scope = {
 		enabled = true,
-		char = '┊',
+		char = '│',
 		show_start = false,
 		show_end = false,
 	}
@@ -298,6 +302,7 @@ npairs.setup({
 })
 cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done() )
 npairs.add_rules({
+	Rule("\'","","tex"),
 	Rule("\\(","\\)","tex"),
 	Rule("\\{","\\}","tex"),
 	Rule("\\[","\\]","tex"),
@@ -314,5 +319,10 @@ require('leap').set_default_keymaps()
 require('neoscroll').setup()
 
 --- Vimtex
+vim.g.vimtex_matchparen_enabled = 0
+vim.g.vimtex_indent_enabled = 0
+vim.g.vimtex_motion_enabled = 0
+vim.g.vimtex_imaps_enabled = 0
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
+-- vim.g.vimtex_quickfix_ignore_filters = {'Underfull \\\\hbox (badness 10000)', '`h\' float specifier changed to `ht\''}
