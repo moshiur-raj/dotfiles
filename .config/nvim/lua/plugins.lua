@@ -1,6 +1,4 @@
 return require('lazy').setup({
-	-- Plugin Manager
-	'folke/lazy.nvim',
 	-- Icons
 	'nvim-tree/nvim-web-devicons',
 	-- Theme
@@ -28,7 +26,8 @@ return require('lazy').setup({
 		dependencies = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
 	},
 	-- Snippet Support
-	'SirVer/ultisnips',
+	'dcampos/nvim-snippy',
+	'dcampos/cmp-snippy',
 	-- Lsp
 	'neovim/nvim-lspconfig',
 	-- Treesitter
