@@ -52,4 +52,6 @@ return require('lazy').setup({
 	'karb94/neoscroll.nvim',
 	-- Latex Support
 	'lervag/vimtex',
+	-- Forward and Inverse sync
+	{'peterbjorgensen/sved', ft={'tex'}},
 })

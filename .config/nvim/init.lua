@@ -325,4 +325,5 @@ vim.g.vimtex_motion_enabled = 0
 vim.g.vimtex_imaps_enabled = 0
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
--- vim.g.vimtex_quickfix_ignore_filters = {'Underfull \\\\hbox (badness 10000)', '`h\' float specifier changed to `ht\''}
+-- SVED
+nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
