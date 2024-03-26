@@ -11,15 +11,15 @@ pip-update
 pipx upgrade-all
 
 printf "\n ==> Cleaning Pacman Cache\n"
-doas paccache -ruk 0
-doas paccache -rk 2
+sudo paccache -ruk 0
+sudo paccache -rk 2
 
 printf "\n ==> Cleaning Unrequired Dependencies\n"
-doas pacman -Rscn $(pacman -Qtdq)
+sudo pacman -Rscn $(pacman -Qtdq)
 flatpak uninstall --unused
 
 printf "\n ==> Updating Pacman Remote Database\n"
-doas pacman -Fy
+sudo pacman -Fy
 
 printf "\n ==> Backing Up Installed Application list\n"
 printf "\n ==> Explicitly Installed\n" > /mnt/storage0/Backups/applist.txt
@@ -31,10 +31,9 @@ cp -f /mnt/storage0/Backups/applist.txt ~/Nextcloud/Backups/
 printf "\n ==> Backing Up System Configs\n"
 mkdir /tmp/sysconfigs || { echo "/tmp/sysconfigs already exists"; exit 1; }
 cp /etc/default/grub /etc/fstab /etc/pacman.conf /etc/paru.conf /etc/systemd/resolved.conf /tmp/sysconfigs
-doas cat /etc/audit/audit.rules > /tmp/sysconfigs/audit.rules
-doas cat /etc/doas.conf > /tmp/sysconfigs/doas.conf
-doas cat /etc/samba/smb.conf  > /tmp/sysconfigs/smb.conf
-doas cat /etc/ssh/sshd_config  > /tmp/sysconfigs/sshd_config.conf
+sudo cat /etc/audit/audit.rules > /tmp/sysconfigs/audit.rules
+sudo cat /etc/samba/smb.conf  > /tmp/sysconfigs/smb.conf
+sudo cat /etc/ssh/sshd_config  > /tmp/sysconfigs/sshd_config.conf
 tar czf /tmp/sysconfigs.tar.gz --directory=/tmp/ sysconfigs
 rm -rf /tmp/sysconfigs
 cp -f /tmp/sysconfigs.tar.gz /mnt/storage0/Backups
