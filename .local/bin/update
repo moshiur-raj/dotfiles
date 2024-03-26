@@ -1,18 +1,19 @@
 #!/usr/bin/bash
-printf "=============================\n%s\n%s\n" \
-       "     Updating Flatpaks" \
-       "============================="
-flatpak update
-
 printf "\n=============================\n%s\n%s\n" \
          " Updating Official Packages" \
          "============================="
-doas pacman -Syu
+sudo /usr/bin/pacman -Syu
 
 printf "\n=============================\n%s\n%s\n" \
          "    Updating AUR Packages" \
          "============================="
 paru -Sau
+
+printf "=============================\n%s\n%s\n" \
+       "     Updating Flatpaks" \
+       "============================="
+flatpak update
+touch /var/lib/pacman/local/flatpak-arch-update
 
 printf "\nDone - Press any key to exit."
 read
