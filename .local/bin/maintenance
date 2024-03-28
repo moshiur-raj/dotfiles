@@ -13,6 +13,8 @@ pipx upgrade-all
 printf "\n ==> Cleaning Pacman Cache\n"
 sudo paccache -ruk 0
 sudo paccache -rk 2
+paru -Scc
+pip cache purge
 
 printf "\n ==> Cleaning Unrequired Dependencies\n"
 sudo pacman -Rscn $(pacman -Qtdq)
