@@ -27,13 +27,15 @@ local autocmd = vim.api.nvim_create_autocmd
 autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
 })
-autocmd('FileType', { pattern = {'c', 'python', 'sh'}, group = startup_augroup,
-	callback = function() vim.opt.colorcolumn = "100" end,
+autocmd('FileType', { pattern = {'c', 'python', 'sh', 'tex'}, group = startup_augroup,
+	callback = function()
+		vim.opt.colorcolumn = "100"
+		vim.opt.tw = 100
+	end,
 })
 autocmd('FileType', { pattern = {'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
 	callback = function() vim.opt.spell.spellang = 'en_us' end,
 })
-vim.cmd('autocmd FileType text,tex,markdown,html setlocal spell spelllang=en_us')
 -- filetype changes
 autocmd('BufEnter', { pattern = '*.h', group = startup_augroup,
 	callback = function() vim.opt.filetype = 'c' end,
@@ -129,7 +131,7 @@ nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
 
 -- Onedark
 require('onedark').setup {
-    style = 'cool'
+    style = 'darker'
 }
 require('onedark').load()
 
@@ -144,7 +146,8 @@ require('lualine').setup({
 -- Bufferline
 require('bufferline').setup({
 	options = {
-		numbers = 'ordinal',
+	 	numbers = 'ordinal',
+		diagnostics = "nvim_lsp",
 		right_mouse_command = nil,
 		-- do not show terminals in bufferline
 		custom_filter = function(bufn)
@@ -192,6 +195,7 @@ cmp.setup({
 	},
 	mapping = {
 		['<cr>'] = cmp.mapping.confirm({ select = false }),
+		['<c-y>'] = cmp.mapping.close(),
 		['<tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
 		['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
 	}
