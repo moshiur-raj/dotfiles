@@ -14,7 +14,8 @@
 [[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
 
 # Python venv
-source $HOME/.local/python-venv/bin/activate
+source $HOME/.local/python-venv/default/bin/activate
+alias venv_torch="source $HOME/.local/python-venv/pytorch/bin/activate && PS1=\"%b%F{magenta}(pytorch) %2~ %B%F{red}＞ %b%f\""
 
 # Termux Support
 [[ $HOSTNAME == "Termux" ]] && [[ $SHELL == "$PREFIX/bin/zsh" ]] && {
