@@ -3,7 +3,7 @@ source $HOME/.config/shell/patches.sh
 
 #Enable colors and change prompt
 autoload -U colors && colors
-PS1="%b%F{magenta} %2~ %B%F{red}＞ %b%f"
+PS1="%B%F{magenta} %2~ %B%F{red}＞ %b%f"
 
 # Disable ctrl-s to freeze terminal
 stty stop undef

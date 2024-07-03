@@ -1,10 +1,12 @@
+# add .local/bin to path
+export PATH="$HOME/.local/bin:$PATH"
 # Load env vars if systemd failed to do so
 [[ $ENV_CONF_LOADED == "1" ]] || { set -a; source $HOME/.config/environment.d/env.conf; set +a; }
 # Assign HOSTNAME if it is not set
 [[ $HOSTNAME ]] || export HOSTNAME=$HOST
 
 # Fix mpv blank screen and hw decode in gnome wayland
-[[ $HOSTNAME == "archlinux" ]] && [[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && alias mpv="gnome-session-inhibit --inhibit idle env LIBVA_DRIVER_NAME=radeonsi mpv --gpu-context=x11egl"
+[[ $HOSTNAME == "archlinux" ]] && [[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && alias mpv="gnome-session-inhibit --inhibit idle mpv"
 # VTE Support in tilix
 [ $TILIX_ID ] || [ $VTE_VERSION ] && source /etc/profile.d/vte.sh
 # Set Terminal Title in Gnome-Console
@@ -15,7 +17,6 @@
 
 # Python venv
 source $HOME/.local/python-venv/default/bin/activate
-alias venv_torch="source $HOME/.local/python-venv/pytorch/bin/activate && PS1=\"%b%F{magenta}(pytorch) %2~ %B%F{red}＞ %b%f\""
 
 # Termux Support
 [[ $HOSTNAME == "Termux" ]] && [[ $SHELL == "$PREFIX/bin/zsh" ]] && {
@@ -24,3 +25,7 @@ alias venv_torch="source $HOME/.local/python-venv/pytorch/bin/activate && PS1=\"
 	source $HOME/.local/share/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 	source $HOME/.local/share/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 }
+
+# Use hyperthreading in OpenMPI
+alias mpirun="mpirun --use-hwthread-cpus"
+alias mpiexec="mpiexec --use-hwthread-cpus"

@@ -19,7 +19,7 @@ white = "#abb2bf"
 yellow = "#d19a66"
 
 [colors.primary]
-background = "#282c34"
+background = "#1E1E1E"
 foreground = "#abb2bf"
 
 [cursor]
@@ -54,19 +54,25 @@ key = "PageUp"
 mods = "Shift"
 
 [[keyboard.bindings]]
+action = "ScrollHalfPageUp"
+key = "PageUp"
+
+[[keyboard.bindings]]
 action = "ScrollPageDown"
 key = "PageDown"
 mods = "Shift"
 
 [[keyboard.bindings]]
+action = "ScrollHalfPageDown"
+key = "PageDown"
+
+[[keyboard.bindings]]
 action = "ScrollToBottom"
 key = "End"
-mods = "Shift"
 
 [[keyboard.bindings]]
 action = "ScrollToTop"
 key = "Home"
-mods = "Shift"
 
 [[keyboard.bindings]]
 action = "Copy"

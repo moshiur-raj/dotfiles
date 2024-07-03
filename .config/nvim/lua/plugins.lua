@@ -23,7 +23,7 @@ return require('lazy').setup({
 	-- Completion Plugin
 	{
 		'hrsh7th/nvim-cmp',
-		dependencies = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}, {'quangnguyen30192/cmp-nvim-ultisnips'}}
+		dependencies = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}}
 	},
 	-- Snippet Support
 	'dcampos/nvim-snippy',
@@ -37,8 +37,6 @@ return require('lazy').setup({
 	},
 	-- Indentaion Guide
 	'lukas-reineke/indent-blankline.nvim',
-	-- Commenting
-	'numToStr/Comment.nvim',
 	-- Surround Text
 	'kylechui/nvim-surround',
 	-- Auto Pairs

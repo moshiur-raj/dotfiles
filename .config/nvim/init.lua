@@ -15,7 +15,6 @@ vim.opt.foldenable = false
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.mouse = 'a'
-vim.opt.termguicolors = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
@@ -27,18 +26,25 @@ local autocmd = vim.api.nvim_create_autocmd
 autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
 })
-autocmd('FileType', { pattern = {'c', 'python', 'sh', 'tex'}, group = startup_augroup,
+-- filetype changes
+autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex'}, group = startup_augroup,
 	callback = function()
 		vim.opt.colorcolumn = "100"
 		vim.opt.tw = 100
 	end,
 })
-autocmd('FileType', { pattern = {'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'tex', 'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
 	callback = function() vim.opt.spell.spellang = 'en_us' end,
 })
--- filetype changes
-autocmd('BufEnter', { pattern = '*.h', group = startup_augroup,
-	callback = function() vim.opt.filetype = 'c' end,
+autocmd('BufEnter', { pattern = {'*.h', '*.cl'}, group = startup_augroup,
+	callback = function()
+		vim.opt.filetype = 'c'
+	end,
+})
+autocmd('FileType', { pattern = {'c', 'cpp'}, group = startup_augroup,
+	callback = function()
+		vim.opt.commentstring = '// %s'
+	end,
 })
 
 
@@ -268,8 +274,8 @@ require('nvim-treesitter.configs').setup({
 		additional_vim_regex_highlighting = false,
 	},
 	indent = {
-		enable = true,
-		disable = {'latex'},
+		enable = false,
+		-- disable = {'latex', 'cpp'},
 	}
 })
 
@@ -290,9 +296,6 @@ require('ibl').setup({
 		show_end = false,
 	}
 })
-
--- Comment.nvim
-require('Comment').setup()
 
 -- Surround
 require('nvim-surround').setup()
