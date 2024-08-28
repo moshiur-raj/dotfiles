@@ -34,7 +34,10 @@ autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex'}, group = sta
 	end,
 })
 autocmd('FileType', { pattern = {'tex', 'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
-	callback = function() vim.opt.spell.spellang = 'en_us' end,
+	callback = function()
+		vim.opt.spelllang = 'en_us'
+		vim.opt.spell = true
+	end,
 })
 autocmd('BufEnter', { pattern = {'*.h', '*.cl'}, group = startup_augroup,
 	callback = function()
@@ -194,10 +197,10 @@ cmp.setup({
 		documentation = cmp.config.window.bordered(),
 	},
 	sources = {
-		{ name = 'snippy', keyword_length = 2 },
 		{ name = 'nvim_lsp' },
 		{ name = 'buffer', keyword_length = 5 },
 		{ name = 'path' },
+		{ name = 'snippy', keyword_length = 2 },
 	},
 	mapping = {
 		['<cr>'] = cmp.mapping.confirm({ select = false }),
@@ -209,10 +212,11 @@ cmp.setup({
 
 -- Snippy
 require('snippy').setup({
+	snippet_dirs = '~/.config/nvim/snippets',
     mappings = {
         is = {
-            ['<Tab>'] = 'expand_or_advance',
-            ['<S-Tab>'] = 'previous',
+            ['<c-j>'] = 'expand_or_advance',
+            ['<c-k>'] = 'previous',
         },
         nx = {
             ['<leader>x'] = 'cut_text',
