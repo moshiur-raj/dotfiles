@@ -27,13 +27,13 @@ autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
 })
 -- filetype changes
-autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex', 'typst', 'markdown'}, group = startup_augroup,
 	callback = function()
 		vim.opt.colorcolumn = "100"
 		vim.opt.tw = 100
 	end,
 })
-autocmd('FileType', { pattern = {'tex', 'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'tex', 'text', 'latex', 'markdown', 'html', 'typst'}, group = startup_augroup,
 	callback = function()
 		vim.opt.spelllang = 'en_us'
 		vim.opt.spell = true
@@ -44,7 +44,7 @@ autocmd('BufEnter', { pattern = {'*.h', '*.cl'}, group = startup_augroup,
 		vim.opt.filetype = 'c'
 	end,
 })
-autocmd('FileType', { pattern = {'c', 'cpp'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'c', 'cpp', 'typst'}, group = startup_augroup,
 	callback = function()
 		vim.opt.commentstring = '// %s'
 	end,
@@ -262,7 +262,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- capabilities.textDocument.completion.completionItem.snippetSupport = false
-servers = {'pyright', 'clangd', 'texlab'}
+servers = {'pyright', 'clangd', 'texlab', 'typst_lsp'}
 for i = 1, #servers do
 	require('lspconfig')[servers[i]].setup{ capabilities = capabilities }
 end
@@ -314,13 +314,14 @@ npairs.setup({
 cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done() )
 npairs.add_rules({
 	Rule("\'","","tex"),
-	Rule("\\(","\\)","tex"),
+	Rule("\\(","\\)",{"tex", "typst"}),
 	Rule("\\{","\\}","tex"),
 	Rule("\\[","\\]","tex"),
 	Rule("\\left(","\\right)","tex"),
 	Rule("\\left\\{","\\right\\}","tex"),
 	Rule("\\left[","\\right]","tex"),
 	Rule("\\left|","\\right|","tex"),
+	Rule("$", "$", "typst")
 })
 
 -- Leap
