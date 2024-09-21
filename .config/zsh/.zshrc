@@ -10,13 +10,11 @@ PS1="%B%F{magenta} %2~ %B%F{red}＞ %b%f"
 # Disable ctrl-s to freeze terminal
 stty stop undef
 
-# History
-HISTFILE=$XDG_CACHE_HOME/histfile
+# History Size
 HISTSIZE=1000
 SAVEHIST=1000
 
 # Autocompletion
-autoload -Uz compinit
 zstyle ':completion:*' menu select
 # Case insensitive matchinng
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
