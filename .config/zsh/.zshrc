@@ -1,5 +1,7 @@
 # Load pathces
 source $HOME/.config/shell/patches.sh
+# Add .local/bin to path
+export PATH="$HOME/.local/bin:$PATH"
 
 #Enable colors and change prompt
 autoload -U colors && colors
@@ -70,15 +72,10 @@ bindkey -M vicmd j history-substring-search-down
 bindkey -M vicmd k history-substring-search-up
 
 # Fuzzy completion
-source /usr/share/fzf/completion.zsh
-source /usr/share/fzf/key-bindings.zsh
 source $XDG_CONFIG_HOME/shell/fuzzy-completion.sh
-zle -N fuzzy_completion
-bindkey "^f" fuzzy_completion
 
 # Souce aliases
 source $XDG_CONFIG_HOME/shell/alias.sh
 
 # Clear output in termux
 [[ $HOSTNAME == "Termux" ]] && clear
-
