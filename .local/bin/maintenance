@@ -6,8 +6,7 @@ if [[ $USERNAME == "root" ]]; then
 fi
 
 printf "\n ==> Updating Packages\n"
-yes | ~/.local/bin/update
-~/.local/bin/pip-update
+~/.local/bin/update
 pipx upgrade-all
 
 printf "\n ==> Cleaning Pacman Cache\n"
