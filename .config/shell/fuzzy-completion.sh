@@ -1,13 +1,22 @@
 # quick edit
-export FUZZY_FINDER=fzf
+source /usr/share/fzf/completion.zsh
+source /usr/share/fzf/key-bindings.zsh
+FUZZY_FINDER=fzf
 
-export FUZZY_COMPLETION_PATHS=(~/.local/bin $XDG_CONFIG_HOME/bashrc ~/Documents $XDG_CONFIG_HOME/{nvim,zsh,mpv,alacritty,environment.d,mimeapps.list,ipython/profile_default,shell} $XDG_DATA_HOME/applications ~/coding ~/todo ~/notes ~/research ~/Nextcloud/Notes ~/Templates)
+CONFIG_FILES=(~/.local/bin $XDG_CONFIG_HOME/{bashrc,nvim,zsh,mpv,alacritty,environment.d,shell} $XDG_DATA_HOME/applications ~/Nextcloud/Notes ~/coding ~/todo ~/notes ~/research ~/Templates)
 
+find_files() {
+	find ${CONFIG_FILES[@]} \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" -o -path "*.pdf" -o -path "*.pdf_tex" -o -path "*.mkv" -o -path "*.svg" -o -path "*.glsl" -o -path "*.png" -o -path "*.jpg" \) -prune -o -type f -print
+}
+# edit config files
 ef() {
-	find ${FUZZY_COMPLETION_PATHS[@]} \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -type f -print | $FUZZY_FINDER | xargs -r -d "\n" $EDITOR
+	find_files | $FUZZY_FINDER | xargs -r -d "\n" $EDITOR
 }
 
 # fuzzy completion
 fuzzy_completion() {
-	LBUFFER="${LBUFFER}$(find ${FUZZY_COMPLETION_PATHS[@]} \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" \) -prune -o -print | $FUZZY_FINDER | xargs -d "\n" printf "%q" )"
+	LBUFFER="${LBUFFER}$(find_files | $FUZZY_FINDER | xargs -d "\n" printf "%q" )"
 }
+
+zle -N fuzzy_completion
+bindkey "^f" fuzzy_completion
