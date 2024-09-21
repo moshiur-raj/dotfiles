@@ -92,6 +92,10 @@ mods = "Alt"
 
 [mouse]
 hide_when_typing = true
+bindings = [{mouse = "Middle", action = "None"}]
+
+[selection]
+save_to_clipboard = false
 
 [window]
 dynamic_title = true
