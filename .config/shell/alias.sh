@@ -22,5 +22,4 @@ pytorch()
 {
 	[[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
 	source $HOME/.local/python-venv/pytorch/bin/activate
-	PS1="%B%F{magenta} %2~ %B%F{red}＞ %b%f"
 }
