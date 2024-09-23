@@ -1,7 +1,7 @@
 # Load pathces
 source $HOME/.config/shell/patches.sh
 # Add .local/bin to path
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
 
 #Enable colors and change prompt
 autoload -U colors && colors
