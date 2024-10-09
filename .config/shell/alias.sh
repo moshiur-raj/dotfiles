@@ -17,9 +17,24 @@ alias mv="mv -iv"
 alias mpirun="mpirun --use-hwthread-cpus"
 alias mpiexec="mpiexec --use-hwthread-cpus"
 
-# Python venv
-pytorch()
+# Activate Python Virtual Environment
+pyvenv()
 {
-	[[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
-	source $HOME/.local/python-venv/pytorch/bin/activate
+	if [ -z "$1" ]; then
+		echo "Please provide the name of the virtual environment."
+		return 1
+	fi
+
+	if [[ $1 == "pytorch" ]]; then
+		[[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
+	fi
+
+	VENV_DIR="$HOME/.local/python-venv/$1"
+	if [ -d "$VENV_DIR" ]; then
+		source "$VENV_DIR/bin/activate"
+		echo "Activated virtual environment: $1"
+	else
+		echo "Virtual environment '$1' not found in $HOME/.virtualenvs/"
+		return 1
+	fi
 }
