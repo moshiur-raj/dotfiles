@@ -1,6 +1,4 @@
 return require('lazy').setup({
-	-- Icons
-	'nvim-tree/nvim-web-devicons',
 	-- Theme
 	'navarasu/onedark.nvim',
 	-- Statusline
@@ -11,23 +9,30 @@ return require('lazy').setup({
 	-- Bufferline
 	{
 		'akinsho/nvim-bufferline.lua',
-		dependencies = 'nvim-tree/nvim-web-devicons'
+		dependencies = {'nvim-tree/nvim-web-devicons'}
 	},
 	-- Fuzzy Finder
 	{
 		'nvim-telescope/telescope.nvim',
-		dependencies = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+		dependencies = {
+			{'nvim-lua/popup.nvim'},
+			{'nvim-lua/plenary.nvim'}
+		}
 	},
 	-- Scroll View
 	'dstein64/nvim-scrollview',
+	-- Snippet Support
+	'dcampos/nvim-snippy',
 	-- Completion Plugin
 	{
 		'hrsh7th/nvim-cmp',
-		dependencies = {{'hrsh7th/cmp-buffer'}, {'hrsh7th/cmp-path'}, {'hrsh7th/cmp-nvim-lsp'}}
+		dependencies = {
+			{'hrsh7th/cmp-buffer'},
+			{'hrsh7th/cmp-path'},
+			{'hrsh7th/cmp-nvim-lsp'},
+			{'dcampos/cmp-snippy'}
+		}
 	},
-	-- Snippet Support
-	'dcampos/nvim-snippy',
-	'dcampos/cmp-snippy',
 	-- Lsp
 	'neovim/nvim-lspconfig',
 	-- Treesitter
@@ -49,7 +54,14 @@ return require('lazy').setup({
 	-- Smooth Scroll
 	'karb94/neoscroll.nvim',
 	-- Latex Support
-	'lervag/vimtex',
-	-- Forward and Inverse sync
-	{'peterbjorgensen/sved', ft={'tex'}},
+	{
+		'lervag/vimtex',
+		ft={'latex', 'tex'},
+		-- Forward and Inverse sync for evince
+		dependencies = {'peterbjorgensen/sved'}
+	},
+	-- ToggleTerm
+	{
+		'akinsho/toggleterm.nvim', config = true
+	}
 })

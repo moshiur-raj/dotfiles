@@ -20,6 +20,7 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.pumheight = 8
 vim.opt.pumwidth = 16
+-- vim.opt.laststatus = 3
 --
 local startup_augroup = vim.api.nvim_create_augroup('startup_augroup', {clear = true})
 local autocmd = vim.api.nvim_create_autocmd
@@ -47,6 +48,14 @@ autocmd('BufEnter', { pattern = {'*.h', '*.cl'}, group = startup_augroup,
 autocmd('FileType', { pattern = {'c', 'cpp', 'typst'}, group = startup_augroup,
 	callback = function()
 		vim.opt.commentstring = '// %s'
+	end,
+})
+
+-- Terminal
+autocmd('TermOpen', { group = vim.api.nvim_create_augroup('custom-term-open', {clear = true}),
+	callback = function()
+		vim.opt.number = false
+		vim.opt.relativenumber = false
 	end,
 })
 
@@ -127,10 +136,8 @@ cnoremap('<a-h>', '<left>')
 cnoremap('<a-j>', '<down>')
 cnoremap('<a-k>', '<up>')
 cnoremap('<a-l>', '<right>')
--- opening terminal
-nnoremap('<c-t>', '<cmd>rightbelow 55 vsplit +terminal<cr>')
-nnoremap('<a-t>', '<cmd>rightbelow 15 split +terminal<cr>')
---
+-- terminal
+tnoremap('<esc>', '<c-\\><c-n>')
 
 
 -----------
@@ -262,7 +269,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- capabilities.textDocument.completion.completionItem.snippetSupport = false
-servers = {'pyright', 'clangd', 'texlab', 'typst_lsp'}
+servers = {'pyright', 'clangd', 'texlab', 'tinymist'}
 for i = 1, #servers do
 	require('lspconfig')[servers[i]].setup{ capabilities = capabilities }
 end
@@ -339,3 +346,8 @@ vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
 -- SVED
 nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
+
+-- ToggleTerm
+inoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
+nnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
+tnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
