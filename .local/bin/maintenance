@@ -36,6 +36,8 @@ sudo cat /etc/audit/audit.rules > /tmp/sysconfigs/audit.rules
 sudo cat /etc/sudoers > /tmp/sysconfigs/sudoers
 sudo cat /etc/samba/smb.conf  > /tmp/sysconfigs/smb.conf
 sudo cat /etc/ssh/sshd_config  > /tmp/sysconfigs/sshd_config.conf
+sudo cat /etc/sysctl.d/99-vm-zram-parameters.conf  > /tmp/sysconfigs/99-vm-zram-parameters.conf
+sudo cat /etc/bash.bashrc > /tmp/sysconfigs/bash.bashrc
 tar czf /tmp/sysconfigs.tar.gz --directory=/tmp/ sysconfigs
 rm -rf /tmp/sysconfigs
 cp -f /tmp/sysconfigs.tar.gz /mnt/storage0/Backups
@@ -52,5 +54,8 @@ curl "https://api.github.com/$CNTX/$NAME/repos?page=$PAGE&per_page=100" |
 tar czf /tmp/repositories.tar.gz --directory=/tmp/ repositories
 rm -rf /tmp/repositories
 mv /tmp/repositories.tar.gz /mnt/storage0/Backups/
+
+printf "\n ==> Check Lostfiles"
+sudo lostfiles
 
 printf "\n\n == DONE ==\n"
