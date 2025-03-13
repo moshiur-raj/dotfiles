@@ -28,7 +28,7 @@ autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
 })
 -- filetype changes
-autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex', 'typst', 'markdown'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex', 'typst', 'markdown', 'text'}, group = startup_augroup,
 	callback = function()
 		vim.opt.colorcolumn = "100"
 		vim.opt.tw = 100
@@ -136,8 +136,6 @@ cnoremap('<a-h>', '<left>')
 cnoremap('<a-j>', '<down>')
 cnoremap('<a-k>', '<up>')
 cnoremap('<a-l>', '<right>')
--- terminal
-tnoremap('<esc>', '<c-\\><c-n>')
 
 
 -----------
@@ -276,9 +274,10 @@ end
 
 -- Treesitter
 require('nvim-treesitter.configs').setup({
-	ensure_installed = {'c', 'python', 'latex', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'},
+	ensure_installed = {'c', 'python', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'},
 	sync_install = false,
 	auto_install = true,
+	ignore_install = { 'latex' },
 	highlight = {
 		enable = true,
 		disable = {'latex'},
