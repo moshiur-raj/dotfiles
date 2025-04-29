@@ -182,52 +182,52 @@ nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Telescope
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fd', builtin.diagnostics, {})
-vim.keymap.set('n', '<leader>fF', builtin.current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
+vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>tG', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>tr', builtin.lsp_references, {})
+require('telescope').load_extension('fzf')
 
--- Cmp
-vim.o.completeopt = 'menu,menuone,noselect'
-local cmp = require('cmp')
-cmp.setup({
-	snippet = {
-		expand = function(args)
-			require 'snippy'.expand_snippet(args.body)
-		end,
+-- Completion
+require('blink.cmp').setup({
+	keymap = {
+		preset = 'none',
+		['<cr>'] = {'accept', 'fallback'},
+		['<s-tab>'] = {'select_prev', 'fallback'},
+		['<tab>'] = {'select_next', 'fallback'},
 	},
-	window = {
-		completion = cmp.config.window.bordered(),
-		documentation = cmp.config.window.bordered(),
+	completion = {
+		list = {
+			selection = {
+				preselect = false,
+				auto_insert = true,
+			}
+		}
 	},
 	sources = {
-		{ name = 'nvim_lsp' },
-		{ name = 'buffer', keyword_length = 5 },
-		{ name = 'path' },
-		{ name = 'snippy', keyword_length = 2 },
+		default = { 'lsp', 'buffer', 'snippets', 'path' },
+		providers = {
+			buffer = {
+				min_keyword_length = 4,
+			},
+			snippets = {
+				min_keyword_length = 2,
+				score_offset = 6,
+			},
+		}
 	},
-	mapping = {
-		['<cr>'] = cmp.mapping.confirm({ select = false }),
-		['<c-y>'] = cmp.mapping.close(),
-		['<tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-		['<s-tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+	snippets = {
+		preset = 'luasnip',
 	}
 })
 
--- Snippy
-require('snippy').setup({
-	snippet_dirs = '~/.config/nvim/snippets',
-    mappings = {
-        is = {
-            ['<c-j>'] = 'expand_or_advance',
-            ['<c-k>'] = 'previous',
-        },
-        nx = {
-            ['<leader>x'] = 'cut_text',
-        },
-    },
-})
+-- Snippet
+local ls = require("luasnip")
+vim.keymap.set({"i", "s"}, "<C-j>", function() ls.expand_or_jump(1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- Lspconfig
 -- Global mappings.
@@ -265,12 +265,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-capabilities = require('cmp_nvim_lsp').default_capabilities()
--- capabilities.textDocument.completion.completionItem.snippetSupport = false
 servers = {'pyright', 'clangd', 'texlab', 'tinymist'}
 for i = 1, #servers do
 	vim.lsp.enable(servers[i])
-	vim.lsp.config(servers[i], {capabilities = capabilities})
 end
 
 -- Treesitter
@@ -318,7 +315,6 @@ npairs.setup({
 	disable_filetype = { "TelescopePrompt" },
 	-- fast_wrap = {},
 })
-cmp.event:on( 'confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done() )
 npairs.add_rules({
 	Rule("\'","","tex"),
 	Rule("\\(","\\)",{"tex", "typst"}),

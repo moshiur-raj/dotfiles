@@ -15,23 +15,19 @@ return require('lazy').setup({
 	{
 		'nvim-telescope/telescope.nvim',
 		dependencies = {
-			{'nvim-lua/popup.nvim'},
-			{'nvim-lua/plenary.nvim'}
+			{'nvim-lua/plenary.nvim'},
+			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make'},
 		}
 	},
 	-- Scroll View
 	'dstein64/nvim-scrollview',
-	-- Snippet Support
-	'dcampos/nvim-snippy',
+	-- Snippet
+	'L3MON4D3/LuaSnip',
 	-- Completion Plugin
 	{
-		'hrsh7th/nvim-cmp',
-		dependencies = {
-			{'hrsh7th/cmp-buffer'},
-			{'hrsh7th/cmp-path'},
-			{'hrsh7th/cmp-nvim-lsp'},
-			{'dcampos/cmp-snippy'}
-		}
+	  'saghen/blink.cmp',
+	  -- use a release tag to download pre-built binaries
+	  version = '1.*',
 	},
 	-- Lsp
 	'neovim/nvim-lspconfig',
@@ -44,8 +40,6 @@ return require('lazy').setup({
 	'lukas-reineke/indent-blankline.nvim',
 	-- Surround Text
 	'kylechui/nvim-surround',
-	-- Auto Pairs
-	'windwp/nvim-autopairs',
 	-- Sneak Motion
 	{
 		'ggandor/leap.nvim',
@@ -53,6 +47,8 @@ return require('lazy').setup({
 	},
 	-- Smooth Scroll
 	'karb94/neoscroll.nvim',
+	-- Auto Pairs
+	'windwp/nvim-autopairs',
 	-- Latex Support
 	{
 		'lervag/vimtex',
