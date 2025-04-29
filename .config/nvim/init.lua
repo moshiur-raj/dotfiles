@@ -269,7 +269,8 @@ capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- capabilities.textDocument.completion.completionItem.snippetSupport = false
 servers = {'pyright', 'clangd', 'texlab', 'tinymist'}
 for i = 1, #servers do
-	require('lspconfig')[servers[i]].setup{ capabilities = capabilities }
+	vim.lsp.enable(servers[i])
+	vim.lsp.config(servers[i], {capabilities = capabilities})
 end
 
 -- Treesitter
@@ -280,7 +281,7 @@ require('nvim-treesitter.configs').setup({
 	ignore_install = { 'latex' },
 	highlight = {
 		enable = true,
-		disable = {'latex'},
+		-- disable = {'latex'},
 		additional_vim_regex_highlighting = false,
 	},
 	indent = {
@@ -343,6 +344,7 @@ vim.g.vimtex_motion_enabled = 0
 vim.g.vimtex_imaps_enabled = 0
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
+vim.g.vimtex_syntax_enabled = 0
 -- SVED
 nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
