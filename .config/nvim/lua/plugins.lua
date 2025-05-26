@@ -54,12 +54,17 @@ return require('lazy').setup({
 	-- Latex Support
 	{
 		'lervag/vimtex',
-		ft={'latex', 'tex'},
+		ft = {'latex', 'tex'},
 		-- Forward and Inverse sync for evince
 		dependencies = {'peterbjorgensen/sved'}
 	},
 	-- ToggleTerm
 	{
 		'akinsho/toggleterm.nvim'
+	},
+	-- Interactive REPL
+	{
+		'Vigemus/iron.nvim',
+		ft = {'python'},
 	}
 })
