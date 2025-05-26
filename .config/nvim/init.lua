@@ -28,7 +28,7 @@ autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
 })
 -- filetype changes
-autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'sh', 'tex', 'typst', 'markdown', 'text'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'c', 'cpp', 'python', 'lua', 'sh', 'tex', 'typst', 'markdown', 'text'}, group = startup_augroup,
 	callback = function()
 		vim.opt.colorcolumn = "100"
 		vim.opt.tw = 100
@@ -210,7 +210,7 @@ require('blink.cmp').setup({
 		default = { 'lsp', 'buffer', 'snippets', 'path' },
 		providers = {
 			buffer = {
-				min_keyword_length = 4,
+				min_keyword_length = 2,
 			},
 			snippets = {
 				min_keyword_length = 2,
@@ -264,27 +264,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
   end,
 })
-
-servers = {'pyright', 'clangd', 'texlab', 'tinymist'}
-for i = 1, #servers do
-	vim.lsp.enable(servers[i])
-end
+vim.lsp.enable({'pyright', 'clangd', 'texlab', 'tinymist'})
 
 -- Treesitter
-require('nvim-treesitter.configs').setup({
-	ensure_installed = {'c', 'python', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'},
-	sync_install = false,
-	auto_install = true,
-	ignore_install = { 'latex' },
-	highlight = {
-		enable = true,
-		-- disable = {'latex'},
-		additional_vim_regex_highlighting = false,
-	},
-	indent = {
-		enable = false,
-		-- disable = {'latex', 'cpp'},
-	}
+local ts_filetypes = {'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua',
+					 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json',
+					 'json5', 'yaml', 'vimdoc'}
+-- require('nvim-treesitter').install(ts_filetypes)
+autocmd('FileType', { pattern = ts_filetypes,
+	group = startup_augroup,
+	callback = function()
+		vim.treesitter.start()
+	end,
 })
 
 -- Indent-blankline
@@ -311,12 +302,9 @@ require('nvim-surround').setup()
 -- Autopairs
 local npairs = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
-npairs.setup({
-	disable_filetype = { "TelescopePrompt" },
-	-- fast_wrap = {},
-})
+npairs.setup()
 npairs.add_rules({
-	Rule("\'","","tex"),
+	Rule("\'","",{"tex", "typst"}),
 	Rule("\\(","\\)",{"tex", "typst"}),
 	Rule("\\{","\\}","tex"),
 	Rule("\\[","\\]","tex"),
@@ -345,6 +333,7 @@ vim.g.vimtex_syntax_enabled = 0
 nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
 -- ToggleTerm
+require('toggleterm').setup()
 inoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 nnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 tnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')

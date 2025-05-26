@@ -34,6 +34,8 @@ return require('lazy').setup({
 	-- Treesitter
 	{
 		'nvim-treesitter/nvim-treesitter',
+		lazy = false,
+		branch = 'main',
 		build = ':TSUpdate'
 	},
 	-- Indentaion Guide
@@ -58,6 +60,6 @@ return require('lazy').setup({
 	},
 	-- ToggleTerm
 	{
-		'akinsho/toggleterm.nvim', config = true
+		'akinsho/toggleterm.nvim'
 	}
 })
