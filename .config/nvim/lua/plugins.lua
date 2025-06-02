@@ -22,7 +22,11 @@ return require('lazy').setup({
 	-- Scroll View
 	'dstein64/nvim-scrollview',
 	-- Snippet
-	'L3MON4D3/LuaSnip',
+	{
+		'L3MON4D3/LuaSnip',
+		version = "v2.*",
+		build = "make install_jsregexp"
+	},
 	-- Completion Plugin
 	{
 	  'saghen/blink.cmp',

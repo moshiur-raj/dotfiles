@@ -342,6 +342,7 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 	callback = function()
 		require('iron.core').setup({
 			config = {
+				highlight_last = '',
 				repl_definition = {
 					python = {
 						command = { "ipython", "--no-autoindent" },
@@ -359,9 +360,9 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 				send_line = "<space>rl",
 				send_code_block_and_move = "<cr>",
 				cr = "<space>r<cr>",
-				interrupt = "<space>rC",
+				interrupt = "<space>rc",
 				exit = "<space>rq",
-				clear = "<space>rc",
+				clear = "<space>cl",
 			},
 		})
 		inoremap("<c-cr>", "#%%\n")
