@@ -1,6 +1,8 @@
 return require('lazy').setup({
 	-- Theme
-	'navarasu/onedark.nvim',
+	{
+		'navarasu/onedark.nvim'
+	},
 	-- Statusline
 	{
 		'nvim-lualine/lualine.nvim',
@@ -19,8 +21,6 @@ return require('lazy').setup({
 			{'nvim-telescope/telescope-fzf-native.nvim', build = 'make'},
 		}
 	},
-	-- Scroll View
-	'dstein64/nvim-scrollview',
 	-- Snippet
 	{
 		'L3MON4D3/LuaSnip',
@@ -34,7 +34,9 @@ return require('lazy').setup({
 	  version = '1.*',
 	},
 	-- Lsp
-	'neovim/nvim-lspconfig',
+	{
+		'neovim/nvim-lspconfig'
+	},
 	-- Treesitter
 	{
 		'nvim-treesitter/nvim-treesitter',
@@ -43,18 +45,26 @@ return require('lazy').setup({
 		build = ':TSUpdate'
 	},
 	-- Indentaion Guide
-	'lukas-reineke/indent-blankline.nvim',
+	{
+		'lukas-reineke/indent-blankline.nvim'
+	},
 	-- Surround Text
-	'kylechui/nvim-surround',
+	{
+		'kylechui/nvim-surround'
+	},
 	-- Sneak Motion
 	{
 		'ggandor/leap.nvim',
 		dependencies = {'tpope/vim-repeat'}
 	},
 	-- Smooth Scroll
-	'karb94/neoscroll.nvim',
+	{
+		'karb94/neoscroll.nvim'
+	},
 	-- Auto Pairs
-	'windwp/nvim-autopairs',
+	{
+		'windwp/nvim-autopairs'
+	},
 	-- Latex Support
 	{
 		'lervag/vimtex',
