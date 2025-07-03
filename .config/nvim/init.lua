@@ -305,7 +305,7 @@ vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
 vim.g.vimtex_syntax_enabled = 0
 -- SVED
-nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
+-- nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
 -- ToggleTerm
 require('toggleterm').setup()
@@ -314,6 +314,27 @@ nnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 tnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 
 -- Iron.nvim
+function get_python_executable_and_change_dir()
+	local filepath = vim.api.nvim_buf_get_name(0)
+
+	if filepath ~= "" then
+		filedir = vim.fn.fnamemodify(filepath, ":p:h")
+	else
+		filedir = vim.fn.getcwd()
+	end
+
+	local ipython_path = filedir .. "/.ipython"
+
+	if vim.fn.executable(ipython_path) == 1 then
+		vim.cmd('cd ' .. filedir)
+		return {"./.ipython", "--no-autoindent"}
+	elseif vim.fn.executable("ipython") == 1 then
+		return {"ipython"}
+	else
+		return {"python"}
+	end
+end
+
 autocmd('FileType', { pattern = 'python', group = startup_augroup,
 	callback = function()
 		require('iron.core').setup({
@@ -321,10 +342,10 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 				highlight_last = '',
 				repl_definition = {
 					python = {
-						command = { "ipython", "--no-autoindent" },
+						command = get_python_executable_and_change_dir(),
 						format = require('iron.fts.common').bracketed_paste_python,
 						block_dividers = { "# %%", "#%%" },
-					}
+					},
 				},
 				repl_open_cmd = { require('iron.view').split.vertical.rightbelow("%40") }
 			},
