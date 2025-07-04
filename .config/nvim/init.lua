@@ -327,7 +327,7 @@ function get_python_executable_and_change_dir()
 
 	if vim.fn.executable(ipython_path) == 1 then
 		vim.cmd('cd ' .. filedir)
-		return {"./.ipython", "--no-autoindent"}
+		return {ipython_path, "--no-autoindent"}
 	elseif vim.fn.executable("ipython") == 1 then
 		return {"ipython"}
 	else
@@ -335,7 +335,7 @@ function get_python_executable_and_change_dir()
 	end
 end
 
-autocmd('VimEnter', { pattern = 'python', group = startup_augroup,
+autocmd('VimEnter', { pattern = '*.py', group = startup_augroup,
 	callback = function()
 		require('iron.core').setup({
 			config = {
