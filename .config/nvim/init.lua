@@ -335,7 +335,7 @@ function get_python_executable_and_change_dir()
 	end
 end
 
-autocmd('FileType', { pattern = 'python', group = startup_augroup,
+autocmd('VimEnter', { pattern = 'python', group = startup_augroup,
 	callback = function()
 		require('iron.core').setup({
 			config = {
@@ -347,7 +347,7 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 						block_dividers = { "# %%", "#%%" },
 					},
 				},
-				repl_open_cmd = { require('iron.view').split.vertical.rightbelow("%40") }
+				repl_open_cmd = require('iron.view').split.vertical.rightbelow("%40")
 			},
 			keymaps = {
 				toggle_repl = "<space>rr",
@@ -357,9 +357,9 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 				send_line = "<space>rl",
 				send_code_block_and_move = "<cr>",
 				cr = "<space>r<cr>",
-				interrupt = "<space>rc",
+				interrupt = "<space>rC",
 				exit = "<space>rq",
-				clear = "<space>cl",
+				clear = "<space>rc",
 			},
 		})
 		inoremap("<c-cr>", "# %%\n")
