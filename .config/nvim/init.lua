@@ -291,7 +291,7 @@ npairs.add_rules({
 })
 
 -- Leap
-require('leap').set_default_keymaps()
+require('leap').set_default_mappings()
 
 -- Neoscroll
 require('neoscroll').setup()
