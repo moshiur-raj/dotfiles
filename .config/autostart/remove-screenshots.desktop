@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Remove Screenshots
+Exec=/usr/bin/bash -c "rm ~/Pictures/Screenshots/*"
+Terminal=false
