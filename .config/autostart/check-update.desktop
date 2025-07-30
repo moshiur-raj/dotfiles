@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Check System Update
+Exec=/usr/bin/bash -c "$HOME/.local/bin/check-update"
+Terminal=false
