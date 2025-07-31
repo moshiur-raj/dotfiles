@@ -4,5 +4,5 @@ LOGFILE="/var/log/pacman.log"
 
 # Check if file has not been modified in the last 7 days
 if [ $(find "$LOGFILE" -mtime +6 -print) ]; then
-    notify-send --urgency=critical --app-name="System" "Warning! You have not updated your system in a week."
+    notify-send --urgency=critical --app-name="System" "Warning! You have not updated your system in atleast a week."
 fi
