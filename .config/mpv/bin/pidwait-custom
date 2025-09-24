@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+echo $1 > /tmp/mpv-$1.pid
+exec pidwait -F /tmp/mpv-$1.pid
