@@ -13,7 +13,12 @@ printf "=============================\n%s\n%s\n" \
        "     Updating Flatpaks" \
        "============================="
 flatpak update
-touch /var/lib/pacman/local/arch-update
 
+printf "=============================\n%s\n%s\n" \
+       "     Updating Pipx Packages" \
+       "============================="
+pipx upgrade-all
+
+touch /var/lib/pacman/local/arch-update
 printf "\nDone - Press any key to exit."
 read
