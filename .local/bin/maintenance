@@ -7,7 +7,6 @@ fi
 
 printf "\n ==> Updating Packages\n"
 ~/.local/bin/update
-pipx upgrade-all
 
 printf "\n ==> Cleaning Pacman Cache\n"
 sudo paccache -ruk 0
