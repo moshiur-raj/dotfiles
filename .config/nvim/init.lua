@@ -261,7 +261,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
     vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
     vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
     vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
@@ -272,7 +271,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts)
   end,
 })
-vim.lsp.enable({'pyright', 'clangd', 'texlab', 'tinymist'})
+vim.lsp.enable({'ty', 'clangd', 'texlab', 'tinymist'})
 
 -- Treesitter
 local ts_filetypes = {'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua',
@@ -310,8 +309,7 @@ local npairs = require('nvim-autopairs')
 local Rule = require('nvim-autopairs.rule')
 npairs.setup()
 npairs.add_rules({
-	Rule("\'","",{"tex", "typst"}),
-	Rule("$", "$", "typst")
+	Rule("\\(","\\)", "tex"),
 })
 
 -- Leap
@@ -329,8 +327,9 @@ vim.g.vimtex_imaps_enabled = 0
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
 vim.g.vimtex_syntax_enabled = 0
+vim.g.vimtex_view_general_viewer = 'evince'
 -- SVED
--- nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
+nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
 -- ToggleTerm
 require('toggleterm').setup()
