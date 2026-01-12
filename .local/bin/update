@@ -17,7 +17,7 @@ flatpak update
 printf "=============================\n%s\n%s\n" \
        "     Updating Pipx Packages" \
        "============================="
-pipx upgrade-all
+uv tool upgrade --all
 
 touch /var/lib/pacman/local/arch-update
 printf "\nDone - Press any key to exit."
