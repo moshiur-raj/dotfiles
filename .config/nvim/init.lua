@@ -271,7 +271,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts)
   end,
 })
-vim.lsp.enable({'ty', 'clangd', 'texlab', 'tinymist'})
+vim.lsp.enable({'ty', 'clangd', 'texlab', 'tinymist', 'harper_ls'})
 
 -- Treesitter
 local ts_filetypes = {'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua',
