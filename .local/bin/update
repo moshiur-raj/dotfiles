@@ -15,7 +15,7 @@ printf "=============================\n%s\n%s\n" \
 flatpak update
 
 printf "=============================\n%s\n%s\n" \
-       "     Updating Pipx Packages" \
+       "     Updating Python Tools" \
        "============================="
 uv tool upgrade --all
 
