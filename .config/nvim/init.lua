@@ -46,18 +46,13 @@ vim.opt.pumheight = 8
 vim.opt.pumwidth = 16
 vim.opt.colorcolumn = "100"
 vim.opt.tw = 100
+vim.opt.spelllang = 'en'
+vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'
 --
 local startup_augroup = vim.api.nvim_create_augroup('startup_augroup', {clear = true})
 local autocmd = vim.api.nvim_create_autocmd
 autocmd('BufEnter', { pattern = '*', group = startup_augroup,
 	callback = function() vim.opt.formatoptions:remove('r'); vim.opt.formatoptions:remove('o') end,
-})
--- filetype changes
-autocmd('FileType', { pattern = {'tex', 'text', 'latex', 'markdown', 'html'}, group = startup_augroup,
-	callback = function()
-		vim.opt.spelllang = 'en_us'
-		vim.opt.spell = true
-	end,
 })
 autocmd('BufEnter', { pattern = {'*.h', '*.cl'}, group = startup_augroup,
 	callback = function()
@@ -69,12 +64,9 @@ autocmd('FileType', { pattern = {'c', 'cpp', 'typst'}, group = startup_augroup,
 		vim.opt.commentstring = '// %s'
 	end,
 })
-
--- Terminal
-autocmd('TermOpen', { group = vim.api.nvim_create_augroup('custom-term-open', {clear = true}),
+autocmd('FileType', { pattern = {'tex'}, group = startup_augroup,
 	callback = function()
-		vim.opt.number = false
-		vim.opt.relativenumber = false
+		vim.bo.indentexpr = ''
 	end,
 })
 
@@ -157,15 +149,11 @@ require('lualine').setup({})
 -- Bufferline
 require('bufferline').setup({
 	options = {
-	 	numbers = 'ordinal',
 		diagnostics = "nvim_lsp",
-		right_mouse_command = nil,
-		-- do not show terminals in bufferline
-		custom_filter = function(bufn)
-			if not string.match(vim.fn.bufname(bufn), 'term://') then
-				return true
-			end
+		diagnostics_indicator = function(count, level, diagnostics_dict, context)
+			return level:match('error') and " " .. " " .. count or ""
 		end,
+		right_mouse_command = nil,
 	}
 })
 -- move between buffers
@@ -228,26 +216,36 @@ require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- Lspconfig
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 --
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  callback = function(ev)
-    local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-  end,
+	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+	callback = function(ev)
+		local opts = { buffer = ev.buf }
+		vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+		vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+	end,
 })
+
+vim.lsp.config('harper_ls', {
+    capabilities = { textDocument = { semanticTokens = { multilineTokenSupport = true } } },
+	filetypes = {'markdown', 'text', 'tex', 'typst'},
+	settings = {
+		['harper-ls'] = {
+			userDictPath = vim.fn.stdpath('config') .. '/spell/en.utf-8.add',
+		}
+	},
+})
+
 vim.lsp.enable({'ty', 'clangd', 'texlab', 'harper_ls'})
 
 -- Treesitter
-local ts_filetypes = {'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua',
-					 'cpp', 'css', 'html', 'make', 'markdown', 'meson', 'sql', 'json',
-					 'json5', 'yaml', 'vimdoc'}
+local ts_filetypes = {
+	'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make',
+	'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'
+}
 -- require('nvim-treesitter').install(ts_filetypes)
 autocmd('FileType', { pattern = ts_filetypes, group = startup_augroup,
 	callback = function()
@@ -255,34 +253,21 @@ autocmd('FileType', { pattern = ts_filetypes, group = startup_augroup,
 	end,
 })
 
--- Indent-blankline
-require('ibl').setup({
-	indent = {
-		char = '│',
-		smart_indent_cap = true,
-	},
-	whitespace = {
-		remove_blankline_trail = true,
+-- Indent Guides
+require('blink.indent').setup({
+	static = {
+		char= '│',
 	},
 	scope = {
-		enabled = true,
-		char = '│',
-		show_start = false,
-		show_end = false,
-	}
+		char= '│',
+	},
 })
 
 -- Surround
 require('nvim-surround').setup()
 
 -- Autopairs
-local npairs = require('nvim-autopairs')
-local Rule = require('nvim-autopairs.rule')
-npairs.setup()
-npairs.add_rules({
-	Rule("\\(","\\)", "tex"),
-	Rule("$","S", "tex"),
-})
+require('nvim-autopairs').setup()
 
 -- Leap
 vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
@@ -300,6 +285,7 @@ vim.g.tex_flavor = 'latex'
 vim.g.vimtex_complete_enabled = 0
 vim.g.vimtex_syntax_enabled = 0
 vim.g.vimtex_view_general_viewer = 'evince'
+
 -- SVED
 nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
