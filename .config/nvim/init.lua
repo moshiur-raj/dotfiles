@@ -29,6 +29,7 @@ vim.opt.backupcopy = 'yes'
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = false
+vim.opt.foldenable = false
 vim.opt.mouse = 'a'
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -51,10 +52,9 @@ autocmd('FileType', { pattern = {'c', 'cpp', 'typst'}, group = startup_augroup,
 		vim.opt.commentstring = '// %s'
 	end,
 })
-autocmd('BufEnter', { pattern = {'*.tex'}, group = startup_augroup,
+autocmd('FileType', { pattern = {'tex', 'bib'}, group = startup_augroup,
 	callback = function()
 		vim.bo.indentexpr = ''
-		vim.opt.filetype = 'latex'
 	end,
 })
 
@@ -128,7 +128,7 @@ cnoremap('<a-l>', '<right>')
 -- Onedark
 vim.pack.add({'https://github.com/navarasu/onedark.nvim'})
 
-require('onedark').setup {style = 'darker'}
+require('onedark').setup({style = 'darker'})
 require('onedark').load()
 
 -- Icons
@@ -147,7 +147,7 @@ require('bufferline').setup({
 		diagnostics_indicator = function(count, level, diagnostics_dict, context)
 			return level:match('error') and " " .. " " .. count or ""
 		end,
-		right_mouse_command = nil,
+		right_mouse_command = '',
 	}
 })
 -- move between buffers
@@ -158,19 +158,6 @@ tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 -- reorder buffer
 nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
-
--- Telescope
-vim.pack.add({'https://github.com/nvim-lua/plenary.nvim',}) -- 'nvim-telescope/telescope-fzf-native.nvim'})
-vim.pack.add({{ src = 'https://github.com/nvim-telescope/telescope.nvim', version = vim.version.range('*'), }})
-
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
-vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find, {})
-vim.keymap.set('n', '<leader>tG', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
-vim.keymap.set('n', '<leader>tr', builtin.lsp_references, {})
--- require('telescope').load_extension('fzf')
 
 -- Completion
 vim.pack.add({{ src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('1.*') }})
@@ -207,14 +194,6 @@ require('blink.cmp').setup({
 	}
 })
 
--- Snippet
-vim.pack.add({{ src = 'https://github.com/L3MON4D3/LuaSnip', version = vim.version.range('v2.*') }})
-
-local ls = require("luasnip")
-vim.keymap.set({"i", "s"}, "<C-j>", function() ls.expand_or_jump(1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
-require("luasnip.loaders.from_snipmate").lazy_load()
-
 -- Lspconfig
 vim.pack.add({'https://github.com/neovim/nvim-lspconfig'})
 
@@ -232,6 +211,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 vim.lsp.config('texlab', {
 	settings = { texlab = { build = { onSave = true } } },
+	filetypes = {'tex', 'bib'}
 })
 
 vim.lsp.config('harper_ls', {
@@ -245,10 +225,12 @@ vim.lsp.enable({'ty', 'clangd', 'texlab', 'harper_ls'})
 vim.pack.add({'https://github.com/nvim-treesitter/nvim-treesitter'})
 
 local ts_filetypes = {
-	'c', 'python', 'latex', 'typst', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make',
+	'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make',
 	'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'
 }
-require('nvim-treesitter').install(ts_filetypes)
+-- require('nvim-treesitter').install(ts_filetypes)
+-- filetypes and ts names are different which is why both tex and latex are used. tex causes error
+-- with install
 autocmd('FileType', { pattern = ts_filetypes, group = startup_augroup,
 	callback = function()
 		vim.treesitter.start()
@@ -266,6 +248,27 @@ require('blink.indent').setup({
 		char= '│',
 	},
 })
+
+-- Telescope
+vim.pack.add({'https://github.com/nvim-lua/plenary.nvim',}) -- 'nvim-telescope/telescope-fzf-native.nvim'})
+vim.pack.add({{ src = 'https://github.com/nvim-telescope/telescope.nvim', version = vim.version.range('*'), }})
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
+vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find, {})
+vim.keymap.set('n', '<leader>tG', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>tr', builtin.lsp_references, {})
+-- require('telescope').load_extension('fzf')
+
+-- Snippet
+vim.pack.add({{ src = 'https://github.com/L3MON4D3/LuaSnip', version = vim.version.range('v2.*') }})
+
+local ls = require("luasnip")
+vim.keymap.set({"i", "s"}, "<C-j>", function() ls.expand_or_jump(1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- Surround
 vim.pack.add({{ src = "https://github.com/kylechui/nvim-surround", version = vim.version.range("4.*"), }})
@@ -289,9 +292,16 @@ vim.pack.add({'https://github.com/karb94/neoscroll.nvim'})
 require('neoscroll').setup()
 
 -- SVED
-vim.pack.add({'https://github.com/peterbjorgensen/sved'})
+autocmd('FileType', { pattern = 'tex', once = true,
+	callback = function(args)
+		vim.pack.add({'https://github.com/peterbjorgensen/sved'})
+		if vim.g.loaded_evinceSync == nil then
+		  vim.cmd('source ' .. vim.fn.stdpath('data') .. '/site/pack/core/opt/sved/ftplugin/tex_evinceSync.vim')
+		end
+		vim.keymap.set('n', '<leader>lv', ':call SVED_Sync()<cr>', {})
+	end
+})
 
-nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
 -- ToggleTerm
 vim.pack.add({'https://github.com/akinsho/toggleterm.nvim'})
