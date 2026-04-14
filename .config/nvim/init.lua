@@ -1,15 +1,6 @@
-----------------
--- Load Plugins
-----------------
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-vim.opt.rtp:prepend(lazypath)
-require('plugins')
-
-
 -- Check if plugins are outdated
 local function warn_if_plugins_outdated()
-	local lockfile = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
-	lockfile = lockfile .. "/nvim/lazy-lock.json"
+	local lockfile = vim.fn.stdpath('config') .. '/nvim-pack-lock.json'
 
 	local stat = vim.loop.fs_stat(lockfile)
 	if not stat then
@@ -35,19 +26,15 @@ warn_if_plugins_outdated()
 --------------------
 --
 vim.opt.backupcopy = 'yes'
-vim.opt.foldenable = false
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+vim.opt.smarttab = false
 vim.opt.mouse = 'a'
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
-vim.opt.pumheight = 8
-vim.opt.pumwidth = 16
 vim.opt.colorcolumn = "100"
 vim.opt.tw = 100
-vim.opt.spelllang = 'en'
-vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'
 --
 local startup_augroup = vim.api.nvim_create_augroup('startup_augroup', {clear = true})
 local autocmd = vim.api.nvim_create_autocmd
@@ -64,9 +51,10 @@ autocmd('FileType', { pattern = {'c', 'cpp', 'typst'}, group = startup_augroup,
 		vim.opt.commentstring = '// %s'
 	end,
 })
-autocmd('FileType', { pattern = {'tex'}, group = startup_augroup,
+autocmd('BufEnter', { pattern = {'*.tex'}, group = startup_augroup,
 	callback = function()
 		vim.bo.indentexpr = ''
+		vim.opt.filetype = 'latex'
 	end,
 })
 
@@ -138,15 +126,21 @@ cnoremap('<a-l>', '<right>')
 --
 
 -- Onedark
-require('onedark').setup {
-    style = 'darker'
-}
+vim.pack.add({'https://github.com/navarasu/onedark.nvim'})
+
+require('onedark').setup {style = 'darker'}
 require('onedark').load()
 
+-- Icons
+vim.pack.add({'https://github.com/nvim-tree/nvim-web-devicons'})
+
 -- Lualine
-require('lualine').setup({})
+vim.pack.add({'https://github.com/nvim-lualine/lualine.nvim'})
+require('lualine').setup()
 
 -- Bufferline
+vim.pack.add({'https://github.com/akinsho/nvim-bufferline.lua'})
+
 require('bufferline').setup({
 	options = {
 		diagnostics = "nvim_lsp",
@@ -166,6 +160,9 @@ nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
 nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Telescope
+vim.pack.add({'https://github.com/nvim-lua/plenary.nvim',}) -- 'nvim-telescope/telescope-fzf-native.nvim'})
+vim.pack.add({{ src = 'https://github.com/nvim-telescope/telescope.nvim', version = vim.version.range('*'), }})
+
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
 vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find, {})
@@ -173,9 +170,11 @@ vim.keymap.set('n', '<leader>tG', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
 vim.keymap.set('n', '<leader>tr', builtin.lsp_references, {})
-require('telescope').load_extension('fzf')
+-- require('telescope').load_extension('fzf')
 
 -- Completion
+vim.pack.add({{ src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('1.*') }})
+
 require('blink.cmp').setup({
 	keymap = {
 		preset = 'none',
@@ -209,12 +208,16 @@ require('blink.cmp').setup({
 })
 
 -- Snippet
+vim.pack.add({{ src = 'https://github.com/L3MON4D3/LuaSnip', version = vim.version.range('v2.*') }})
+
 local ls = require("luasnip")
 vim.keymap.set({"i", "s"}, "<C-j>", function() ls.expand_or_jump(1) end, {silent = true})
 vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
 require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- Lspconfig
+vim.pack.add({'https://github.com/neovim/nvim-lspconfig'})
+
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 --
@@ -224,29 +227,28 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		local opts = { buffer = ev.buf }
 		vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
 		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-		vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 	end,
+})
+
+vim.lsp.config('texlab', {
+	settings = { texlab = { build = { onSave = true } } },
 })
 
 vim.lsp.config('harper_ls', {
     capabilities = { textDocument = { semanticTokens = { multilineTokenSupport = true } } },
 	filetypes = {'markdown', 'text', 'tex', 'typst'},
-	settings = {
-		['harper-ls'] = {
-			userDictPath = vim.fn.stdpath('config') .. '/spell/en.utf-8.add',
-		}
-	},
 })
 
 vim.lsp.enable({'ty', 'clangd', 'texlab', 'harper_ls'})
 
 -- Treesitter
+vim.pack.add({'https://github.com/nvim-treesitter/nvim-treesitter'})
+
 local ts_filetypes = {
-	'c', 'python', 'tex', 'latex', 'typst', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make',
+	'c', 'python', 'latex', 'typst', 'bibtex', 'bash', 'lua', 'cpp', 'css', 'html', 'make',
 	'markdown', 'meson', 'sql', 'json', 'json5', 'yaml', 'vimdoc'
 }
--- require('nvim-treesitter').install(ts_filetypes)
+require('nvim-treesitter').install(ts_filetypes)
 autocmd('FileType', { pattern = ts_filetypes, group = startup_augroup,
 	callback = function()
 		vim.treesitter.start()
@@ -254,6 +256,8 @@ autocmd('FileType', { pattern = ts_filetypes, group = startup_augroup,
 })
 
 -- Indent Guides
+vim.pack.add({'https://github.com/saghen/blink.indent'})
+
 require('blink.indent').setup({
 	static = {
 		char= '│',
@@ -264,61 +268,65 @@ require('blink.indent').setup({
 })
 
 -- Surround
+vim.pack.add({{ src = "https://github.com/kylechui/nvim-surround", version = vim.version.range("4.*"), }})
+
 require('nvim-surround').setup()
 
 -- Autopairs
+vim.pack.add({'https://github.com/windwp/nvim-autopairs'})
+
 require('nvim-autopairs').setup()
 
 -- Leap
+vim.pack.add({'https://codeberg.org/andyg/leap.nvim'})
+
 vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
 vim.keymap.set({'n', 'x', 'o'}, 'S', '<Plug>(leap-backward)')
 
 -- Neoscroll
+vim.pack.add({'https://github.com/karb94/neoscroll.nvim'})
+
 require('neoscroll').setup()
 
---- Vimtex
-vim.g.vimtex_matchparen_enabled = 0
-vim.g.vimtex_indent_enabled = 0
-vim.g.vimtex_motion_enabled = 0
-vim.g.vimtex_imaps_enabled = 0
-vim.g.tex_flavor = 'latex'
-vim.g.vimtex_complete_enabled = 0
-vim.g.vimtex_syntax_enabled = 0
-vim.g.vimtex_view_general_viewer = 'evince'
-
 -- SVED
+vim.pack.add({'https://github.com/peterbjorgensen/sved'})
+
 nnoremap('<leader>lv', ':call SVED_Sync()<cr>')
 
 -- ToggleTerm
+vim.pack.add({'https://github.com/akinsho/toggleterm.nvim'})
+
 require('toggleterm').setup()
 inoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 nnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 tnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
 
 -- Iron.nvim
-function get_python_executable_and_change_dir()
-	local filepath = vim.api.nvim_buf_get_name(0)
-
-	if filepath ~= "" then
-		filedir = vim.fn.fnamemodify(filepath, ":p:h")
-	else
-		filedir = vim.fn.getcwd()
-	end
-
-	local ipython_path = filedir .. "/.ipython"
-
-	if vim.fn.executable(ipython_path) == 1 then
-		vim.cmd('cd ' .. filedir)
-		return {ipython_path, "--no-autoindent"}
-	elseif vim.fn.executable("ipython") == 1 then
-		return {"ipython", "--no-autoindent"}
-	else
-		return {"python", "--no-autoindent"}
-	end
-end
-
 autocmd('FileType', { pattern = 'python', group = startup_augroup,
 	callback = function(args)
+		vim.pack.add({'https://github.com/Vigemus/iron.nvim'})
+
+		local function get_python_executable_and_change_dir()
+			local filepath = vim.api.nvim_buf_get_name(0)
+
+			if filepath ~= "" then
+				filedir = vim.fn.fnamemodify(filepath, ":p:h")
+			else
+				filedir = vim.fn.getcwd()
+			end
+
+			local ipython_path = filedir .. "/.ipython"
+
+			if vim.fn.executable(ipython_path) == 1 then
+				vim.cmd('cd ' .. filedir)
+				return {ipython_path, "--no-autoindent"}
+			elseif vim.fn.executable("ipython") == 1 then
+				return {"ipython", "--no-autoindent"}
+			else
+				return {"python", "--no-autoindent"}
+			end
+		end
+
 		require('iron.core').setup({
 			config = {
 				highlight_last = '',
@@ -337,6 +345,7 @@ autocmd('FileType', { pattern = 'python', group = startup_augroup,
 				send_file = "<space>rf",
 			},
 		})
+
 		local opts = { buffer = args.buf, silent = true }
 		vim.keymap.set( 'n', '<cr>',
 			function()
