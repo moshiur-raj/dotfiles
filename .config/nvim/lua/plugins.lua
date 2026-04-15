@@ -1,7 +1,38 @@
+----------------------------------------------------------------------------------------------------
+-- Hooks
+----------------------------------------------------------------------------------------------------
+
+vim.api.nvim_create_autocmd('PackChanged', {
+	callback = function(ev)
+		local name = ev.data.spec.name
+		local kind = ev.data.kind
+		if name == 'telescope-fzf-native.nvim' and (kind == 'install' or kind == 'update') then
+			local path = vim.fn.stdpath('data') .. '/site/pack/core/opt/' .. name
+			vim.notify('Building ' .. name .. '...')
+			vim.system({ 'make' }, { cwd = path }, function(obj)
+				vim.schedule(function()
+					if obj.code == 0 then
+						vim.notify(name .. ' built successfully')
+					else
+						vim.notify(name .. ' build failed:\n' .. (obj.stderr or ''),
+						vim.log.levels.ERROR)
+					end
+				end)
+			end)
+		end
+	end,
+})
+
+
+----------------------------------------------------------------------------------------------------
+-- Plugins
+----------------------------------------------------------------------------------------------------
+
 vim.pack.add({
 	'https://github.com/navarasu/onedark.nvim',
 
 	'https://github.com/nvim-tree/nvim-web-devicons',
+
 	'https://github.com/nvim-lualine/lualine.nvim',
 
 	'https://github.com/akinsho/nvim-bufferline.lua',
@@ -19,6 +50,7 @@ vim.pack.add({
 
 	'https://github.com/nvim-lua/plenary.nvim',
 	'https://github.com/nvim-telescope/telescope.nvim',
+	'https://github.com/nvim-telescope/telescope-fzf-native.nvim',
 	'https://github.com/nvim-telescope/telescope-bibtex.nvim',
 
 	{

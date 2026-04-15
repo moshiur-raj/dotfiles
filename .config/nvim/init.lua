@@ -200,6 +200,7 @@ require('blink.indent').setup({
 ----------------------------------------------------------------------------------------------------
 vim.keymap.set('n', 'gf', require('telescope.builtin').find_files)
 vim.keymap.set('n', 'gb', require('telescope.builtin').buffers)
+require('telescope').load_extension('fzf')
 
 -- Snippet
 ----------------------------------------------------------------------------------------------------
