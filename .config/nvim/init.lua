@@ -94,7 +94,7 @@ require('bufferline').setup({
 	options = {
 		diagnostics = "nvim_lsp",
 		diagnostics_indicator = function(count, level, diagnostics_dict, context)
-			return level:match('error') and " " .. " " .. count or ""
+			return level:match('error') and " " or ""
 		end,
 		right_mouse_command = '',
 	}
