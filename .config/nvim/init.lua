@@ -180,13 +180,17 @@ vim.lsp.enable({'ty', 'clangd', 'texlab', 'harper_ls'})
 -- Treesitter
 ----------------------------------------------------------------------------------------------------
 vim.api.nvim_create_autocmd('FileType', {
-	pattern = require('nvim-treesitter.config').get_available(),
 	callback = function(arg)
 		local lang = vim.treesitter.language.get_lang(arg.match)
-		if not vim.treesitter.language.add(lang) then
-			require('nvim-treesitter').install(lang):wait()
+		if vim.treesitter.language.add(lang) then
+			vim.treesitter.start()
+		else
+			local parsers = require('nvim-treesitter.config').get_available()
+			if vim.tbl_contains(parsers, lang) then
+				require('nvim-treesitter').install(lang):wait()
+				vim.treesitter.start()
+			end
 		end
-		vim.treesitter.start()
 	end,
 })
 
