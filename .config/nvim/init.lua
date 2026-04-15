@@ -45,10 +45,14 @@ vim.keymap.set('n', '<a-v>', '<c-v>') -- visual block mode compatibility
 -- use esc to cancel search highlights
 vim.keymap.set('n', '<esc>', '<esc><cmd>nohlsearch<cr>')
 -- move between windows
-for _, key in ipairs({ 'h', 'j', 'k', 'l' }) do
-  vim.keymap.set('n', '<c-' .. key .. '>', '<c-w>' .. key)
-  vim.keymap.set('t', '<c-' .. key .. '>', [[<c-\><c-n><c-w>]] .. key)
-end
+vim.keymap.set('n', '<c-h>', '<c-w>h')
+vim.keymap.set('n', '<c-j>', '<c-w>j')
+vim.keymap.set('n', '<c-k>', '<c-w>k')
+vim.keymap.set('n', '<c-l>', '<c-w>l')
+vim.keymap.set('t', '<c-h>', [[<c-\\><c-N><c-w>h]])
+vim.keymap.set('t', '<c-j>', [[<c-\\><c-N><c-w>j]])
+vim.keymap.set('t', '<c-k>', [[<c-\\><c-N><c-w>k]])
+vim.keymap.set('t', '<c-l>', [[<c-\\><c-N><c-w>l]])
 -- close window
 vim.keymap.set('n', '<c-q>', '<cmd>quit<cr>')
 -- resize window
