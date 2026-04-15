@@ -1,9 +1,15 @@
+----------------------------------------------------------------------------------------------------
+-- Custom Lua Modules
+----------------------------------------------------------------------------------------------------
+
 require('check_last_update')
 require('plugins')
+
 
 ----------------------------------------------------------------------------------------------------
 -- Vim Options
 ----------------------------------------------------------------------------------------------------
+
 vim.opt.backupcopy = 'yes'
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -24,64 +30,50 @@ vim.api.nvim_create_autocmd('FileType', {
 	end,
 })
 
+
 ----------------------------------------------------------------------------------------------------
 -- Keybindings
 ----------------------------------------------------------------------------------------------------
-local function inoremap(key, map)
-	return vim.keymap.set('i', key, map, {expr = false, noremap=true, silent = true})
-end
-local function nnoremap(key, map)
-	return vim.keymap.set('n', key, map, {expr = false, noremap=true, silent = true})
-end
-local function vnoremap(key, map)
-	return vim.keymap.set('v', key, map, {expr = false, noremap=true, silent = true})
-end
-local function cnoremap(key, map)
-	return vim.keymap.set('c', key, map, {expr = false, noremap=true})
-end
-local function tnoremap(key, map)
-	return vim.keymap.set('t', key, map, {expr = false, noremap=true, silent = true})
-end
+
 -- use ctrl + s to save, ctrl + c to copy, ctrl + x to cut, ctl + v to paste
-inoremap('<c-s>', '<c-o><cmd>update<cr>')
-nnoremap('<c-s>', '<cmd>update<cr>')
-vnoremap('<c-c>', '"+y')
-vnoremap('<c-x>', '"+x')
-inoremap('<c-v>', '<esc>"+pa')
-nnoremap('<c-v>', '"+p')
-vnoremap('<c-v>', '"+p')
-nnoremap('<a-v>', '<c-v>') -- visual block mode compatibility
+vim.keymap.set('i', '<c-s>', '<c-o><cmd>update<cr>')
+vim.keymap.set('n', '<c-s>', '<cmd>update<cr>')
+vim.keymap.set('v', '<c-c>', '"+y')
+vim.keymap.set('v', '<c-x>', '"+x')
+vim.keymap.set('i', '<c-v>', '<c-o>"+p')
+vim.keymap.set({'n', 'v'}, '<c-v>', '"+p')
+vim.keymap.set('n', '<a-v>', '<c-v>') -- visual block mode compatibility
 -- use esc to cancel search highlights
-nnoremap('<esc>', '<esc><cmd>nohlsearch<cr>')
+vim.keymap.set('n', '<esc>', '<esc><cmd>nohlsearch<cr>')
 -- move between windows
-nnoremap('<c-h>', '<c-w>h')
-nnoremap('<c-j>', '<c-w>j')
-nnoremap('<c-k>', '<c-w>k')
-nnoremap('<c-l>', '<c-w>l')
-tnoremap('<c-h>', '<c-\\><c-N><c-w>h')
-tnoremap('<c-j>', '<c-\\><c-N><c-w>j')
-tnoremap('<c-k>', '<c-\\><c-N><c-w>k')
-tnoremap('<c-l>', '<c-\\><c-N><c-w>l')
+vim.keymap.set('n', '<c-h>', '<c-w>h')
+vim.keymap.set('n', '<c-j>', '<c-w>j')
+vim.keymap.set('n', '<c-k>', '<c-w>k')
+vim.keymap.set('n', '<c-l>', '<c-w>l')
+vim.keymap.set('t', '<c-h>', '<c-\\><c-N><c-w>h')
+vim.keymap.set('t', '<c-j>', '<c-\\><c-N><c-w>j')
+vim.keymap.set('t', '<c-k>', '<c-\\><c-N><c-w>k')
+vim.keymap.set('t', '<c-l>', '<c-\\><c-N><c-w>l')
 -- close window
-nnoremap('<c-q>', '<cmd>:quit<cr>')
+vim.keymap.set('n', '<c-q>', '<cmd>quit<cr>')
 -- resize window
-nnoremap('<c-left>', '<cmd>vertical resize -1<cr>')
-nnoremap('<c-down>', '<cmd>resize -1<cr>')
-nnoremap('<c-up>', '<cmd>resize +1<cr>')
-nnoremap('<c-right>', '<cmd>vertical resize +1<cr>')
-tnoremap('<c-left>', '<c-\\><c-N><c-w>h')
-tnoremap('<c-down>', '<c-\\><c-N><c-w>j')
-tnoremap('<c-up>', '<c-\\><c-N><c-w>k')
-tnoremap('<c-right>', '<c-\\><c-N><c-w>l')
+vim.keymap.set('n', '<c-left>', '<cmd>vertical resize -1<cr>')
+vim.keymap.set('n', '<c-down>', '<cmd>resize -1<cr>')
+vim.keymap.set('n', '<c-up>', '<cmd>resize +1<cr>')
+vim.keymap.set('n', '<c-right>', '<cmd>vertical resize +1<cr>')
+vim.keymap.set('t', '<c-left>', '<c-\\><c-N><c-w>h')
+vim.keymap.set('t', '<c-down>', '<c-\\><c-N><c-w>j')
+vim.keymap.set('t', '<c-up>', '<c-\\><c-N><c-w>k')
+vim.keymap.set('t', '<c-right>', '<c-\\><c-N><c-w>l')
 -- delete buffer but do not ruin the window layout
-nnoremap('<leader>bd', '<cmd>bp|bd #<cr>')
+vim.keymap.set('n', '<leader>bd', '<cmd>bp|bd #<cr>')
 -- change directory to the current file
-nnoremap('<leader>cd', '<cmd>lcd %:p:h<cr><cmd>pwd<cr>')
+vim.keymap.set('n', '<leader>cd', '<cmd>lcd %:p:h<cr><cmd>pwd<cr>')
 -- navigation in command mode
-cnoremap('<a-h>', '<left>')
-cnoremap('<a-j>', '<down>')
-cnoremap('<a-k>', '<up>')
-cnoremap('<a-l>', '<right>')
+vim.keymap.set('c', '<a-h>', '<left>')
+vim.keymap.set('c', '<a-j>', '<down>')
+vim.keymap.set('c', '<a-k>', '<up>')
+vim.keymap.set('c', '<a-l>', '<right>')
 
 
 ----------------------------------------------------------------------------------------------------
@@ -109,13 +101,13 @@ require('bufferline').setup({
 	}
 })
 -- move between buffers
-nnoremap('<a-j>', '<cmd>BufferLineCycleNext<cr>')
-nnoremap('<a-k>', '<cmd>BufferLineCyclePrev<cr>')
-tnoremap('<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
-tnoremap('<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
+vim.keymap.set('n', '<a-j>', '<cmd>BufferLineCycleNext<cr>')
+vim.keymap.set('n', '<a-k>', '<cmd>BufferLineCyclePrev<cr>')
+vim.keymap.set('t', '<a-j>', '<cmd><c-\\><c-N>BufferLineCycleNext<cr>')
+vim.keymap.set('t', '<a-k>', '<cmd><c-\\><c-N>BufferLineCyclePrev<cr>')
 -- reorder buffer
-nnoremap('<a-J>', '<cmd>BufferLineMoveNext<cr>')
-nnoremap('<a-K>', '<cmd>BufferLineMovePrev<cr>')
+vim.keymap.set('n', '<a-J>', '<cmd>BufferLineMoveNext<cr>')
+vim.keymap.set('n', '<a-K>', '<cmd>BufferLineMovePrev<cr>')
 
 -- Completion
 ----------------------------------------------------------------------------------------------------
@@ -208,18 +200,17 @@ require('blink.indent').setup({
 -- Telescope
 ----------------------------------------------------------------------------------------------------
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
-vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find, {})
-vim.keymap.set('n', '<leader>tG', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
-vim.keymap.set('n', '<leader>tr', builtin.lsp_references, {})
+vim.keymap.set('n', '<leader>tf', builtin.find_files)
+vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find)
+vim.keymap.set('n', '<leader>tG', builtin.live_grep)
+vim.keymap.set('n', '<leader>tb', builtin.buffers)
+vim.keymap.set('n', '<leader>td', builtin.diagnostics)
+vim.keymap.set('n', '<leader>tr', builtin.lsp_references)
 
 -- Snippet
 ----------------------------------------------------------------------------------------------------
-local ls = require("luasnip")
-vim.keymap.set({"i", "s"}, "<C-j>", function() ls.expand_or_jump(1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-j>", function() require("luasnip").expand_or_jump(1) end)
+vim.keymap.set({"i", "s"}, "<C-k>", function() require("luasnip").jump(-1) end)
 require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- Surround
@@ -242,6 +233,6 @@ require('neoscroll').setup()
 -- ToggleTerm
 ----------------------------------------------------------------------------------------------------
 require('toggleterm').setup()
-inoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
-nnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
-tnoremap('<c-t>', '<cmd>ToggleTerm direction=float<cr>')
+vim.keymap.set('i', '<c-t>', '<cmd>ToggleTerm direction=float<cr>')
+vim.keymap.set('n', '<c-t>', '<cmd>ToggleTerm direction=float<cr>')
+vim.keymap.set('t', '<c-t>', '<cmd>ToggleTerm direction=float<cr>')
