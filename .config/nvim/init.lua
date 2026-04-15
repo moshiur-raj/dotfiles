@@ -15,6 +15,7 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.colorcolumn = "100"
 vim.opt.tw = 100
+vim.g.tex_flavor = 'latex'
 --
 vim.api.nvim_create_autocmd('FileType', {
 	group = vim.api.nvim_create_augroup('formatoptions', { clear = true }),
