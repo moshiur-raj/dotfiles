@@ -1,9 +1,7 @@
 vim.pack.add({
-
 	'https://github.com/navarasu/onedark.nvim',
 
 	'https://github.com/nvim-tree/nvim-web-devicons',
-
 	'https://github.com/nvim-lualine/lualine.nvim',
 
 	'https://github.com/akinsho/nvim-bufferline.lua',
@@ -20,15 +18,12 @@ vim.pack.add({
 	'https://github.com/saghen/blink.indent',
 
 	'https://github.com/nvim-lua/plenary.nvim',
-
-	{
-		src = 'https://github.com/nvim-telescope/telescope.nvim',
-		version = vim.version.range('*'),
-	},
+	'https://github.com/nvim-telescope/telescope.nvim',
+	'https://github.com/nvim-telescope/telescope-bibtex.nvim',
 
 	{
 		src = 'https://github.com/L3MON4D3/LuaSnip',
-		version = vim.version.range('v2.*'),
+		version = vim.version.range('2.*'),
 	},
 
 	{
@@ -43,5 +38,4 @@ vim.pack.add({
 	'https://github.com/karb94/neoscroll.nvim',
 
 	'https://github.com/akinsho/toggleterm.nvim',
-
 })

@@ -36,39 +36,34 @@ vim.api.nvim_create_autocmd('FileType', {
 ----------------------------------------------------------------------------------------------------
 
 -- use ctrl + s to save, ctrl + c to copy, ctrl + x to cut, ctl + v to paste
-vim.keymap.set('i', '<c-s>', '<c-o><cmd>update<cr>')
-vim.keymap.set('n', '<c-s>', '<cmd>update<cr>')
+vim.keymap.set({'i', 'n'}, '<c-s>', '<cmd>update<cr>')
 vim.keymap.set('v', '<c-c>', '"+y')
 vim.keymap.set('v', '<c-x>', '"+x')
-vim.keymap.set('i', '<c-v>', '<c-o>"+p')
+vim.keymap.set('i', '<c-v>', '<c-r>+')
 vim.keymap.set({'n', 'v'}, '<c-v>', '"+p')
 vim.keymap.set('n', '<a-v>', '<c-v>') -- visual block mode compatibility
 -- use esc to cancel search highlights
 vim.keymap.set('n', '<esc>', '<esc><cmd>nohlsearch<cr>')
 -- move between windows
-vim.keymap.set('n', '<c-h>', '<c-w>h')
-vim.keymap.set('n', '<c-j>', '<c-w>j')
-vim.keymap.set('n', '<c-k>', '<c-w>k')
-vim.keymap.set('n', '<c-l>', '<c-w>l')
-vim.keymap.set('t', '<c-h>', '<c-\\><c-N><c-w>h')
-vim.keymap.set('t', '<c-j>', '<c-\\><c-N><c-w>j')
-vim.keymap.set('t', '<c-k>', '<c-\\><c-N><c-w>k')
-vim.keymap.set('t', '<c-l>', '<c-\\><c-N><c-w>l')
+for _, key in ipairs({ 'h', 'j', 'k', 'l' }) do
+  vim.keymap.set('n', '<c-' .. key .. '>', '<c-w>' .. key)
+  vim.keymap.set('t', '<c-' .. key .. '>', [[<c-\><c-n><c-w>]] .. key)
+end
 -- close window
 vim.keymap.set('n', '<c-q>', '<cmd>quit<cr>')
 -- resize window
-vim.keymap.set('n', '<c-left>', '<cmd>vertical resize -1<cr>')
-vim.keymap.set('n', '<c-down>', '<cmd>resize -1<cr>')
-vim.keymap.set('n', '<c-up>', '<cmd>resize +1<cr>')
+vim.keymap.set('n', '<c-left>',  '<cmd>vertical resize -1<cr>')
+vim.keymap.set('n', '<c-down>',  '<cmd>resize -1<cr>')
+vim.keymap.set('n', '<c-up>',    '<cmd>resize +1<cr>')
 vim.keymap.set('n', '<c-right>', '<cmd>vertical resize +1<cr>')
-vim.keymap.set('t', '<c-left>', '<c-\\><c-N><c-w>h')
-vim.keymap.set('t', '<c-down>', '<c-\\><c-N><c-w>j')
-vim.keymap.set('t', '<c-up>', '<c-\\><c-N><c-w>k')
-vim.keymap.set('t', '<c-right>', '<c-\\><c-N><c-w>l')
+vim.keymap.set('t', '<c-left>',  [[<c-\><c-n><cmd>vertical resize -1<cr>i]])
+vim.keymap.set('t', '<c-down>',  [[<c-\><c-n><cmd>resize -1<cr>i]])
+vim.keymap.set('t', '<c-up>',    [[<c-\><c-n><cmd>resize +1<cr>i]])
+vim.keymap.set('t', '<c-right>', [[<c-\><c-n><cmd>vertical resize +1<cr>i]])
 -- delete buffer but do not ruin the window layout
-vim.keymap.set('n', '<leader>bd', '<cmd>bp|bd #<cr>')
+vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>')
 -- change directory to the current file
-vim.keymap.set('n', '<leader>cd', '<cmd>lcd %:p:h<cr><cmd>pwd<cr>')
+vim.keymap.set('n', '<leader>cd', '<cmd>lcd %:p:h | pwd<cr>')
 -- navigation in command mode
 vim.keymap.set('c', '<a-h>', '<left>')
 vim.keymap.set('c', '<a-j>', '<down>')
@@ -199,13 +194,8 @@ require('blink.indent').setup({
 
 -- Telescope
 ----------------------------------------------------------------------------------------------------
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>tf', builtin.find_files)
-vim.keymap.set('n', '<leader>tg', builtin.current_buffer_fuzzy_find)
-vim.keymap.set('n', '<leader>tG', builtin.live_grep)
-vim.keymap.set('n', '<leader>tb', builtin.buffers)
-vim.keymap.set('n', '<leader>td', builtin.diagnostics)
-vim.keymap.set('n', '<leader>tr', builtin.lsp_references)
+vim.keymap.set('n', 'gf', require('telescope.builtin').find_files)
+vim.keymap.set('n', 'gb', require('telescope.builtin').buffers)
 
 -- Snippet
 ----------------------------------------------------------------------------------------------------
