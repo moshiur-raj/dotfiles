@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
 						vim.log.levels.ERROR)
 					end
 				end)
-			end)
+			end):wait()
 		end
 	end,
 })
