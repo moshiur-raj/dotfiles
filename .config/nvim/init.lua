@@ -125,6 +125,16 @@ require('blink.cmp').setup({
 			}
 		}
 	},
+	cmdline = {
+		completion = { 
+			list = {
+				selection = {
+					preselect = false,
+					auto_insert = true,
+				}
+			}
+		},
+	},
 	sources = {
 		default = { 'lsp', 'buffer', 'snippets', 'path' },
 		providers = {
