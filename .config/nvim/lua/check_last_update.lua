@@ -1,6 +1,6 @@
 -- Check if plugins are outdated
 local function warn_if_plugins_outdated()
-	local lockfile = vim.fn.stdpath('config') .. '/nvim-pack-lock.json'
+	local lockfile = vim.fn.stdpath("config") .. "/nvim-pack-lock.json"
 
 	local stat = vim.loop.fs_stat(lockfile)
 	if not stat then
