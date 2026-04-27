@@ -35,12 +35,12 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function()
-		local file = vim.api.nvim_buf_get_name(0)
-		if file ~= "" and vim.fn.isdirectory(file) == 0 then
-			vim.uv.chdir(vim.fs.dirname(file))
-		end
-	end,
+    callback = function()
+        local file = vim.api.nvim_buf_get_name(0)
+        if file ~= "" and vim.fn.isdirectory(file) == 0 then
+            vim.cmd.cd(vim.fn.fnameescape(vim.fs.dirname(file)))
+        end
+    end,
 })
 
 
@@ -62,10 +62,10 @@ vim.keymap.set("n", "<c-h>", "<c-w>h")
 vim.keymap.set("n", "<c-j>", "<c-w>j")
 vim.keymap.set("n", "<c-k>", "<c-w>k")
 vim.keymap.set("n", "<c-l>", "<c-w>l")
-vim.keymap.set("t", "<c-h>", [[<c-\\><c-N><c-w>h]])
-vim.keymap.set("t", "<c-j>", [[<c-\\><c-N><c-w>j]])
-vim.keymap.set("t", "<c-k>", [[<c-\\><c-N><c-w>k]])
-vim.keymap.set("t", "<c-l>", [[<c-\\><c-N><c-w>l]])
+vim.keymap.set("t", "<c-h>", [[<c-\><c-N><c-w>h]])
+vim.keymap.set("t", "<c-j>", [[<c-\><c-N><c-w>j]])
+vim.keymap.set("t", "<c-k>", [[<c-\><c-N><c-w>k]])
+vim.keymap.set("t", "<c-l>", [[<c-\><c-N><c-w>l]])
 -- close window
 vim.keymap.set("n", "<c-q>", "<cmd>quit<cr>")
 -- resize window
