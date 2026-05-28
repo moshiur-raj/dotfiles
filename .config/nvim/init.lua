@@ -210,15 +210,21 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Indent Guides
 ----------------------------------------------------------------------------------------------------
-require("blink.indent").setup({
-	static = {
-		char= "│",
+require('ibl').setup({
+	indent = {
+		char = '│',
+		smart_indent_cap = true,
+	},
+	whitespace = {
+		remove_blankline_trail = true,
 	},
 	scope = {
-		char= "│",
+		enabled = true,
+		char = '│',
+		show_start = false,
+		show_end = false,
 	},
 })
-
 -- Telescope
 ----------------------------------------------------------------------------------------------------
 vim.keymap.set("n", "gf", require("telescope.builtin").find_files)

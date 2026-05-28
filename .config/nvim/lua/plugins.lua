@@ -46,7 +46,7 @@ vim.pack.add({
 
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 
-	"https://github.com/saghen/blink.indent",
+	"https://github.com/lukas-reineke/indent-blankline.nvim",
 
 	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/nvim-telescope/telescope.nvim",
