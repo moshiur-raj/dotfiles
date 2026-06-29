@@ -1,72 +1,58 @@
 -- Inhibit GNOME idle/suspend while MPV is playing
 -- Only works when gpu-context starts with "x11*"
 
-local mp = require 'mp'
-local utils = require 'mp.utils'
-
-local inhibit_pid = nil
-local mpv_pid = mp.get_property_native("pid")
-local pidfile = "/tmp/mpv-gnome-inhibit-" .. mpv_pid .. ".pid"
-
-local allow_inhibit
-
--- Check if gpu-context is X11-based
-local gpu_context = mp.get_property("gpu-context", ""):lower()
-if gpu_context:match("^x11") then
-	mp.msg.info("Inhibition allowed (gpu-context=" .. gpu_context .. ")")
-	allow_inhibit = true
-else
-	mp.msg.info("Inhibition skipped (gpu-context=" .. gpu_context .. ")")
-	allow_inhibit = false
-end
-
--- Start inhibition
+local mp  = require 'mp'
+local msg = require 'mp.msg'
+ 
+local mpv_pid   = mp.get_property_native("pid")
+local inhibitor = nil   -- async-command handle while inhibiting, else nil
+ 
+-- Decide once whether we should act, based on the configured gpu-context.
+local gpu_context   = (mp.get_property("gpu-context", "") or ""):lower()
+local allow_inhibit = gpu_context:find("^x11") ~= nil
+msg.info(("idle inhibition %s (gpu-context=%s)")
+    :format(allow_inhibit and "enabled" or "disabled", gpu_context))
+ 
 local function start_inhibit()
-    if not allow_inhibit then return end
-    if inhibit_pid ~= nil then return end
-
-    local cmd = string.format(
-        "echo $$ > %s; sync; exec gnome-session-inhibit --inhibit idle --inhibit suspend --reason \"mpv playing\" $HOME/.config/mpv/bin/pidwait-custom %s",
-        pidfile,
-		mpv_pid
-    )
-    local res = utils.subprocess_detached({ args = { "bash", "-c", cmd } })
-    -- detached mode returns immediately; read PID from file
-    local f = io.open(pidfile, "r")
-    if f then
-        inhibit_pid = f:read("*n")
-        f:close()
-    end
-
-    if inhibit_pid then
-        mp.msg.info("Inhibition started (PID " .. tostring(inhibit_pid) .. ")")
-    else
-        mp.msg.error("Failed to get inhibition PID")
-    end
+    if not allow_inhibit or inhibitor ~= nil then return end
+ 
+    local handle
+    handle = mp.command_native_async({
+        name          = "subprocess",
+        playback_only = false,   -- lifecycle is driven by us, not by mpv
+        detach        = false,   -- mpv owns the child, so abort can kill it
+        args = {
+            "gnome-session-inhibit",
+            "--inhibit", "idle",
+            "--inhibit", "suspend",
+            "--reason",  "mpv playing",
+            -- lifetime token: exits the moment mpv (pid) is gone
+            "pidwait", "--pid", tostring(mpv_pid),
+        },
+    }, function(_, result, _)
+        -- Fires when the inhibitor ends (paused -> aborted, quit, or failed).
+        if inhibitor == handle then inhibitor = nil end
+        if result and not result.killed_by_us
+           and result.error_string and result.error_string ~= "" then
+            msg.warn("gnome-session-inhibit failed: " .. result.error_string)
+        end
+    end)
+ 
+    inhibitor = handle
+    msg.info("inhibition started")
 end
-
--- Stop inhibition
+ 
 local function stop_inhibit()
-    if inhibit_pid ~= nil then
-        -- Kill child (pidwait), which makes parent (gnome-session-inhibit) exit
-        pcall(function()
-            utils.subprocess({ args = {"pkill", "-P", tostring(inhibit_pid)} })
-        end)
-        inhibit_pid = nil
-        mp.msg.info("Inhibition stopped")
-    end
+    if inhibitor == nil then return end
+    mp.abort_async_command(inhibitor)  -- kills gnome-session-inhibit -> inhibit released
+    inhibitor = nil
+    msg.info("inhibition stopped")
 end
-
--- Watch pause state
+ 
+-- Inhibit only while playing; release as soon as we pause.
 mp.observe_property("pause", "bool", function(_, paused)
-    if paused == false then
-        start_inhibit()
-    else
-        stop_inhibit()
-    end
+    if paused then stop_inhibit() else start_inhibit() end
 end)
-
--- Ensure cleanup on quit
+ 
+-- Clean shutdown on normal quit. (SIGKILL of mpv is covered by tail --pid.)
 mp.register_event("shutdown", stop_inhibit)
-mp.register_event("shutdown", function() os.remove(pidfile) end)
-mp.register_event("shutdown", function() os.remove("/tmp/mpv-" .. mpv_pid .. ".pid") end)
