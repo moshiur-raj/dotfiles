@@ -14,9 +14,6 @@ compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-$ZSH_VERSION
 # Assign HOSTNAME if it is not set
 [[ $HOSTNAME ]] || export HOSTNAME=$HOST
 
-# Fix mpv blank screen and hw decode in gnome wayland
-[[ $HOSTNAME == "archlinux" ]] && [[ $WAYLAND_DISPLAY ]] && [[ $XDG_CURRENT_DESKTOP == "GNOME" ]] && alias mpv="gnome-session-inhibit --inhibit idle mpv"
-
 # Set Terminal Title in Gnome-Console
 [ $(ps -p $PPID -o comm= ) = "kgx" ] && echo -ne "\033]0;Terminal\007"
 

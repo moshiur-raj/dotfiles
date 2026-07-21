@@ -77,8 +77,6 @@ vim.keymap.set("t", "<c-left>",  [[<c-\><c-n><cmd>vertical resize -1<cr>i]])
 vim.keymap.set("t", "<c-down>",  [[<c-\><c-n><cmd>resize -1<cr>i]])
 vim.keymap.set("t", "<c-up>",    [[<c-\><c-n><cmd>resize +1<cr>i]])
 vim.keymap.set("t", "<c-right>", [[<c-\><c-n><cmd>vertical resize +1<cr>i]])
--- delete buffer but do not ruin the window layout
-vim.keymap.set("n", "<leader>bd", "<cmd>bd<cr>")
 -- change directory to the current file
 vim.keymap.set("n", "<leader>cd", "<cmd>lcd %:p:h | pwd<cr>")
 -- navigation in command mode
@@ -169,6 +167,9 @@ require("blink.cmp").setup({
 ----------------------------------------------------------------------------------------------------
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
+vim.diagnostic.config({
+  signs = false, -- Hides diagnostics in the left sign column
+})
 --
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),

@@ -25,8 +25,10 @@ pyvenv()
 		return 1
 	fi
 
-	if [[ $1 == "pytorch" ]]; then
+	if [[ $1 == *rocm ]]; then
 		[[ $HOSTNAME == "archlinux" ]] && export HSA_OVERRIDE_GFX_VERSION=10.3.0
+	else
+		unset HSA_OVERRIDE_GFX_VERSION
 	fi
 
 	VENV_DIR="$HOME/.local/python-venv/$1"
@@ -34,7 +36,7 @@ pyvenv()
 		source "$VENV_DIR/bin/activate"
 		echo "Activated virtual environment: $1"
 	else
-		echo "Virtual environment '$1' not found in $HOME/.virtualenvs/"
+		echo "Virtual environment '$1' not found in $HOME/.local/python-venv/"
 		return 1
 	fi
 }

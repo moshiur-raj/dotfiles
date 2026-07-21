@@ -12,6 +12,7 @@ local function get_python_executable()
 		type = "file",
 	})[1]
 
+	local rocm
 	if ty_toml then
 		-- Pull python = "..." (or single-quoted) out of the config
 		local content = table.concat(vim.fn.readfile(ty_toml), "\n")
@@ -25,6 +26,7 @@ local function get_python_executable()
 			if not vim.startswith(venv, "/") then
 				venv = vim.fs.joinpath(vim.fs.dirname(ty_toml), venv)
 			end
+			rocm = vim.fs.basename(venv:gsub("/+$", "")):match("%-rocm$") ~= nil
 
 			local ipython = vim.fs.joinpath(venv, "bin", "ipython")
 			if vim.fn.executable(ipython) == 1 then
@@ -37,6 +39,9 @@ local function get_python_executable()
 		end
 	end
 
+	if rocm then
+		return {"env", "HSA_OVERRIDE_GFX_VERSION=10.3.0", python, "--no-autoindent"}
+	end
 	return {python, "--no-autoindent"}
 end
 

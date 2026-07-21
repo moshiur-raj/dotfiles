@@ -1,4 +1,6 @@
 AdamW
+Antiferromagnets
+Ashraf
 BGD
 Civita
 Colab
@@ -13,7 +15,9 @@ GRE
 GeLU
 Ghosh
 Hamiltonians
+Hibat
 ICTP
+IELTS
 Ising
 Jacobian
 Jastrow
@@ -22,14 +26,18 @@ Lanczos
 Lecun
 MLP
 MSR
+Mahmud
 Majumdar
+Matplotlib
 MinSR
 Minkowski
+Moshiur
 NVIDIA
 Neel
 Noether
 Noether's
 Parameterizing
+Paulo
 Peierls
 Pre
 QFT
@@ -37,6 +45,8 @@ QMC
 RBM
 RBMModPhase
 RNN
+Rahman
+Raj
 Rajshahi
 ReLU
 Riemannian
@@ -44,7 +54,11 @@ Riemnnian
 Rodrigue
 Rodrigues
 SGD
+SLURM
+SciPy
+Shamim
 Sigmoid
+TikZ
 VMC
 ViT
 ViTSym
