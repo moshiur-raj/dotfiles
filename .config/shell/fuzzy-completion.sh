@@ -4,7 +4,7 @@ source /usr/share/fzf/key-bindings.zsh
 
 FUZZY_FINDER=("fzf" "--border" "--height" "60%")
 
-CONFIG_FILES=(~/.local/bin $XDG_CONFIG_HOME/{bashrc,nvim,zsh,mpv,alacritty,npm,environment.d,shell} $XDG_DATA_HOME/applications $XDG_DATA_HOMe/Nextcloud/Notes ~/coding ~/todo ~/notes ~/research ~/Templates)
+CONFIG_FILES=(~/.local/bin $XDG_CONFIG_HOME/{bashrc,nvim,zsh,mpv,alacritty,npm,environment.d,shell} $XDG_DATA_HOME/applications ~/Nextcloud/Notes ~/coding ~/todo ~/notes ~/research ~/Templates)
 
 find_files() {
 	find ${CONFIG_FILES[@]} \( -path "*/.cache" -o -path "*/.clangd" -o -path "*/.git" -o -path "*.pdf" -o -path "*.pdf_tex" -o -path "*.mkv" -o -path "*.svg" -o -path "*.glsl" -o -path "*.png" -o -path "*.jpg" \) -prune -o -type f -print
