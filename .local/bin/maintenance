@@ -33,10 +33,14 @@ mkdir /tmp/sysconfigs || { echo "/tmp/sysconfigs already exists"; exit 1; }
 cp /etc/default/grub /etc/fstab /etc/pacman.conf /etc/paru.conf /etc/systemd/resolved.conf /tmp/sysconfigs
 sudo cat /etc/audit/audit.rules > /tmp/sysconfigs/audit.rules
 sudo cat /etc/sudoers-rs > /tmp/sysconfigs/sudoers-rs
-sudo cat /etc/samba/smb.conf  > /tmp/sysconfigs/smb.conf
 sudo cat /etc/ssh/sshd_config  > /tmp/sysconfigs/sshd_config.conf
 sudo cat /etc/sysctl.d/99-vm-zram-parameters.conf  > /tmp/sysconfigs/99-vm-zram-parameters.conf
+sudo cat /etc/pacman.d/hooks/80-secureboot.hook > /tmp/sysconfigs/80-secureboot.hook
+sudo cat /etc/kernel/cmdline  > /tmp/sysconfigs/cmdline
+sudo cat /etc/kernel/uki.conf  > /tmp/sysconfigs/uki.conf
 sudo cat /etc/bash.bashrc > /tmp/sysconfigs/bash.bashrc
+sudo cat /etc/zshenv > /tmp/sysconfigs/zshenv
+
 tar czf /tmp/sysconfigs.tar.gz --directory=/tmp/ sysconfigs
 rm -rf /tmp/sysconfigs
 cp -f /tmp/sysconfigs.tar.gz /mnt/storage0/Backups
